@@ -3,7 +3,19 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           controllers.HomeController.index
+GET     /                           controllers.HomeController.index(request: Request)
+# Serve index page from public directory
+#GET     /                           controllers.FrontendController.index()
+GET     /register                   controllers.RegisterController.register(request: Request)
+GET     /logIn                      controllers.LogInController.logIn(request: Request)
+GET     /upload                     controllers.HomeController.uploadFile(request: Request)
+GET     /ksaForm                    controllers.KsaFormController.loadForm(request: Request)
+GET     /logOut                     controllers.HomeController.logOut(request: Request)
+
++nocsrf
+POST    /register/submit            controllers.RegisterController.registerSubmit()
++nocsrf
+POST    /logIn/submit               controllers.LogInController.logInSubmit()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
