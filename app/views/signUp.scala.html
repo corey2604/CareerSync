@@ -1,0 +1,48 @@
+@()
+
+@main("Register") {
+    @helper.form(action = routes.RegisterController.registerSubmit()) {
+        <div class="sidenav">
+            <div class="login-main-text">
+                <h2>CareerSync - Register</h2>
+                <p>Create an account.</p>
+            </div>
+        </div>
+        <div class="main">
+            <div class="col-md-6 col-sm-12">
+                <div class="login-form">
+                @helper.form(action = routes.RegisterController.registerSubmit()) {
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" name="username" />
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" name="email" />
+                    </div>
+                    <div class="form-group">
+                        <label for="firstName">First Name:</label>
+                        <input type="text" name="firstName">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name:</label>
+                        <input type="text" name="lastName">
+                    </div>
+                    <div class="form-group">
+                        <label for="PhoneNumber">Phone Number:</label>
+                        <input type="text" name="phoneNumber">
+                    </div>
+                    <div class="form-group">
+                        <label for="userType">Type of user:</label>
+                        <select class="form-control" name="userType">
+                            <option value="recruiter">Recruiter</option>
+                            <option value="candidate">Candidate</option>
+                        </select>
+                    </div>
+                    <input type="submit" class="btn btn-black" value="Sign Up" />
+                }
+                </div>
+            </div>
+        </div>
+    }
+}

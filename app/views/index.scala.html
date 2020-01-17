@@ -1,5 +1,13 @@
 @()
 
-@main("Welcome to Play") {
-  <h1>Welcome to Play!</h1>
+@main("CareerSync") {
+    <div class="container">
+        <div class="jumbotron">
+            <h1>CareerSync</h1>
+        </div>
+        <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.HomeController.uploadFile">Upload File</a>
+        <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.KsaFormController.loadForm()">Complete KSA Form</a>
+        <a class="btn btn-primary btn-lg btn-block active" role="button" href="">View Job Recommendations</a>
+    </div>
+    <script type="text/javascript" src="@routes.Assets.versioned("javascripts/transformed.js")"></script>
 }

@@ -1,0 +1,28 @@
+@()
+
+@main("Log In") {
+    <div class="sidenav">
+        <div class="login-main-text">
+            <h2>CareerSync<br> Login Page</h2>
+            <p>Login or register from here to access.</p>
+        </div>
+    </div>
+    <div class="main">
+        <div class="col-md-6 col-sm-12">
+            <div class="login-form">
+                @helper.form(action = routes.LogInController.logInSubmit()) {
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" name="username" />
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" name="password" />
+                    </div>
+
+                    <input type="submit" class="btn btn-black" value="Sign In" />
+                }
+            </div>
+        </div>
+    </div>
+}
