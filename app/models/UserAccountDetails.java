@@ -3,14 +3,16 @@ package models;
 public class UserAccountDetails {
     private String username;
     private String firstName;
-    private String surName;
+    private String surname;
     private String emailAddress;
     private String phoneNumber;
 
-    public UserAccountDetails(String username, String firstName, String surName, String emailAddress, String phoneNumber) {
+    public UserAccountDetails() {}
+
+    public UserAccountDetails(String username, String firstName, String surname, String emailAddress, String phoneNumber) {
         this.username = username;
         this.firstName = firstName;
-        this.surName = surName;
+        this.surname = surname;
         this.emailAddress = emailAddress;
         this.phoneNumber = phoneNumber;
     }
@@ -31,12 +33,12 @@ public class UserAccountDetails {
         this.firstName = firstName;
     }
 
-    public String getSurName() {
-        return surName;
+    public String getSurname() {
+        return surname;
     }
 
-    public void setSurName(String surName) {
-        this.surName = surName;
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public String getEmailAddress() {

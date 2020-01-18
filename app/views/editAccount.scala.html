@@ -3,28 +3,28 @@
 @main("Edit Account") {
     <div class="container">
         <h1>Edit your details below:</h1>
-        <form>
+            @helper.form(action = routes.EditAccountController.updateUserAccountDetails()) {
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" class="form-control" id="usernameInput" value="@userAccountDetails.getUsername">
+                <input type="text" class="form-control" name="username" value="@userAccountDetails.getUsername">
             </div>
             <div class="form-group">
                 <label for="firstName">First Name</label>
-                <input type="text" class="form-control" id="firstName" value="@userAccountDetails.getFirstName">
+                <input type="text" class="form-control" name="firstName" value="@userAccountDetails.getFirstName">
             </div>
             <div class="form-group">
                 <label for="surname">Surname</label>
-                <input type="text" class="form-control" id="surname" value="@userAccountDetails.getSurName">
+                <input type="text" class="form-control" name="surname" value="@userAccountDetails.getSurname">
             </div>
             <div class="form-group">
-                <label for="email">Email address</label>
-                <input type="email" class="form-control" id="email" value="@userAccountDetails.getEmailAddress">
+                <label for="emailAddress">Email address</label>
+                <input type="email" class="form-control" name="emailAddress" value="@userAccountDetails.getEmailAddress">
             </div>
             <div class="form-group">
                 <label for="phoneNumber">Phone number</label>
-                <input type="text" class="form-control" id="phoneNumber" value="@userAccountDetails.getPhoneNumber">
+                <input type="text" class="form-control" name="phoneNumber" value="@userAccountDetails.getPhoneNumber">
             </div>
-            <button type="submit" class="btn btn-primary">Update Details</button>
-        </form>
+                <input type="submit" class="btn btn-black" value="Update Details" />
+            }
     </div>
 }

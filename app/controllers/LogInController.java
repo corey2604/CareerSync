@@ -35,7 +35,6 @@ public class LogInController extends Controller {
     }
 
     public Result logInSubmit() {
-
         Form<UserSignInRequest> userSignInForm = formFactory.form(UserSignInRequest.class).bindFromRequest();
         String username = awsSignIn(userSignInForm);
         String userType = DynamoDbTableProvider.getTable("CareerSync-Users").getItem("username", username).get("userType").toString();
