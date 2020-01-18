@@ -31,10 +31,7 @@ public class EditAccountController extends Controller {
     }
 
     public Result updateUserAccountDetails() {
-        System.out.println("GOT HERE");
         UserAccountDetails userAccountDetails = formFactory.form(UserAccountDetails.class).bindFromRequest().get();
-        System.out.println(userAccountDetails.getUsername());
-        System.out.println(userAccountDetails.getSurname());
         UpdateItemRequest updateRequest = new UpdateItemRequest();
         updateRequest.setTableName("CareerSync-Users");
 
@@ -45,7 +42,6 @@ public class EditAccountController extends Controller {
         /* Create a Map of attributes to be updated */
         Map<String, AttributeValueUpdate> map = new HashMap<>();
         map.put("firstName", new AttributeValueUpdate(new AttributeValue(userAccountDetails.getFirstName()),"PUT"));
-        System.out.println("First Name: " + userAccountDetails.getFirstName());
         map.put("surname", new AttributeValueUpdate(new AttributeValue(userAccountDetails.getSurname()),"PUT"));
         map.put("email", new AttributeValueUpdate(new AttributeValue(userAccountDetails.getEmailAddress()),"PUT"));
         map.put("phoneNumber", new AttributeValueUpdate(new AttributeValue(userAccountDetails.getPhoneNumber()),"PUT"));
