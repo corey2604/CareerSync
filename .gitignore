@@ -5,6 +5,7 @@ target
 /.classpath
 /.project
 /.settings
+/conf/application.conf
 /RUNNING_PID
 # dependencies
 /node_modules
@@ -27,4 +28,3 @@ target
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-conf/application.conf
