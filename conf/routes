@@ -11,6 +11,7 @@ GET     /logIn                      controllers.LogInController.logIn(request: R
 GET     /upload                     controllers.HomeController.uploadFile(request: Request)
 GET     /ksaForm                    controllers.KsaFormController.loadForm(request: Request)
 GET     /logOut                     controllers.HomeController.logOut(request: Request)
+GET     /editAccount                controllers.EditAccountController.editAccount(request: Request)
 
 +nocsrf
 POST    /register/submit            controllers.RegisterController.registerSubmit()
