@@ -1,5 +1,28 @@
-@()
+@import java.util
+@(jobDescriptions:List[JobDescription])
 
 @main("Uploaded Job Specifications"){
-
+    <div class="container">
+        <div class="row text-center pt-5">
+            <h1 class="display-4">Your Uploaded Job Specifications:</h1>
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Reference Number</th>
+                        <th scope="col">Job Title</th>
+                        <th scope="col">Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(jobDescription <- jobDescriptions) {
+                        <tr>
+                            <th>@jobDescription.getReferenceCode</th>
+                            <td>@jobDescription.getJobTitle</td>
+                            <td>@jobDescription.getLocation</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 }

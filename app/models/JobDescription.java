@@ -1,5 +1,7 @@
 package models;
 
+import com.amazonaws.services.dynamodbv2.document.Item;
+
 public class JobDescription {
     private String referenceCode;
     private String jobTitle;
@@ -129,5 +131,22 @@ public class JobDescription {
     }
 
     public JobDescription() {
+    }
+
+    public JobDescription(Item item) {
+        this.referenceCode = item.get("referenceCode").toString();
+        this.jobTitle = item.get("jobTitle").toString();
+        this.duration = item.get("duration").toString();
+        this.location = item.get("location").toString();
+        this.department = item.get("department").toString();
+        this.section = item.get("section").toString();
+        this.grade = item.get("grade").toString();
+        this.reportsTo = item.get("reportsTo").toString();
+        this.responsibleTo = item.get("responsibleTo").toString();
+        this.hours = item.get("hours").toString();
+        this.salary = item.get("salary").toString();
+        this.mainPurposeOfJob = item.get("mainPurposeOfJob").toString();
+        this.mainResponsibilities = item.get("mainResponsibilities").toString();
+        this.general = item.get("general").toString();
     }
 }
