@@ -12,7 +12,7 @@ import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import utilities.LoginChecker;
+import utilities.DynamoTables;
 
 import javax.inject.Inject;
 
@@ -73,7 +73,7 @@ public class RegisterController extends Controller {
                 .with("email", signUpRequest.getEmail())
                 .with("phoneNumber", signUpRequest.getPhoneNumber())
                 .with("userType", signUpRequest.getUserType());
-        DynamoDbTableProvider.getTable("CareerSync-Users").putItem(careerSyncUser);
+        DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName()).putItem(careerSyncUser);
 
 
         AdminCreateUserResult createUserResult = cognitoClient.adminCreateUser(cognitoRequest);

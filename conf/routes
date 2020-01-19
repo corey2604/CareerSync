@@ -12,6 +12,8 @@ GET     /upload                     controllers.HomeController.uploadFile(reques
 GET     /ksaForm                    controllers.KsaFormController.loadForm(request: Request)
 GET     /logOut                     controllers.HomeController.logOut(request: Request)
 GET     /editAccount                controllers.EditAccountController.editAccount(request: Request)
+GET     /uploadJobApplication       controllers.JobApplicationController.uploadJobApplication(request: Request)
+GET     /uploadedJobSpecifications  controllers.JobApplicationController.getUploadedJobSpecifications(request: Request)
 
 +nocsrf
 POST    /register/submit            controllers.RegisterController.registerSubmit()
@@ -19,6 +21,8 @@ POST    /register/submit            controllers.RegisterController.registerSubmi
 POST    /logIn/submit               controllers.LogInController.logInSubmit()
 +nocsrf
 POST    /editAccount/update         controllers.EditAccountController.updateUserAccountDetails()
++nocsrf
+POST    /jobDescription/submit      controllers.JobApplicationController.submitJobDescription()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

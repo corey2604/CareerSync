@@ -1,0 +1,68 @@
+@()
+
+@main("Upload Job Application") {
+    <div class="container">
+        <div class="row text-center pt-5">
+            <h1 class="display-4">Job Application Details:</h1>
+        </div>
+        @helper.form(action = routes.JobApplicationController.submitJobDescription()) {
+            <div class="form-group">
+                <label for="referenceCode"><strong>Reference Code:</strong></label>
+                <input type="text" class="form-control" name="referenceCode" value="">
+            </div>
+            <div class="form-group">
+                <label for="jobTitle"><strong>Job Title:</strong></label>
+                <input type="text" class="form-control" name="jobTitle" value="">
+            </div>
+            <div class="form-group">
+                <label for="duration"><strong>Duration:</strong></label>
+                <input type="text" class="form-control" name="duration" value="">
+            </div>
+            <div class="form-group">
+                <label for="location"><strong>Location:</strong></label>
+                <input type="text" class="form-control" name="location" value="">
+            </div>
+            <div class="form-group">
+                <label for="department"><strong>Department:</strong></label>
+                <input type="text" class="form-control" name="department" value="">
+            </div>
+            <div class="form-group">
+                <label for="section"><strong>Section:</strong></label>
+                <input type="text" class="form-control" name="section" value="">
+            </div>
+            <div class="form-group">
+                <label for="grade"><strong>Grade:</strong></label>
+                <input type="text" class="form-control" name="grade" value="">
+            </div>
+            <div class="form-group">
+                <label for="reportsTo"><strong>Reports To:</strong></label>
+                <input type="text" class="form-control" name="reportsTo" value="">
+            </div>
+            <div class="form-group">
+                <label for="responsibleTo"><strong>Responsible To:</strong></label>
+                <input type="text" class="form-control" name="responsibleTo" value="">
+            </div>
+            <div class="form-group">
+                <label for="hours"><strong>Hours:</strong></label>
+                <input type="text" class="form-control" name="hours" value="">
+            </div>
+            <div class="form-group">
+                <label for="salary"><strong>Salary:</strong></label>
+                <input type="text" class="form-control" name="salary" value="">
+            </div>
+            <div class="form-group">
+                <label for="mainPurposeOfJob"><strong>Main Purpose of Job:</strong></label>
+                <textarea class="form-control" name="mainPurposeOfJob" rows="10"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="mainResponsibilities"><strong>Main Responsibilities:</strong></label>
+                <textarea class="form-control" name="mainResponsibilities" rows="10"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="general"><strong>General:</strong></label>
+                <textarea class="form-control" name="general" rows="10"></textarea>
+            </div>
+            <input type="submit" class="btn btn-primary btn-lg btn-block mb-5" value="Submit" />
+        }
+    </div>
+}
