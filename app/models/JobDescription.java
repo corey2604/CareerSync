@@ -7,6 +7,7 @@ public class JobDescription {
     private String jobTitle;
     private String duration;
     private String location;
+    private String companyOrOrganisation;
     private String department;
     private String section;
     private String grade;
@@ -48,6 +49,14 @@ public class JobDescription {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getCompanyOrOrganisation() {
+        return companyOrOrganisation;
+    }
+
+    public void setCompanyOrOrganisation(String companyOrOrganisation) {
+        this.companyOrOrganisation = companyOrOrganisation;
     }
 
     public String getDepartment() {
@@ -138,6 +147,7 @@ public class JobDescription {
         this.jobTitle = item.get("jobTitle").toString();
         this.duration = item.get("duration").toString();
         this.location = item.get("location").toString();
+        this.companyOrOrganisation = item.get("companyOrOrganisation").toString();
         this.department = item.get("department").toString();
         this.section = item.get("section").toString();
         this.grade = item.get("grade").toString();

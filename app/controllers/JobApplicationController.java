@@ -57,12 +57,42 @@ public class JobApplicationController extends Controller {
 
     public Result submitJobDescription() {
         JobDescription jobDescription = formFactory.form(JobDescription.class).bindFromRequest().get();
+        putJobDescriptionInTable(jobDescription);
+        return redirect(routes.HomeController.index());
+    }
+
+    public Result editJobDescription(Http.Request request, String referenceCode) {
+        Table jobDescriptionsTable = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_JOB_DESCRIPTIONS.getName());
+
+        QuerySpec spec = new QuerySpec()
+                .withKeyConditionExpression("recruiter = :recruiter")
+                .withFilterExpression("referenceCode = :referenceCode")
+                .withValueMap(new ValueMap()
+                        .withString(":recruiter", request.cookie("username").value())
+                        .withString(":referenceCode", referenceCode)
+                );
+
+        ItemCollection<QueryOutcome> items = jobDescriptionsTable.query(spec);
+
+        Iterator<Item> iterator = items.iterator();
+        List<JobDescription> jobDescriptions = new ArrayList<JobDescription>();
+        Item item;
+        while (iterator.hasNext()) {
+            item = iterator.next();
+            jobDescriptions.add(new JobDescription(item));
+            System.out.println(item.toJSONPretty());
+        }
+        return ok(views.html.editJobApplication.render(jobDescriptions.get(0)));
+    }
+
+    private void putJobDescriptionInTable(JobDescription jobDescription) {
         Item jobDescriptionItem = new Item()
                 .withPrimaryKey("referenceCode", jobDescription.getReferenceCode())
                 .with("recruiter", userName)
                 .with("jobTitle", jobDescription.getJobTitle())
                 .with("duration", jobDescription.getDuration())
                 .with("location", jobDescription.getLocation())
+                .with("companyOrOrganisation", jobDescription.getCompanyOrOrganisation())
                 .with("department", jobDescription.getDepartment())
                 .with("section", jobDescription.getSection())
                 .with("grade", jobDescription.getGrade())
@@ -74,6 +104,5 @@ public class JobApplicationController extends Controller {
                 .with("mainResponsibilities", jobDescription.getMainResponsibilities())
                 .with("general", jobDescription.getGeneral());
         DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_JOB_DESCRIPTIONS.getName()).putItem(jobDescriptionItem);
-        return redirect(routes.HomeController.index());
     }
 }

@@ -10,7 +10,9 @@
                     <tr>
                         <th scope="col">Reference Number</th>
                         <th scope="col">Job Title</th>
+                        <th scope="col">Company/Organisation</th>
                         <th scope="col">Location</th>
+                        <th scopr="col"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -18,7 +20,12 @@
                         <tr>
                             <th>@jobDescription.getReferenceCode</th>
                             <td>@jobDescription.getJobTitle</td>
+                            <td>@jobDescription.getCompanyOrOrganisation</td>
                             <td>@jobDescription.getLocation</td>
+                            <td>
+                                <div><a class="btn active">View</a></div>
+                                <div><a class="btn active" href="@routes.JobApplicationController.editJobDescription(jobDescription.getReferenceCode)">Edit</a></div>
+                            </td>
                         </tr>
                     }
                 </tbody>
