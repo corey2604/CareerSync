@@ -23,8 +23,8 @@
                             <td>@jobDescription.getCompanyOrOrganisation</td>
                             <td>@jobDescription.getLocation</td>
                             <td>
-                                <div><a class="btn active">View</a></div>
-                                <div><a class="btn active" href="@routes.JobApplicationController.editJobDescription(jobDescription.getReferenceCode)">Edit</a></div>
+                                <a class="btn active btn-primary btn-sm m-0" href="@routes.JobApplicationController.viewJobDescription(jobDescription.getReferenceCode)">View</a>
+                                <a class="btn active btn-primary btn-sm m-0" href="@routes.JobApplicationController.editJobDescription(jobDescription.getReferenceCode)">Edit</a>
                             </td>
                         </tr>
                     }

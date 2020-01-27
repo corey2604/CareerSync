@@ -22,7 +22,6 @@ import java.util.List;
 public class JobApplicationController extends Controller {
 
     private FormFactory formFactory;
-    private String userName;
 
     @Inject
     public JobApplicationController(FormFactory formFactory) {
@@ -30,8 +29,11 @@ public class JobApplicationController extends Controller {
     }
 
     public Result uploadJobApplication(Http.Request request) {
-        userName = request.cookie("username").value();
         return ok(views.html.uploadJobApplication.render());
+    }
+
+    public Result viewJobDescription(Http.Request request, String referenceCode) {
+        return ok(views.html.viewJobApplication.render(getJobDescription(request, referenceCode)));
     }
 
     public Result getUploadedJobSpecifications(Http.Request request) {
@@ -55,15 +57,19 @@ public class JobApplicationController extends Controller {
         return ok(views.html.uploadedJobSpecifications.render(jobDescriptions));
     }
 
-    public Result submitJobDescription() {
+    public Result submitJobDescription(Http.Request request) {
         JobDescription jobDescription = formFactory.form(JobDescription.class).bindFromRequest().get();
-        putJobDescriptionInTable(jobDescription);
+        putJobDescriptionInTable(request.cookie("username").value(), jobDescription);
         return redirect(routes.HomeController.index());
     }
 
     public Result editJobDescription(Http.Request request, String referenceCode) {
-        Table jobDescriptionsTable = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_JOB_DESCRIPTIONS.getName());
+        JobDescription jobDescription = getJobDescription(request, referenceCode);
+        return ok(views.html.editJobApplication.render(jobDescription));
+    }
 
+    private JobDescription getJobDescription(Http.Request request, String referenceCode) {
+        Table jobDescriptionsTable = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_JOB_DESCRIPTIONS.getName());
         QuerySpec spec = new QuerySpec()
                 .withKeyConditionExpression("recruiter = :recruiter")
                 .withFilterExpression("referenceCode = :referenceCode")
@@ -82,13 +88,13 @@ public class JobApplicationController extends Controller {
             jobDescriptions.add(new JobDescription(item));
             System.out.println(item.toJSONPretty());
         }
-        return ok(views.html.editJobApplication.render(jobDescriptions.get(0)));
+        return jobDescriptions.get(0);
     }
 
-    private void putJobDescriptionInTable(JobDescription jobDescription) {
+    private void putJobDescriptionInTable(String username, JobDescription jobDescription) {
         Item jobDescriptionItem = new Item()
                 .withPrimaryKey("referenceCode", jobDescription.getReferenceCode())
-                .with("recruiter", userName)
+                .with("recruiter", username)
                 .with("jobTitle", jobDescription.getJobTitle())
                 .with("duration", jobDescription.getDuration())
                 .with("location", jobDescription.getLocation())
