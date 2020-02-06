@@ -7,6 +7,6 @@ import play.mvc.Result;
 public class KsaFormController extends Controller {
 
     public Result loadForm(Http.Request request) {
-        return ok(views.html.ksaForm.render());
+        return ok(views.html.candidate.ksaForm.render());
     }
 }

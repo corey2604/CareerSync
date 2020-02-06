@@ -1,0 +1,84 @@
+@()
+
+@main("KSA Form") {
+    <div class="container">
+        <div class="jumbotron">
+            <h1>KSA Form</h1>
+        </div>
+        @helper.form(action = routes.JobApplicationController.submitJobDescription()) {
+            <h1>Skills and Abilities</h1>
+            <h2>Communication</h2>
+            <div class="form-group">
+            @for(communicationSkill <- KsaValues.getCommunicationSkills) {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="@communicationSkill" id="defaultCheck1">
+                    <label class="form-check-label" for="defaultCheck1">
+                       @communicationSkill
+                    </label>
+                </div>
+            }
+            </div>
+            <hr>
+            <h2>People Skills</h2>
+            <div class="form-group">
+            @for(peopleSkill <- KsaValues.getPeopleSkills) {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="@peopleSkill" id="defaultCheck1">
+                    <label class="form-check-label" for="defaultCheck1">
+                    @peopleSkill
+                    </label>
+                </div>
+            }
+            </div>
+            <hr>
+            <h2>Financial Knowledge and Skills</h2>
+            <div class="form-group">
+            @for(financialKnowledge <- KsaValues.getFinancialKnowledgeAndSkills) {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="@financialKnowledge" id="defaultCheck1">
+                    <label class="form-check-label" for="defaultCheck1">
+                    @financialKnowledge
+                    </label>
+                </div>
+            }
+            </div>
+            <hr>
+            <h2>Thinking and Analysis</h2>
+            <div class="form-group">
+            @for(analyticalSkill <- KsaValues.getThinkingAndAnalysis) {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="@analyticalSkill" id="defaultCheck1">
+                    <label class="form-check-label" for="defaultCheck1">
+                    @analyticalSkill
+                    </label>
+                </div>
+            }
+            </div>
+            <hr>
+            <h2>Creative/Innovative</h2>
+            <div class="form-group">
+            @for(creativeSkill <- KsaValues.getCreativeOrInnovative) {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="@creativeSkill" id="defaultCheck1">
+                    <label class="form-check-label" for="defaultCheck1">
+                    @creativeSkill
+                    </label>
+                </div>
+            }
+            </div>
+            <hr>
+            <h2>Administrative/Organisational</h2>
+            <div class="form-group">
+            @for(administrativeSkill <- KsaValues.getAdministrativeOrOrganisational) {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="@administrativeSkill" id="defaultCheck1">
+                    <label class="form-check-label" for="defaultCheck1">
+                    @administrativeSkill
+                    </label>
+                </div>
+            }
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-block active">Submit</button>
+        }
+    </div>
+}

@@ -29,11 +29,11 @@ public class JobApplicationController extends Controller {
     }
 
     public Result uploadJobApplication(Http.Request request) {
-        return ok(views.html.uploadJobApplication.render());
+        return ok(views.html.recruiter.uploadJobApplication.render());
     }
 
     public Result viewJobDescription(Http.Request request, String referenceCode) {
-        return ok(views.html.viewJobApplication.render(getJobDescription(request, referenceCode)));
+        return ok(views.html.recruiter.viewJobApplication.render(getJobDescription(request, referenceCode)));
     }
 
     public Result getUploadedJobSpecifications(Http.Request request) {
@@ -54,7 +54,7 @@ public class JobApplicationController extends Controller {
             jobDescriptions.add(new JobDescription(item));
             System.out.println(item.toJSONPretty());
         }
-        return ok(views.html.uploadedJobSpecifications.render(jobDescriptions));
+        return ok(views.html.recruiter.uploadedJobSpecifications.render(jobDescriptions));
     }
 
     public Result submitJobDescription(Http.Request request) {
@@ -65,7 +65,7 @@ public class JobApplicationController extends Controller {
 
     public Result editJobDescription(Http.Request request, String referenceCode) {
         JobDescription jobDescription = getJobDescription(request, referenceCode);
-        return ok(views.html.editJobApplication.render(jobDescription));
+        return ok(views.html.recruiter.editJobApplication.render(jobDescription));
     }
 
     private JobDescription getJobDescription(Http.Request request, String referenceCode) {
