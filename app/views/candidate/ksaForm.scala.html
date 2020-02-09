@@ -5,13 +5,28 @@
         <div class="jumbotron">
             <h1>KSA Form</h1>
         </div>
-        @helper.form(action = routes.JobApplicationController.submitJobDescription()) {
+        @helper.form(action = routes.KsaFormController.loadForm()) {
+            <h1>Qualifications</h1>
+            <div class="form-group">
+                <label for="qualificationLevel">Please select your highest level of qualification: </label>
+                <select id="qualificationLevel" name="qualificationLevel">
+                    @for(qualificationLevel <- QualificationLevels.getQualificationLevels) {
+                        <option value="@qualificationLevel">@qualificationLevel</option>
+                    }
+                </select>
+            </div>
+            <div>
+                <label for="qualificationArea">Please indicate in what area(s) below:</label>
+                <textarea class="form-control" name="qualificationArea" rows="10"></textarea>
+            </div>
+            <br>
+            <hr>
             <h1>Skills and Abilities</h1>
             <h2>Communication</h2>
             <div class="form-group">
             @for(communicationSkill <- KsaValues.getCommunicationSkills) {
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="@communicationSkill" id="defaultCheck1">
+                    <input class="form-check-input" type="checkbox" value="@communicationSkill" name="communicationSkills">
                     <label class="form-check-label" for="defaultCheck1">
                        @communicationSkill
                     </label>
@@ -23,7 +38,7 @@
             <div class="form-group">
             @for(peopleSkill <- KsaValues.getPeopleSkills) {
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="@peopleSkill" id="defaultCheck1">
+                    <input class="form-check-input" type="checkbox" value="@peopleSkill" name="peopleSkills">
                     <label class="form-check-label" for="defaultCheck1">
                     @peopleSkill
                     </label>
@@ -35,7 +50,7 @@
             <div class="form-group">
             @for(financialKnowledge <- KsaValues.getFinancialKnowledgeAndSkills) {
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="@financialKnowledge" id="defaultCheck1">
+                    <input class="form-check-input" type="checkbox" value="@financialKnowledge" name="financialKnowledgeAndSkills">
                     <label class="form-check-label" for="defaultCheck1">
                     @financialKnowledge
                     </label>
@@ -47,7 +62,7 @@
             <div class="form-group">
             @for(analyticalSkill <- KsaValues.getThinkingAndAnalysis) {
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="@analyticalSkill" id="defaultCheck1">
+                    <input class="form-check-input" type="checkbox" value="@analyticalSkill" name="thinkingAndAnalysis">
                     <label class="form-check-label" for="defaultCheck1">
                     @analyticalSkill
                     </label>
@@ -59,7 +74,7 @@
             <div class="form-group">
             @for(creativeSkill <- KsaValues.getCreativeOrInnovative) {
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="@creativeSkill" id="defaultCheck1">
+                    <input class="form-check-input" type="checkbox" value="@creativeSkill" name="creativeOrInnovative">
                     <label class="form-check-label" for="defaultCheck1">
                     @creativeSkill
                     </label>
@@ -71,7 +86,7 @@
             <div class="form-group">
             @for(administrativeSkill <- KsaValues.getAdministrativeOrOrganisational) {
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="@administrativeSkill" id="defaultCheck1">
+                    <input class="form-check-input" type="checkbox" value="@administrativeSkill" id="administrativeOrOrganisational">
                     <label class="form-check-label" for="defaultCheck1">
                     @administrativeSkill
                     </label>
