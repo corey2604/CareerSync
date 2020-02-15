@@ -4,7 +4,7 @@ import java.util.List;
 
 public class KsaForm {
     private String qualificationLevel;
-    private List<String> communicationSkills;
+        private List<String> communicationSkills;
     private List<String> peopleSkills;
     private List<String> financialKnowledgeAndSkills;
     private List<String> thinkingAndAnalysis;
