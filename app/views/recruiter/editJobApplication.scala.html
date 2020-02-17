@@ -3,19 +3,8 @@
 @main("Edit Job Application") {
     <div class="container">
         <div class="row text-center pt-5">
-            <h1 class="display-4">Job Application Details:</h1>
+            <h1 class="display-4">Job Specification Details:</h1>
         </div>
-        <nav aria-label="...">
-            <ul class="pagination pagination-lg justify-content-center">
-                <li class="page-item active" aria-current="page">
-                    <span class="page-link">
-                        Job Specification
-                        <span class="sr-only">(current)</span>
-                    </span>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">Employee Specification</a></li>
-            </ul>
-        </nav>
         @helper.form(action = routes.JobApplicationController.submitJobDescription()) {
             <div class="form-group">
                 <label for="referenceCode"><strong>Reference Code:</strong></label>

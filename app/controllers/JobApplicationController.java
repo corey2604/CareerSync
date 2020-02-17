@@ -31,11 +31,11 @@ public class JobApplicationController extends Controller {
     }
 
     public Result uploadJobApplication(Http.Request request) {
-        return ok(views.html.recruiter.uploadJobApplication.render(views.html.ksaFormContent.render()));
+        return ok(views.html.recruiter.uploadJobSpecification.render(views.html.ksaFormContent.render()));
     }
 
     public Result viewJobDescription(Http.Request request, String referenceCode) {
-        return ok(views.html.recruiter.viewJobApplication.render(getJobDescription(request, referenceCode)));
+        return ok(views.html.recruiter.viewJobSpecification.render(getJobDescription(request, referenceCode)));
     }
 
     public Result getUploadedJobSpecifications(Http.Request request) {
