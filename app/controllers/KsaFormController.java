@@ -23,7 +23,7 @@ public class KsaFormController extends Controller {
 
     public Result loadForm(Http.Request request) {
         KsaForm jobDescription = formFactory.form(KsaForm.class).bindFromRequest().get();
-        return ok(views.html.candidate.ksaForm.render());
+        return ok(views.html.candidate.ksaForm.render(views.html.ksaFormContent.render()));
     }
 
     public Result submitForm(Http.Request request) {
@@ -36,6 +36,7 @@ public class KsaFormController extends Controller {
         Item jobDescriptionItem = new Item()
                 .withPrimaryKey("username", username)
                 .with("qualificationLevel", ksaForm.getQualificationLevel())
+                .with("qualificationArea", ksaForm.getQualificationArea())
                 .withList("communicationSkills", ksaForm.getCommunicationSkills().stream().filter(item -> item!=null).collect(Collectors.toList()))
                 .withList("peopleSkills", ksaForm.getPeopleSkills().stream().filter(item -> item!=null).collect(Collectors.toList()))
                 .withList("financialKnowledgeAndSkills", ksaForm.getFinancialKnowledgeAndSkills().stream().filter(item -> item!=null).collect(Collectors.toList()))

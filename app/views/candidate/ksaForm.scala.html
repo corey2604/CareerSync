@@ -1,99 +1,12 @@
-@()
+@(ksaFormContent: Html)
 
 @main("KSA Form") {
     <div class="container">
         <div class="jumbotron">
-            <h1>KSA Form</h1>
+            <h1 class="display-4">KSA Form</h1>
         </div>
         @helper.form(action = routes.KsaFormController.submitForm()) {
-            <h1>Qualifications</h1>
-            <div class="form-group">
-                <label for="qualificationLevel">Please select your highest level of qualification: </label>
-                <select id="qualificationLevel" name="qualificationLevel">
-                    @for(qualificationLevel <- QualificationLevels.getQualificationLevels) {
-                        <option value="@qualificationLevel">@qualificationLevel</option>
-                    }
-                </select>
-            </div>
-            <div>
-                <label for="qualificationArea">Please indicate in what area(s) below:</label>
-                <textarea class="form-control" name="qualificationArea" rows="10"></textarea>
-            </div>
-            <br>
-            <hr>
-            <h1>Skills and Abilities</h1>
-            <h2>Communication</h2>
-            <div class="form-group">
-            @for((communicationSkill, index) <- KsaValues.getCommunicationSkills.zipWithIndex) {
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="@communicationSkill" name="communicationSkills[@index]">
-                    <label class="form-check-label" for="@communicationSkill">
-                       @communicationSkill
-                    </label>
-                </div>
-            }
-            </div>
-            <hr>
-            <h2>People Skills</h2>
-            <div class="form-group">
-            @for((peopleSkill, index) <- KsaValues.getPeopleSkills.zipWithIndex) {
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="@peopleSkill" name="peopleSkills[@index]">
-                    <label class="form-check-label" for="defaultCheck1">
-                    @peopleSkill
-                    </label>
-                </div>
-            }
-            </div>
-            <hr>
-            <h2>Financial Knowledge and Skills</h2>
-            <div class="form-group">
-            @for((financialKnowledge, index) <- KsaValues.getFinancialKnowledgeAndSkills.zipWithIndex) {
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="@financialKnowledge" name="financialKnowledgeAndSkills[@index]">
-                    <label class="form-check-label" for="defaultCheck1">
-                    @financialKnowledge
-                    </label>
-                </div>
-            }
-            </div>
-            <hr>
-            <h2>Thinking and Analysis</h2>
-            <div class="form-group">
-            @for((analyticalSkill, index) <- KsaValues.getThinkingAndAnalysis.zipWithIndex) {
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="@analyticalSkill" name="thinkingAndAnalysis[@index]">
-                    <label class="form-check-label" for="defaultCheck1">
-                    @analyticalSkill
-                    </label>
-                </div>
-            }
-            </div>
-            <hr>
-            <h2>Creative/Innovative</h2>
-            <div class="form-group">
-            @for((creativeSkill, index) <- KsaValues.getCreativeOrInnovative.zipWithIndex) {
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="@creativeSkill" name="creativeOrInnovative[@index]">
-                    <label class="form-check-label" for="defaultCheck1">
-                    @creativeSkill
-                    </label>
-                </div>
-            }
-            </div>
-            <hr>
-            <h2>Administrative/Organisational</h2>
-            <div class="form-group">
-            @for((administrativeSkill, index) <- KsaValues.getAdministrativeOrOrganisational.zipWithIndex) {
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="@administrativeSkill" name="administrativeOrOrganisational[@index]">
-                    <label class="form-check-label" for="defaultCheck1">
-                    @administrativeSkill
-                    </label>
-                </div>
-            }
-            </div>
-            <button type="submit" class="btn btn-primary btn-lg btn-block active">Submit</button>
+            @ksaFormContent
         }
     </div>
 }

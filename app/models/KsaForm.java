@@ -4,7 +4,8 @@ import java.util.List;
 
 public class KsaForm {
     private String qualificationLevel;
-        private List<String> communicationSkills;
+    private String qualificationArea;
+    private List<String> communicationSkills;
     private List<String> peopleSkills;
     private List<String> financialKnowledgeAndSkills;
     private List<String> thinkingAndAnalysis;
@@ -20,6 +21,15 @@ public class KsaForm {
 
     public void setQualificationLevel(String qualificationLevel) {
         this.qualificationLevel = qualificationLevel;
+    }
+
+
+    public String getQualificationArea() {
+        return qualificationArea;
+    }
+
+    public void setQualificationArea(String qualificationArea) {
+        this.qualificationArea = qualificationArea;
     }
 
     public List<String> getCommunicationSkills() {

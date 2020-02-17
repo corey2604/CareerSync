@@ -1,4 +1,4 @@
-@()
+@(ksaFormPage: Html)
 
 @main("Upload Job Application") {
     <div class="container">
@@ -77,10 +77,10 @@
                 <label for="general"><strong>General:</strong></label>
                 <textarea class="form-control" name="general" rows="10"></textarea>
             </div>
-            <input type="submit" class="btn btn-primary btn-lg btn-block mb-5" value="Submit" />
-        }
-        <div class="row text-center pt-5">
-            <h2 class="display-6">Employee Specification:</h2>
-        </div>
+            <div class="row text-center pt-5">
+                <h2 class="display-6">Employee Specification:</h2>
+            </div>
+            @ksaFormPage
+            }
     </div>
 }

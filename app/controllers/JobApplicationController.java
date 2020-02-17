@@ -8,6 +8,7 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import models.JobDescription;
+import models.KsaForm;
 import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -18,6 +19,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JobApplicationController extends Controller {
 
@@ -29,7 +31,7 @@ public class JobApplicationController extends Controller {
     }
 
     public Result uploadJobApplication(Http.Request request) {
-        return ok(views.html.recruiter.uploadJobApplication.render());
+        return ok(views.html.recruiter.uploadJobApplication.render(views.html.ksaFormContent.render()));
     }
 
     public Result viewJobDescription(Http.Request request, String referenceCode) {
@@ -108,7 +110,15 @@ public class JobApplicationController extends Controller {
                 .with("salary", jobDescription.getSalary())
                 .with("mainPurposeOfJob", jobDescription.getMainPurposeOfJob())
                 .with("mainResponsibilities", jobDescription.getMainResponsibilities())
-                .with("general", jobDescription.getGeneral());
+                .with("general", jobDescription.getGeneral())
+                .with("qualificationLevel", jobDescription.getQualificationLevel())
+                .with("qualificationArea", jobDescription.getQualificationArea())
+                .withList("communicationSkills", jobDescription.getCommunicationSkills().stream().filter(item -> item!=null).collect(Collectors.toList()))
+                .withList("peopleSkills", jobDescription.getPeopleSkills().stream().filter(item -> item!=null).collect(Collectors.toList()))
+                .withList("financialKnowledgeAndSkills", jobDescription.getFinancialKnowledgeAndSkills().stream().filter(item -> item!=null).collect(Collectors.toList()))
+                .withList("thinkingAndAnalysis", jobDescription.getThinkingAndAnalysis().stream().filter(item -> item!=null).collect(Collectors.toList()))
+                .withList("creativeOrInnovative", jobDescription.getCreativeOrInnovative().stream().filter(item -> item!=null).collect(Collectors.toList()))
+                .withList("administrativeOrOrganisational", jobDescription.getAdministrativeOrOrganisational().stream().filter(item -> item!=null).collect(Collectors.toList()));
         DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_JOB_DESCRIPTIONS.getName()).putItem(jobDescriptionItem);
     }
 }
