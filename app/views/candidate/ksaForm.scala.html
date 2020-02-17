@@ -1,0 +1,12 @@
+@(ksaFormContent: Html)
+
+@main("KSA Form") {
+    <div class="container">
+        <div class="jumbotron">
+            <h1 class="display-4">KSA Form</h1>
+        </div>
+        @helper.form(action = routes.KsaFormController.submitForm()) {
+            @ksaFormContent
+        }
+    </div>
+}
