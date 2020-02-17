@@ -1,4 +1,4 @@
-@(jobDescription: JobDescription)
+@(jobDescription: JobDescription, populatedKsaFormPage: Html)
 
 @main("Edit Job Application") {
     <div class="container">
@@ -66,7 +66,7 @@
                 <label for="general"><strong>General:</strong></label>
                 <textarea class="form-control" name="general" rows="10">@jobDescription.getGeneral</textarea>
             </div>
-            <input type="submit" class="btn btn-primary btn-lg btn-block mb-5" value="Update" />
+            @populatedKsaFormPage
         }
     </div>
 }

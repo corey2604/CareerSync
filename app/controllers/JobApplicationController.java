@@ -67,7 +67,7 @@ public class JobApplicationController extends Controller {
 
     public Result editJobDescription(Http.Request request, String referenceCode) {
         JobDescription jobDescription = getJobDescription(request, referenceCode);
-        return ok(views.html.recruiter.editJobApplication.render(jobDescription));
+        return ok(views.html.recruiter.editJobApplication.render(jobDescription, views.html.populatedKsaFormContent.render(jobDescription)));
     }
 
     private JobDescription getJobDescription(Http.Request request, String referenceCode) {
