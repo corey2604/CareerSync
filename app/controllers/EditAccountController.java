@@ -12,6 +12,7 @@ import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import utilities.DynamoTables;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -56,7 +57,7 @@ public class EditAccountController extends Controller {
     }
 
     private UserAccountDetails getUserAccountDetails(Http.Request request) {
-        Item userAccountDetails = DynamoDbTableProvider.getTable("CareerSync-Users").getItem("username", request.cookie("username").value());
+        Item userAccountDetails = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName()).getItem("username", request.cookie("username").value());
         return new UserAccountDetails(userAccountDetails.get("username").toString(),
                         userAccountDetails.get("firstName").toString(),
                         userAccountDetails.get("surname").toString(),
