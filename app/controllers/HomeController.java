@@ -13,11 +13,8 @@ import javax.inject.Inject;
  */
 public class HomeController extends Controller {
 
-    private final Config config;
-
     @Inject
-    public HomeController(Config config) {
-        this.config = config;
+    public HomeController() {
     }
 
     /**

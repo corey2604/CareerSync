@@ -2,7 +2,6 @@ package controllers;
 
 import awsWrappers.DynamoDbTableProvider;
 import com.amazonaws.services.dynamodbv2.document.Item;
-import models.JobDescription;
 import models.KsaForm;
 import play.data.FormFactory;
 import play.mvc.Controller;
@@ -37,12 +36,12 @@ public class KsaFormController extends Controller {
                 .withPrimaryKey("username", username)
                 .with("qualificationLevel", ksaForm.getQualificationLevel())
                 .with("qualificationArea", ksaForm.getQualificationArea())
-                .withList("communicationSkills", ksaForm.getCommunicationSkills().stream().filter(item -> item!=null).collect(Collectors.toList()))
-                .withList("peopleSkills", ksaForm.getPeopleSkills().stream().filter(item -> item!=null).collect(Collectors.toList()))
-                .withList("financialKnowledgeAndSkills", ksaForm.getFinancialKnowledgeAndSkills().stream().filter(item -> item!=null).collect(Collectors.toList()))
-                .withList("thinkingAndAnalysis", ksaForm.getThinkingAndAnalysis().stream().filter(item -> item!=null).collect(Collectors.toList()))
-                .withList("creativeOrInnovative", ksaForm.getCreativeOrInnovative().stream().filter(item -> item!=null).collect(Collectors.toList()))
-                .withList("administrativeOrOrganisational", ksaForm.getAdministrativeOrOrganisational().stream().filter(item -> item!=null).collect(Collectors.toList()));
+                .withList("communicationSkills", ksaForm.getCommunicationSkills().stream().filter(item -> item != null).collect(Collectors.toList()))
+                .withList("peopleSkills", ksaForm.getPeopleSkills().stream().filter(item -> item != null).collect(Collectors.toList()))
+                .withList("financialKnowledgeAndSkills", ksaForm.getFinancialKnowledgeAndSkills().stream().filter(item -> item != null).collect(Collectors.toList()))
+                .withList("thinkingAndAnalysis", ksaForm.getThinkingAndAnalysis().stream().filter(item -> item != null).collect(Collectors.toList()))
+                .withList("creativeOrInnovative", ksaForm.getCreativeOrInnovative().stream().filter(item -> item != null).collect(Collectors.toList()))
+                .withList("administrativeOrOrganisational", ksaForm.getAdministrativeOrOrganisational().stream().filter(item -> item != null).collect(Collectors.toList()));
         DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USER_KSAS.getName()).putItem(jobDescriptionItem);
     }
 }
