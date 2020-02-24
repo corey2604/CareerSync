@@ -7,6 +7,7 @@ import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.AttributeValueUpdate;
 import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest;
+import com.google.common.annotations.VisibleForTesting;
 import models.UserAccountDetails;
 import play.data.FormFactory;
 import play.mvc.Controller;
@@ -27,7 +28,6 @@ public class EditAccountController extends Controller {
     }
 
     public Result editAccount(Http.Request request) {
-        System.out.println("Hello");
         return ok(views.html.editAccount.render(getUserAccountDetails(request)));
     }
 
@@ -56,7 +56,8 @@ public class EditAccountController extends Controller {
         return redirect(routes.EditAccountController.editAccount());
     }
 
-    private UserAccountDetails getUserAccountDetails(Http.Request request) {
+    @VisibleForTesting
+    protected UserAccountDetails getUserAccountDetails(Http.Request request) {
         Item userAccountDetails = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName()).getItem("username", request.cookie("username").value());
         return new UserAccountDetails(userAccountDetails.get("username").toString(),
                         userAccountDetails.get("firstName").toString(),

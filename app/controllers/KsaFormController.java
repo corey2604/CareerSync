@@ -21,7 +21,6 @@ public class KsaFormController extends Controller {
     }
 
     public Result loadForm(Http.Request request) {
-        KsaForm jobDescription = formFactory.form(KsaForm.class).bindFromRequest().get();
         return ok(views.html.candidate.ksaForm.render(views.html.ksaFormContent.render()));
     }
 

@@ -8,7 +8,7 @@ import play.mvc.Result;
 import play.test.Helpers;
 import play.test.WithApplication;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static play.mvc.Http.Status.OK;
 import static play.mvc.Http.Status.SEE_OTHER;
 
@@ -63,6 +63,21 @@ public class HomeControllerTest extends WithApplication {
 
         //then
         assertEquals(SEE_OTHER, result.status());
+        assertEquals(result.redirectLocation().get(), "/logIn");
+    }
+
+    @Test
+    public void testLogOut() {
+        //given
+        Http.RequestImpl request = Helpers.fakeRequest().cookie(Http.Cookie.builder("username", "fakeUser").build()).build();
+
+        //when
+        Result result = new HomeController().logOut(request);
+
+        //then
+        assertEquals(SEE_OTHER, result.status());
+        assertEquals(result.redirectLocation().get(), "/logIn");
+        assertTrue(result.cookies().getCookie("username").get().value().isEmpty());
     }
 
 }
