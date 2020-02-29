@@ -81,7 +81,7 @@ public class JobApplicationController extends Controller {
                 .withValueMap(new ValueMap()
                         .withString(":val", referenceCode))
                 .withReturnValues(ReturnValue.ALL_OLD);
-        DeleteItemOutcome outcome = jobDescriptionsTable.deleteItem(deleteItemSpec);
+        jobDescriptionsTable.deleteItem(deleteItemSpec);
         return getUploadedJobSpecifications(request);
     }
 
