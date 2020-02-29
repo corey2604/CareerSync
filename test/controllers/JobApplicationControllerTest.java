@@ -10,16 +10,16 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static play.mvc.Http.Status.OK;
 
-public class KsaFormControllerTest {
+public class JobApplicationControllerTest {
 
     @Test
-    public void testLoadForm() {
+    public void testUploadJobApplication() {
         //given
         FormFactory mockFormFactory = mock(FormFactory.class);
         Http.RequestImpl request = Helpers.fakeRequest().build();
 
         //when
-        Result result = new KsaFormController(mockFormFactory).loadForm(request);
+        Result result = new JobApplicationController(mockFormFactory).uploadJobApplication(request);
 
         //then
         assertEquals(OK, result.status());
