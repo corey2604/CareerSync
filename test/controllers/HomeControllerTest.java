@@ -5,12 +5,12 @@ import play.Application;
 import play.inject.guice.GuiceApplicationBuilder;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.test.Helpers;
 import play.test.WithApplication;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static play.mvc.Http.Status.OK;
-import static play.test.Helpers.GET;
-import static play.test.Helpers.route;
+import static play.mvc.Http.Status.SEE_OTHER;
 
 public class HomeControllerTest extends WithApplication {
 
@@ -20,13 +20,64 @@ public class HomeControllerTest extends WithApplication {
     }
 
     @Test
-    public void testIndex() {
-        Http.RequestBuilder request = new Http.RequestBuilder()
-                .method(GET)
-                .uri("/");
+    public void testIndexWithCandidateLoggedIn() {
+        //given
+        Http.RequestImpl request = Helpers.fakeRequest()
+                .cookie(Http.Cookie.builder("username", "fakeName").build())
+                .cookie(Http.Cookie.builder("userType", "candidate").build())
+                .build();
 
-        Result result = route(app, request);
+        //when
+        Result result = new HomeController().index(request);
+
+        //then
         assertEquals(OK, result.status());
+        assertEquals("text/html", result.contentType().get());
+        assertEquals("utf-8", result.charset().get());
+    }
+
+    @Test
+    public void testIndexWithRecruiterLoggedIn() {
+        //given
+        Http.RequestImpl request = Helpers.fakeRequest()
+                .cookie(Http.Cookie.builder("username", "fakeName").build())
+                .cookie(Http.Cookie.builder("userType", "recruiter").build())
+                .build();
+
+        //when
+        Result result = new HomeController().index(request);
+
+        //then
+        assertEquals(OK, result.status());
+        assertEquals("text/html", result.contentType().get());
+        assertEquals("utf-8", result.charset().get());
+    }
+
+    @Test
+    public void testIndexWhenNotLoggedIn() {
+        //given
+        Http.RequestImpl request = Helpers.fakeRequest().cookie(Http.Cookie.builder("userType", "recruiter").build()).build();
+
+        //when
+        Result result = new HomeController().index(request);
+
+        //then
+        assertEquals(SEE_OTHER, result.status());
+        assertEquals(result.redirectLocation().get(), "/logIn");
+    }
+
+    @Test
+    public void testLogOut() {
+        //given
+        Http.RequestImpl request = Helpers.fakeRequest().cookie(Http.Cookie.builder("username", "fakeUser").build()).build();
+
+        //when
+        Result result = new HomeController().logOut(request);
+
+        //then
+        assertEquals(SEE_OTHER, result.status());
+        assertEquals(result.redirectLocation().get(), "/logIn");
+        assertTrue(result.cookies().getCookie("username").get().value().isEmpty());
     }
 
 }
