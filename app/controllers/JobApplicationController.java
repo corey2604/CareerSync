@@ -1,12 +1,13 @@
 package controllers;
 
 import awsWrappers.DynamoDbTableProvider;
-import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.ItemCollection;
-import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
-import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.*;
+import com.amazonaws.services.dynamodbv2.document.spec.DeleteItemSpec;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
+import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
+import com.amazonaws.services.dynamodbv2.model.DeleteItemRequest;
+import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import models.JobDescription;
 import models.KsaForm;
 import play.data.FormFactory;
@@ -68,6 +69,20 @@ public class JobApplicationController extends Controller {
     public Result editJobDescription(Http.Request request, String referenceCode) {
         JobDescription jobDescription = getJobDescription(request, referenceCode);
         return ok(views.html.recruiter.editJobApplication.render(jobDescription, views.html.populatedKsaFormContent.render(jobDescription)));
+    }
+
+    public Result deleteJobDescription(Http.Request request, String referenceCode) {
+        Table jobDescriptionsTable = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_JOB_DESCRIPTIONS.getName());
+        DeleteItemSpec deleteItemSpec = new DeleteItemSpec()
+                .withPrimaryKey("recruiter", request.cookie("username").value())
+                .withConditionExpression(":referenceCode = :val")
+                .withNameMap(new NameMap()
+                        .with(":referenceCode", "referenceCode"))
+                .withValueMap(new ValueMap()
+                        .withString(":val", referenceCode))
+                .withReturnValues(ReturnValue.ALL_OLD);
+        DeleteItemOutcome outcome = jobDescriptionsTable.deleteItem(deleteItemSpec);
+        return getUploadedJobSpecifications(request);
     }
 
     private JobDescription getJobDescription(Http.Request request, String referenceCode) {
