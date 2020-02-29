@@ -13,11 +13,8 @@ import javax.inject.Inject;
  */
 public class HomeController extends Controller {
 
-    private final Config config;
-
     @Inject
-    public HomeController(Config config) {
-        this.config = config;
+    public HomeController() {
     }
 
     /**
@@ -31,16 +28,16 @@ public class HomeController extends Controller {
             return redirect(routes.LogInController.logIn());
         }
         if (request.cookies().getCookie("userType").get().value().equals("candidate")) {
-            return ok(views.html.index.render());
+            return ok(views.html.candidate.index.render());
         } else {
-            return ok(views.html.recruiterIndex.render());
+            return ok(views.html.recruiter.recruiterIndex.render());
         }
     }
 
     public Result uploadFile(Http.Request request) {
         FileUploader.createFolder(request.cookie("username").value());
         FileUploader.uploadFile(request.cookie("username").value());
-        return ok(views.html.index.render());
+        return ok(views.html.candidate.index.render());
     }
 
     public Result logOut(Http.Request request) {

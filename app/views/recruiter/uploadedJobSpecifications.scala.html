@@ -1,0 +1,35 @@
+@import java.util
+@(jobDescriptions:List[JobDescription])
+
+@main("Uploaded Job Specifications"){
+    <div class="container">
+        <div class="row text-center pt-5">
+            <h1 class="display-4">Your Uploaded Job Specifications:</h1>
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Reference Number</th>
+                        <th scope="col">Job Title</th>
+                        <th scope="col">Company/Organisation</th>
+                        <th scope="col">Location</th>
+                        <th scopr="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(jobDescription <- jobDescriptions) {
+                        <tr>
+                            <th>@jobDescription.getReferenceCode</th>
+                            <td>@jobDescription.getJobTitle</td>
+                            <td>@jobDescription.getCompanyOrOrganisation</td>
+                            <td>@jobDescription.getLocation</td>
+                            <td>
+                                <a class="btn active btn-primary btn-sm m-0" href="@routes.JobApplicationController.viewJobDescription(jobDescription.getReferenceCode)">View</a>
+                                <a class="btn active btn-primary btn-sm m-0" href="@routes.JobApplicationController.editJobDescription(jobDescription.getReferenceCode)">Edit</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

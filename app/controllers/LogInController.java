@@ -11,6 +11,7 @@ import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import utilities.DynamoTables;
 import utilities.LoginChecker;
 
 import javax.inject.Inject;
@@ -35,10 +36,12 @@ public class LogInController extends Controller {
     }
 
     public Result logInSubmit() {
-
         Form<UserSignInRequest> userSignInForm = formFactory.form(UserSignInRequest.class).bindFromRequest();
         String username = awsSignIn(userSignInForm);
-        String userType = DynamoDbTableProvider.getTable("CareerSync-Users").getItem("username", username).get("userType").toString();
+        String userType = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName())
+                .getItem("username", username)
+                .get("userType")
+                .toString();
         return redirect(routes.HomeController.index()).withCookies(
                 Http.Cookie.builder("username", username).build(),
                 Http.Cookie.builder("userType", userType).build());
