@@ -6,6 +6,7 @@ import com.typesafe.config.Config;
 import play.mvc.*;
 
 import javax.inject.Inject;
+import java.io.IOException;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -37,6 +38,7 @@ public class HomeController extends Controller {
     public Result uploadFile(Http.Request request) {
         FileUploader.createFolder(request.cookie("username").value());
         FileUploader.uploadFile(request.cookie("username").value());
+        FileUploader.readFile(request.cookie("username").value());
         return ok(views.html.candidate.index.render());
     }
 
