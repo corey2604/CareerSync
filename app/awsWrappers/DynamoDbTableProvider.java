@@ -18,4 +18,8 @@ public class DynamoDbTableProvider {
         }
         return dynamoDB.getTable(tableName);
     }
+
+    public static void setDynamoDb(DynamoDB setDynamoDb) {
+        dynamoDB = setDynamoDb;
+    }
 }
