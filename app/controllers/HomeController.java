@@ -1,12 +1,10 @@
 package controllers;
 
-import utilities.FileUploader;
+import utilities.FileHandler;
 import utilities.LoginChecker;
-import com.typesafe.config.Config;
 import play.mvc.*;
 
 import javax.inject.Inject;
-import java.io.IOException;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -25,7 +23,7 @@ public class HomeController extends Controller {
      * <code>GET</code> request with a path of <code>/</code>.
      */
     public Result index(Http.Request request) {
-        if (!LoginChecker.isLoggedin(request)) {
+        if (!LoginChecker.getInstance().isLoggedin(request)) {
             return redirect(routes.LogInController.logIn());
         }
         if (request.cookies().getCookie("userType").get().value().equals("candidate")) {
@@ -36,9 +34,7 @@ public class HomeController extends Controller {
     }
 
     public Result uploadFile(Http.Request request) {
-        FileUploader.createFolder(request.cookie("username").value());
-        FileUploader.uploadFile(request.cookie("username").value());
-        FileUploader.readFile(request.cookie("username").value());
+        FileHandler.getInstance().uploadFile(request.cookie("username").value());
         return ok(views.html.candidate.index.render());
     }
 
