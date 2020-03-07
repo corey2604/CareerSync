@@ -1,10 +1,16 @@
 package controllers;
 
+import awsWrappers.ClasspathPropertiesFileCredentialsProviderWrapper;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import utilities.FileHandler;
 import utilities.LoginChecker;
 import play.mvc.*;
 
 import javax.inject.Inject;
+import javax.swing.*;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -34,7 +40,12 @@ public class HomeController extends Controller {
     }
 
     public Result uploadFile(Http.Request request) {
-        FileHandler.getInstance().uploadFile(request.cookie("username").value());
+         AmazonS3 s3Client = AmazonS3ClientBuilder
+                .standard()
+                .withRegion(Regions.EU_WEST_1)
+                .withCredentials(ClasspathPropertiesFileCredentialsProviderWrapper.getInstance())
+                .build();
+        FileHandler.getInstance(s3Client, new JFileChooser()).uploadFile(request.cookie("username").value());
         return ok(views.html.candidate.index.render());
     }
 

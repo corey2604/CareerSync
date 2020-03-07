@@ -1,11 +1,8 @@
 package utilities;
 
-import awsWrappers.ClasspathPropertiesFileCredentialsProviderWrapper;
 import awsWrappers.DynamoDbTableProvider;
-import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -31,24 +28,26 @@ import java.util.stream.Collectors;
 public class FileHandler {
     private static final String BUCKET_NAME = "career-sync";
     private static final String SUFFIX = "/CV";
-    private static final JFileChooser fileChooser = new JFileChooser();
     private static FileHandler fileHandler = null;
-    private static AmazonS3 s3client = AmazonS3ClientBuilder
-            .standard()
-            .withRegion(Regions.EU_WEST_1)
-            .withCredentials(ClasspathPropertiesFileCredentialsProviderWrapper.getInstance())
-            .build();
+    private static AmazonS3 s3Client;
+    private static JFileChooser fileChooser;
 
-    private FileHandler() {
+    private FileHandler(AmazonS3 s3Client, JFileChooser fileChooser) {
         //Private constructor
+        FileHandler.s3Client = s3Client;
+        FileHandler.fileChooser = fileChooser;
     }
 
     //Factory method
-    public static FileHandler getInstance() {
+    public static FileHandler getInstance(AmazonS3 s3Client, JFileChooser fileChooser) {
         if (fileHandler == null) {
-            fileHandler = new FileHandler();
+            fileHandler = new FileHandler(s3Client, fileChooser);
         }
         return fileHandler;
+    }
+
+    public static void setFileHandler(FileHandler setFileHandler) {
+        fileHandler = setFileHandler;
     }
 
     private void createFolder(String folderName) {
@@ -61,7 +60,7 @@ public class FileHandler {
         PutObjectRequest putObjectRequest = new PutObjectRequest(BUCKET_NAME,
                 (folderName + SUFFIX), emptyContent, metadata);
         // send request to S3 to create folder
-        s3client.putObject(putObjectRequest);
+        s3Client.putObject(putObjectRequest);
     }
 
     public void uploadFile(String folderName) {
@@ -70,13 +69,13 @@ public class FileHandler {
         fileChooser.setVisible(true);
         File chosenFile = fileChooser.getSelectedFile();
         String fileName = folderName + SUFFIX;
-        s3client.putObject(new PutObjectRequest(BUCKET_NAME, fileName, chosenFile));
+        s3Client.putObject(new PutObjectRequest(BUCKET_NAME, fileName, chosenFile));
         extractKsasFromFile(folderName);
     }
 
     private void extractKsasFromFile(String username) {
         String fileName = username + SUFFIX;
-        S3Object object = s3client.getObject(new GetObjectRequest(BUCKET_NAME, fileName));
+        S3Object object = s3Client.getObject(new GetObjectRequest(BUCKET_NAME, fileName));
         InputStream objectData = object.getObjectContent();
         XWPFDocument xdoc = null;
         try {
