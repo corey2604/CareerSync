@@ -65,6 +65,7 @@ public class FileHandler {
 
     public void uploadFile(String folderName) {
         createFolder(folderName);
+        KsaMatcher.getInstance().getJobRecommendations(folderName);
         fileChooser.showDialog(null, "Please Select the File You Wish to Upload");
         fileChooser.setVisible(true);
         File chosenFile = fileChooser.getSelectedFile();

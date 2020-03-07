@@ -1,8 +1,12 @@
 package models;
 
 import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class JobDescription {
     private String referenceCode;
@@ -59,6 +63,35 @@ public class JobDescription {
         this.administrativeOrOrganisational = (List<String>) item.get("administrativeOrOrganisational");
     }
 
+    public JobDescription(Map<String, AttributeValue> item) {
+        this.referenceCode = item.get("referenceCode").getS();
+        this.jobTitle = item.get("jobTitle").getS();
+        this.duration = item.get("duration").getS();
+        this.location = item.get("location").getS();
+        this.companyOrOrganisation = item.get("companyOrOrganisation").getS();
+        this.department = item.get("department").getS();
+        this.section = item.get("section").getS();
+        this.grade = item.get("grade").getS();
+        this.reportsTo = item.get("reportsTo").getS();
+        this.responsibleTo = item.get("responsibleTo").getS();
+        this.hours = item.get("hours").getS();
+        this.salary = item.get("salary").getS();
+        this.mainPurposeOfJob = item.get("mainPurposeOfJob").getS();
+        this.mainResponsibilities = item.get("mainResponsibilities").getS();
+        this.general = item.get("general").getS();
+        this.qualificationLevel = item.get("qualificationLevel").getS();
+        this.qualificationArea = item.get("qualificationArea").getS();
+        this.communicationSkills = getListOfStringsFromItem(item, "communicationSkills");
+        this.peopleSkills = getListOfStringsFromItem(item, "peopleSkills");
+        this.financialKnowledgeAndSkills = getListOfStringsFromItem(item, "financialKnowledgeAndSkills");
+        this.thinkingAndAnalysis = getListOfStringsFromItem(item, "thinkingAndAnalysis");
+        this.creativeOrInnovative = getListOfStringsFromItem(item,"creativeOrInnovative");
+        this.administrativeOrOrganisational = getListOfStringsFromItem(item, "administrativeOrOrganisational");
+    }
+
+    private List<String> getListOfStringsFromItem(Map<String, AttributeValue> item, String key) {
+        return item.get(key).getL().stream().map(AttributeValue::getS).collect(Collectors.toList());
+    }
 
     public String getReferenceCode() {
         return referenceCode;
@@ -242,5 +275,18 @@ public class JobDescription {
 
     public void setAdministrativeOrOrganisational(List<String> administrativeOrOrganisational) {
         this.administrativeOrOrganisational = administrativeOrOrganisational;
+    }
+
+    public List<String> getAllJobRelatedKsas() {
+        List<String> allKsas = new ArrayList<>();
+        allKsas.add(this.qualificationLevel);
+        allKsas.add(this.qualificationArea);
+        allKsas.addAll(this.communicationSkills);
+        allKsas.addAll(this.peopleSkills);
+        allKsas.addAll(this.financialKnowledgeAndSkills);
+        allKsas.addAll(this.thinkingAndAnalysis);
+        allKsas.addAll(this.creativeOrInnovative);
+        allKsas.addAll(this.administrativeOrOrganisational);
+        return allKsas;
     }
 }
