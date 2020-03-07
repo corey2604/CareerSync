@@ -86,6 +86,6 @@ public class LogInController extends Controller {
             authenticationResult = resultChallenge.getAuthenticationResult();
         }
 
-        return LoginChecker.getUsername(authenticationResult.getAccessToken());
+        return LoginChecker.getInstance().getUsername(authenticationResult.getAccessToken());
     }
 }

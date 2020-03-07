@@ -2,6 +2,7 @@ package awsWrappers;
 
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
+import com.google.common.annotations.VisibleForTesting;
 
 public class DynamoDbTableProvider {
     private static DynamoDB dynamoDB = null;
@@ -19,6 +20,7 @@ public class DynamoDbTableProvider {
         return dynamoDB.getTable(tableName);
     }
 
+    @VisibleForTesting
     public static void setDynamoDb(DynamoDB setDynamoDb) {
         dynamoDB = setDynamoDb;
     }

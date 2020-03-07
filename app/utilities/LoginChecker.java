@@ -6,11 +6,25 @@ import com.amazonaws.services.cognitoidp.model.GetUserRequest;
 import play.mvc.Http;
 
 public class LoginChecker {
-    public static boolean isLoggedin(Http.Request request) {
+    private static LoginChecker loginChecker = null;
+
+    private LoginChecker() {
+        //Private Constructor
+    }
+
+    //Factory method
+    public static LoginChecker getInstance() {
+        if (loginChecker == null) {
+            loginChecker = new LoginChecker();
+        }
+        return loginChecker;
+    }
+
+    public boolean isLoggedin(Http.Request request) {
         return request.cookies().getCookie("username").isPresent();
     }
 
-    public static String getUsername(String accessToken) {
+    public String getUsername(String accessToken) {
         GetUserRequest request = new GetUserRequest();
         request.withAccessToken(accessToken);
 
