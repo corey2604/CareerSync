@@ -17,6 +17,7 @@ GET     /uploadedJobSpecifications  controllers.JobApplicationController.getUplo
 GET     /editJobDescription         controllers.JobApplicationController.editJobDescription(request: Request, referenceCode: String)
 GET     /viewJobDescription         controllers.JobApplicationController.viewJobDescription(request: Request, referenceCode: String)
 GET     /deleteJobDescription       controllers.JobApplicationController.deleteJobDescription(request: Request, referenceCode: String)
+GET     /viewJobRecommendations     controllers.KsaMatcherController.viewJobRecommendations(request: Request)
 
 +nocsrf
 POST    /register/submit            controllers.RegisterController.registerSubmit()

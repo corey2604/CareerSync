@@ -31,11 +31,10 @@ public class KsaMatcher {
         return ksaMatcher;
     }
 
-    public void getJobRecommendations(String username) {
+    public List<JobDescription> getJobRecommendations(String username) {
         UserKsas userKsas = getKsasForUser(username);
         ScanResult allJobDescriptions = getAllJobDescriptions();
-        //List<JobDescription> matchingJobDescriptions =
-        getMatchingJobDescriptions(userKsas, allJobDescriptions);
+        return getMatchingJobDescriptions(userKsas, allJobDescriptions);
     }
 
     public UserKsas getKsasForUser(String username) {
@@ -54,7 +53,6 @@ public class KsaMatcher {
         while (iterator.hasNext()) {
             item = iterator.next();
             userKsas.add(new UserKsas(item));
-            System.out.println(item.toJSONPretty());
         }
         return userKsas.get(0);
     }
