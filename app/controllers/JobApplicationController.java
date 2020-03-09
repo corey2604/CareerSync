@@ -1,15 +1,16 @@
 package controllers;
 
 import awsWrappers.DynamoDbTableProvider;
-import com.amazonaws.services.dynamodbv2.document.*;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.ItemCollection;
+import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
+import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.spec.DeleteItemSpec;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
-import com.amazonaws.services.dynamodbv2.model.DeleteItemRequest;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import models.JobDescription;
-import models.KsaForm;
 import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -35,8 +36,9 @@ public class JobApplicationController extends Controller {
         return ok(views.html.recruiter.uploadJobSpecification.render(views.html.ksaFormContent.render()));
     }
 
-    public Result viewJobDescription(Http.Request request, String referenceCode) {
-        return ok(views.html.recruiter.viewJobSpecification.render(getJobDescription(request, referenceCode)));
+    public Result viewJobDescription(String recruiter, String referenceCode) {
+        JobDescription jobDescription = getJobDescription(recruiter, referenceCode);
+        return ok(views.html.recruiter.viewJobSpecification.render(jobDescription, views.html.viewEmployeeSpecificationBody.render(jobDescription)));
     }
 
     public Result getUploadedJobSpecifications(Http.Request request) {
@@ -62,12 +64,13 @@ public class JobApplicationController extends Controller {
 
     public Result submitJobDescription(Http.Request request) {
         JobDescription jobDescription = formFactory.form(JobDescription.class).bindFromRequest().get();
-        putJobDescriptionInTable(request.cookie("username").value(), jobDescription);
+        jobDescription.setRecruiter(request.cookie("username").value());
+        putJobDescriptionInTable(jobDescription);
         return redirect(routes.HomeController.index());
     }
 
-    public Result editJobDescription(Http.Request request, String referenceCode) {
-        JobDescription jobDescription = getJobDescription(request, referenceCode);
+    public Result editJobDescription(String recruiter, String referenceCode) {
+        JobDescription jobDescription = getJobDescription(recruiter, referenceCode);
         return ok(views.html.recruiter.editJobApplication.render(jobDescription, views.html.populatedKsaFormContent.render(jobDescription)));
     }
 
@@ -85,13 +88,13 @@ public class JobApplicationController extends Controller {
         return getUploadedJobSpecifications(request);
     }
 
-    private JobDescription getJobDescription(Http.Request request, String referenceCode) {
+    private JobDescription getJobDescription(String recruiter, String referenceCode) {
         Table jobDescriptionsTable = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_JOB_DESCRIPTIONS.getName());
         QuerySpec spec = new QuerySpec()
                 .withKeyConditionExpression("recruiter = :recruiter")
                 .withFilterExpression("referenceCode = :referenceCode")
                 .withValueMap(new ValueMap()
-                        .withString(":recruiter", request.cookie("username").value())
+                        .withString(":recruiter", recruiter)
                         .withString(":referenceCode", referenceCode)
                 );
 
@@ -108,10 +111,10 @@ public class JobApplicationController extends Controller {
         return jobDescriptions.get(0);
     }
 
-    private void putJobDescriptionInTable(String username, JobDescription jobDescription) {
+    private void putJobDescriptionInTable(JobDescription jobDescription) {
         Item jobDescriptionItem = new Item()
                 .withPrimaryKey("referenceCode", jobDescription.getReferenceCode())
-                .with("recruiter", username)
+                .with("recruiter", jobDescription.getRecruiter())
                 .with("jobTitle", jobDescription.getJobTitle())
                 .with("duration", jobDescription.getDuration())
                 .with("location", jobDescription.getLocation())
@@ -128,12 +131,12 @@ public class JobApplicationController extends Controller {
                 .with("general", jobDescription.getGeneral())
                 .with("qualificationLevel", jobDescription.getQualificationLevel())
                 .with("qualificationArea", jobDescription.getQualificationArea())
-                .withList("communicationSkills", jobDescription.getCommunicationSkills().stream().filter(item -> item!=null).collect(Collectors.toList()))
-                .withList("peopleSkills", jobDescription.getPeopleSkills().stream().filter(item -> item!=null).collect(Collectors.toList()))
-                .withList("financialKnowledgeAndSkills", jobDescription.getFinancialKnowledgeAndSkills().stream().filter(item -> item!=null).collect(Collectors.toList()))
-                .withList("thinkingAndAnalysis", jobDescription.getThinkingAndAnalysis().stream().filter(item -> item!=null).collect(Collectors.toList()))
-                .withList("creativeOrInnovative", jobDescription.getCreativeOrInnovative().stream().filter(item -> item!=null).collect(Collectors.toList()))
-                .withList("administrativeOrOrganisational", jobDescription.getAdministrativeOrOrganisational().stream().filter(item -> item!=null).collect(Collectors.toList()));
+                .withList("communicationSkills", jobDescription.getCommunicationSkills().stream().filter(item -> item != null).collect(Collectors.toList()))
+                .withList("peopleSkills", jobDescription.getPeopleSkills().stream().filter(item -> item != null).collect(Collectors.toList()))
+                .withList("financialKnowledgeAndSkills", jobDescription.getFinancialKnowledgeAndSkills().stream().filter(item -> item != null).collect(Collectors.toList()))
+                .withList("thinkingAndAnalysis", jobDescription.getThinkingAndAnalysis().stream().filter(item -> item != null).collect(Collectors.toList()))
+                .withList("creativeOrInnovative", jobDescription.getCreativeOrInnovative().stream().filter(item -> item != null).collect(Collectors.toList()))
+                .withList("administrativeOrOrganisational", jobDescription.getAdministrativeOrOrganisational().stream().filter(item -> item != null).collect(Collectors.toList()));
         DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_JOB_DESCRIPTIONS.getName()).putItem(jobDescriptionItem);
     }
 }

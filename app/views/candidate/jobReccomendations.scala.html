@@ -1,4 +1,3 @@
-@import java.util
 @(jobDescriptions:List[JobDescription])
 
 @main("Uploaded Job Specifications"){
@@ -12,7 +11,8 @@
                             <th scope="col">Job Title</th>
                             <th scope="col">Company/Organisation</th>
                             <th scope="col">Location</th>
-                            <th scopr="col">Salary</th>
+                            <th scope="col">Salary</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -23,7 +23,7 @@
                             <td>@jobDescription.getLocation</td>
                             <td>@jobDescription.getSalary</td>
                             <td>
-                                <a class="btn active btn-primary btn-sm m-0" href="@routes.JobApplicationController.viewJobDescription(jobDescription.getReferenceCode)">View</a>
+                                <a class="btn active btn-primary btn-sm m-0" href="@routes.JobApplicationController.viewJobDescription(jobDescription.getRecruiter, jobDescription.getReferenceCode)">View Details</a>
                             </td>
                         </tr>
                     }

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JobDescription {
+    private String recruiter;
     private String referenceCode;
     private String jobTitle;
     private String duration;
@@ -64,6 +65,7 @@ public class JobDescription {
     }
 
     public JobDescription(Map<String, AttributeValue> item) {
+        this.recruiter = item.get("recruiter").getS();
         this.referenceCode = item.get("referenceCode").getS();
         this.jobTitle = item.get("jobTitle").getS();
         this.duration = item.get("duration").getS();
@@ -91,6 +93,14 @@ public class JobDescription {
 
     private List<String> getListOfStringsFromItem(Map<String, AttributeValue> item, String key) {
         return item.get(key).getL().stream().map(AttributeValue::getS).collect(Collectors.toList());
+    }
+
+    public String getRecruiter() {
+        return recruiter;
+    }
+
+    public void setRecruiter(String recruiter) {
+        this.recruiter = recruiter;
     }
 
     public String getReferenceCode() {
