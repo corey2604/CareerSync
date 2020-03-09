@@ -38,7 +38,8 @@ public class JobApplicationController extends Controller {
 
     public Result viewJobDescription(String recruiter, String referenceCode) {
         JobDescription jobDescription = getJobDescription(recruiter, referenceCode);
-        return ok(views.html.recruiter.viewJobSpecification.render(jobDescription, views.html.viewEmployeeSpecificationBody.render(jobDescription)));
+        return ok(views.html.recruiter.viewJobSpecification.render(views.html.viewJobSpecificationBody.render(jobDescription),
+                views.html.viewEmployeeSpecificationBody.render(jobDescription)));
     }
 
     public Result getUploadedJobSpecifications(Http.Request request) {
