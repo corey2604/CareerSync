@@ -15,7 +15,9 @@ import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import utilities.DynamoAccessor;
 import utilities.DynamoTables;
+import utilities.KsaMatcher;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 public class JobApplicationController extends Controller {
 
     private FormFactory formFactory;
+    private DynamoAccessor dynamoAccessor = DynamoAccessor.getInstance();
 
     @Inject
     public JobApplicationController(FormFactory formFactory) {
@@ -37,7 +40,7 @@ public class JobApplicationController extends Controller {
     }
 
     public Result viewJobDescription(String recruiter, String referenceCode) {
-        JobDescription jobDescription = getJobDescription(recruiter, referenceCode);
+        JobDescription jobDescription = dynamoAccessor.getJobDescription(recruiter, referenceCode);
         return ok(views.html.recruiter.viewJobSpecification.render(views.html.viewJobSpecificationBody.render(jobDescription),
                 views.html.viewEmployeeSpecificationBody.render(jobDescription)));
     }
@@ -71,7 +74,7 @@ public class JobApplicationController extends Controller {
     }
 
     public Result editJobDescription(String recruiter, String referenceCode) {
-        JobDescription jobDescription = getJobDescription(recruiter, referenceCode);
+        JobDescription jobDescription = dynamoAccessor.getJobDescription(recruiter, referenceCode);
         return ok(views.html.recruiter.editJobApplication.render(jobDescription, views.html.populatedKsaFormContent.render(jobDescription)));
     }
 
@@ -89,27 +92,9 @@ public class JobApplicationController extends Controller {
         return getUploadedJobSpecifications(request);
     }
 
-    private JobDescription getJobDescription(String recruiter, String referenceCode) {
-        Table jobDescriptionsTable = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_JOB_DESCRIPTIONS.getName());
-        QuerySpec spec = new QuerySpec()
-                .withKeyConditionExpression("recruiter = :recruiter")
-                .withFilterExpression("referenceCode = :referenceCode")
-                .withValueMap(new ValueMap()
-                        .withString(":recruiter", recruiter)
-                        .withString(":referenceCode", referenceCode)
-                );
-
-        ItemCollection<QueryOutcome> items = jobDescriptionsTable.query(spec);
-
-        Iterator<Item> iterator = items.iterator();
-        List<JobDescription> jobDescriptions = new ArrayList<JobDescription>();
-        Item item;
-        while (iterator.hasNext()) {
-            item = iterator.next();
-            jobDescriptions.add(new JobDescription(item));
-            System.out.println(item.toJSONPretty());
-        }
-        return jobDescriptions.get(0);
+    public Result getPotentialCandidates(String recruiter, String referenceCode) {
+        KsaMatcher.getInstance().getPotentialCandidates(recruiter, referenceCode);
+        return ok();
     }
 
     private void putJobDescriptionInTable(JobDescription jobDescription) {

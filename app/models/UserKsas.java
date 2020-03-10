@@ -1,11 +1,15 @@
 package models;
 
 import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class UserKsas {
+    private String username;
     private String qualificationLevel;
     private String qualificationArea;
     private List<String> communicationSkills;
@@ -24,6 +28,30 @@ public class UserKsas {
         this.thinkingAndAnalysis = (List<String>) item.get("thinkingAndAnalysis");
         this.creativeOrInnovative = (List<String>) item.get("creativeOrInnovative");
         this.administrativeOrOrganisational = (List<String>) item.get("administrativeOrOrganisational");
+    }
+
+    public UserKsas(Map<String, AttributeValue> item) {
+        this.username = item.get("username").getS();
+        this.qualificationLevel = item.get("qualificationLevel").getS();
+        this.qualificationArea = item.get("qualificationArea").getS();
+        this.communicationSkills = getListOfStringsFromItem(item, "communicationSkills");
+        this.peopleSkills = getListOfStringsFromItem(item, "peopleSkills");
+        this.financialKnowledgeAndSkills = getListOfStringsFromItem(item, "financialKnowledgeAndSkills");
+        this.thinkingAndAnalysis = getListOfStringsFromItem(item, "thinkingAndAnalysis");
+        this.creativeOrInnovative = getListOfStringsFromItem(item,"creativeOrInnovative");
+        this.administrativeOrOrganisational = getListOfStringsFromItem(item, "administrativeOrOrganisational");
+    }
+
+    private List<String> getListOfStringsFromItem(Map<String, AttributeValue> item, String key) {
+        return item.get(key).getL().stream().map(AttributeValue::getS).collect(Collectors.toList());
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getQualificationLevel() {

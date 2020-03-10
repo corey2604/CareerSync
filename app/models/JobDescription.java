@@ -39,6 +39,7 @@ public class JobDescription {
     }
 
     public JobDescription(Item item) {
+        this.recruiter = item.get("recruiter").toString();
         this.referenceCode = item.get("referenceCode").toString();
         this.jobTitle = item.get("jobTitle").toString();
         this.duration = item.get("duration").toString();
