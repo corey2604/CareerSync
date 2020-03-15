@@ -20,6 +20,7 @@ GET     /deleteJobDescription       controllers.JobApplicationController.deleteJ
 GET     /viewJobRecommendations     controllers.KsaMatcherController.viewJobRecommendations(request: Request)
 GET     /getPotentialCandidates     controllers.JobApplicationController.getPotentialCandidates(recruiter: String, referenceCode: String)
 GET     /getCandidateKsaProfile     controllers.JobApplicationController.getCandidateKsaProfile(firstName: String, surname: String, username: String)
+GET     /getRecruiterDetails        controllers.JobApplicationController.viewRecruiterDetails(recruiterUsername: String)
 
 +nocsrf
 POST    /register/submit            controllers.RegisterController.registerSubmit()

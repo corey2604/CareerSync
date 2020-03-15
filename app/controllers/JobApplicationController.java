@@ -106,6 +106,11 @@ public class JobApplicationController extends Controller {
         return ok(views.html.candidateKsaProfile.render(fullName, userKsas));
     }
 
+    public Result viewRecruiterDetails(String recruiterName) {
+        UserAccountDetails recruiterDetails = DynamoAccessor.getInstance().getUserAccountDetails(recruiterName);
+        return ok(views.html.candidate.viewRecruiterDetails.render(recruiterDetails));
+    }
+
     private void putJobDescriptionInTable(JobDescription jobDescription) {
         Item jobDescriptionItem = new Item()
                 .withPrimaryKey("referenceCode", jobDescription.getReferenceCode())
