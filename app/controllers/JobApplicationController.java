@@ -11,6 +11,8 @@ import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import models.JobDescription;
+import models.UserAccountDetails;
+import models.UserKsas;
 import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -93,8 +95,15 @@ public class JobApplicationController extends Controller {
     }
 
     public Result getPotentialCandidates(String recruiter, String referenceCode) {
-        KsaMatcher.getInstance().getPotentialCandidates(recruiter, referenceCode);
-        return ok();
+        JobDescription jobDescription = DynamoAccessor.getInstance().getJobDescription(recruiter, referenceCode);
+        List<UserAccountDetails> matchingCandidates = KsaMatcher.getInstance().getPotentialCandidates(recruiter, referenceCode);
+        return ok(views.html.recruiter.matchingCandidates.render(referenceCode, jobDescription.getJobTitle(), matchingCandidates));
+    }
+
+    public Result getCandidateKsaProfile(String firstName, String surname, String username) {
+        String fullName = firstName + " " + surname;
+        UserKsas userKsas = DynamoAccessor.getInstance().getKsasForUser(username);
+        return ok(views.html.candidateKsaProfile.render(fullName, userKsas));
     }
 
     private void putJobDescriptionInTable(JobDescription jobDescription) {

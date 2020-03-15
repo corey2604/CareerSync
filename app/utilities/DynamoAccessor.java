@@ -9,6 +9,7 @@ import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import models.JobDescription;
 import models.UserAccountDetails;
+import models.UserKsas;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -62,5 +63,25 @@ public class DynamoAccessor {
                 userAccountDetails.get("surname").toString(),
                 userAccountDetails.get("email").toString(),
                 userAccountDetails.get("phoneNumber").toString());
+    }
+
+    public UserKsas getKsasForUser(String username) {
+        Table userKsaTable = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USER_KSAS.getName());
+        QuerySpec spec = new QuerySpec()
+                .withKeyConditionExpression("username = :username")
+                .withValueMap(new ValueMap()
+                        .withString(":username", username)
+                );
+
+        ItemCollection<QueryOutcome> items = userKsaTable.query(spec);
+
+        Iterator<Item> iterator = items.iterator();
+        Item item;
+        List<UserKsas> userKsas = new ArrayList<>();
+        while (iterator.hasNext()) {
+            item = iterator.next();
+            userKsas.add(new UserKsas(item));
+        }
+        return userKsas.get(0);
     }
 }

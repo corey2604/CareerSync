@@ -20,6 +20,7 @@ import java.util.*;
 
 public class KsaMatcher {
     private static KsaMatcher ksaMatcher = null;
+    private static int PERCENTAGE_THRESHOLD = 75;
 
     private KsaMatcher() {
         //private constructor
@@ -33,35 +34,15 @@ public class KsaMatcher {
     }
 
     public List<JobDescription> getJobRecommendations(String username) {
-        UserKsas userKsas = getKsasForUser(username);
+        UserKsas userKsas = DynamoAccessor.getInstance().getKsasForUser(username);
         ScanResult allJobDescriptions = getAllJobDescriptions();
         return getMatchingJobDescriptions(userKsas, allJobDescriptions);
     }
 
-    public void getPotentialCandidates(String recruiter, String referenceCode) {
+    public List<UserAccountDetails> getPotentialCandidates(String recruiter, String referenceCode) {
         JobDescription jobDescription = DynamoAccessor.getInstance().getJobDescription(recruiter, referenceCode);
         ScanResult allCandidates = getAllCandidates();
-        getMatchingCandidates(jobDescription, allCandidates);
-    }
-
-    public UserKsas getKsasForUser(String username) {
-        Table userKsaTable = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USER_KSAS.getName());
-        QuerySpec spec = new QuerySpec()
-                .withKeyConditionExpression("username = :username")
-                .withValueMap(new ValueMap()
-                        .withString(":username", username)
-                );
-
-        ItemCollection<QueryOutcome> items = userKsaTable.query(spec);
-
-        Iterator<Item> iterator = items.iterator();
-        Item item;
-        List<UserKsas> userKsas = new ArrayList<>();
-        while (iterator.hasNext()) {
-            item = iterator.next();
-            userKsas.add(new UserKsas(item));
-        }
-        return userKsas.get(0);
+        return getMatchingCandidates(jobDescription, allCandidates);
     }
 
     public ScanResult getAllJobDescriptions() {
@@ -108,7 +89,7 @@ public class KsaMatcher {
             double percentMatch = (ksaCount <= allJobDescriptionRelatedKsas.size()) ? (ksaCount * 100) / allJobDescriptionRelatedKsas.size() : 100;
             System.out.println("Percentage Match: " + percentMatch);
 
-            if (percentMatch > 75) {
+            if (percentMatch > PERCENTAGE_THRESHOLD) {
                 matchingJobDescriptions.add(jobDescription);
             }
         }
@@ -125,7 +106,7 @@ public class KsaMatcher {
             double percentMatch = (ksaCount <= allJobDescriptionRelatedKsas.size()) ? (ksaCount * 100) / allJobDescriptionRelatedKsas.size() : 100;;
             System.out.println("Percentage Match: " + percentMatch);
 
-            if (percentMatch > 75) {
+            if (percentMatch > PERCENTAGE_THRESHOLD) {
                 matchingUsers.add(DynamoAccessor.getInstance().getUserAccountDetails(userKsas.getUsername()));
             }
         }
