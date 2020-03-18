@@ -13,6 +13,7 @@ import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import utilities.DynamoAccessor;
 import utilities.DynamoTables;
 
 import javax.inject.Inject;
@@ -28,7 +29,7 @@ public class EditAccountController extends Controller {
     }
 
     public Result editAccount(Http.Request request) {
-        return ok(views.html.editAccount.render(getUserAccountDetails(request)));
+        return ok(views.html.editAccount.render(DynamoAccessor.getInstance().getUserAccountDetails(request.cookie("username").value())));
     }
 
     public Result updateUserAccountDetails() {
@@ -54,15 +55,5 @@ public class EditAccountController extends Controller {
             System.out.println(e.getErrorMessage());
         }
         return redirect(routes.EditAccountController.editAccount());
-    }
-
-    @VisibleForTesting
-    protected UserAccountDetails getUserAccountDetails(Http.Request request) {
-        Item userAccountDetails = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName()).getItem("username", request.cookie("username").value());
-        return new UserAccountDetails(userAccountDetails.get("username").toString(),
-                        userAccountDetails.get("firstName").toString(),
-                        userAccountDetails.get("surname").toString(),
-                        userAccountDetails.get("email").toString(),
-                        userAccountDetails.get("phoneNumber").toString());
     }
 }

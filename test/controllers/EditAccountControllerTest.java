@@ -6,6 +6,7 @@ import play.data.FormFactory;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
+import utilities.DynamoAccessor;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -14,19 +15,20 @@ import static play.mvc.Http.Status.OK;
 public class EditAccountControllerTest {
 
     @Test
-    public void testLoadForm() {
+    public void testEditAccount() {
         //given
         FormFactory mockFormFactory = mock(FormFactory.class);
+        DynamoAccessor mockDynamoAccessor = mock(DynamoAccessor.class);
+        UserAccountDetails mockUserAccountDetails = mock(UserAccountDetails.class);
+        DynamoAccessor.setDynamoAccessor(mockDynamoAccessor);
         Http.RequestImpl request = Helpers.fakeRequest()
                 .cookie(Http.Cookie.builder("username", "fakeName").build())
                 .cookie(Http.Cookie.builder("userType", "candidate").build())
                 .build();
-        EditAccountController editAccountController = spy(new EditAccountController(mockFormFactory));
-        UserAccountDetails userAccountDetails = mock(UserAccountDetails.class);
-        doReturn(userAccountDetails).when(editAccountController).getUserAccountDetails(request);
+        doReturn(mockUserAccountDetails).when(mockDynamoAccessor).getUserAccountDetails(any());
 
         //when
-        Result result = new KsaFormController(mockFormFactory).loadForm(request);
+        Result result = new EditAccountController(mockFormFactory).editAccount(request);
 
         //then
         assertEquals(OK, result.status());

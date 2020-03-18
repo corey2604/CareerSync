@@ -13,5 +13,7 @@ libraryDependencies ++= Seq(
   "org.webjars" %% "webjars-play" % "2.7.3",
   "org.webjars" % "bootstrap" % "3.1.1-2" exclude("org.webjars", "jquery"),
   "org.webjars" % "jquery" % "1.8.3",
-  "org.mockito" % "mockito-all" % "1.10.19" % Test
+  "org.apache.poi" % "poi" % "4.1.2",
+  "org.apache.poi" % "poi-ooxml" % "4.1.2",
+  "org.mockito" % "mockito-all" % "2.0.2-beta" % Test
 )

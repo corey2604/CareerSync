@@ -23,8 +23,10 @@
                             <td>@jobDescription.getCompanyOrOrganisation</td>
                             <td>@jobDescription.getLocation</td>
                             <td>
-                                <a class="btn active btn-primary btn-sm m-0" href="@routes.JobApplicationController.viewJobDescription(jobDescription.getReferenceCode)">View</a>
-                                <a class="btn active btn-primary btn-sm m-0" href="@routes.JobApplicationController.editJobDescription(jobDescription.getReferenceCode)">Edit</a>
+                                <a class="btn active btn-primary btn-sm m-0" href="@routes.JobApplicationController.viewJobDescription(jobDescription.getRecruiter, jobDescription.getReferenceCode)">View</a>
+                                <a class="btn active btn-primary btn-sm m-0" href="@routes.JobApplicationController.editJobDescription(jobDescription.getRecruiter, jobDescription.getReferenceCode)">Edit</a>
+                                <a class="btn active btn-primary btn-sm m-0" href="@routes.JobApplicationController.deleteJobDescription(jobDescription.getReferenceCode)">Delete</a>
+                                <a class="btn active btn-primary btn-sm m-0" href="@routes.JobApplicationController.getPotentialCandidates(jobDescription.getRecruiter, jobDescription.getReferenceCode)">View Potential Applicants</a>
                             </td>
                         </tr>
                     }
