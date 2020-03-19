@@ -9,6 +9,7 @@ GET     /                           controllers.HomeController.index(request: Re
 GET     /register                   controllers.RegisterController.register(request: Request)
 GET     /logIn                      controllers.LogInController.logIn(request: Request)
 GET     /upload                     controllers.HomeController.uploadFile(request: Request)
+GET     /viewCv                     controllers.HomeController.viewCv(request: Request)
 GET     /ksaForm                    controllers.KsaFormController.loadForm(request: Request)
 GET     /logOut                     controllers.HomeController.logOut(request: Request)
 GET     /editAccount                controllers.EditAccountController.editAccount(request: Request)

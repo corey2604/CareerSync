@@ -14,8 +14,10 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import scala.reflect.internal.util.FileUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -71,6 +73,34 @@ public class FileHandler {
         String fileName = folderName + SUFFIX;
         s3Client.putObject(new PutObjectRequest(BUCKET_NAME, fileName, chosenFile));
         extractKsasFromFile(folderName);
+    }
+
+    public boolean doesUserHaveUploadedCV(String username) {
+        String fileName = username + SUFFIX;
+        try {
+            s3Client.getObject(new GetObjectRequest(BUCKET_NAME, fileName));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public void getFileFromUsername(String username) {
+        try {
+            String fileName = username + SUFFIX;
+            File localFile = new File(System.getProperty("user.home") + "/CV.docx");
+            s3Client.getObject(new GetObjectRequest(BUCKET_NAME, fileName), localFile);
+            if(!Desktop.isDesktopSupported()){
+                System.out.println("Desktop is not supported");
+                return;
+            }
+
+            Desktop desktop = Desktop.getDesktop();
+            if(localFile.exists()) desktop.open(localFile);
+
+        } catch (Exception e) {
+            System.out.println("No CV found");
+        }
     }
 
     private void extractKsasFromFile(String username) {

@@ -18,6 +18,12 @@ import javax.swing.*;
  */
 public class HomeController extends Controller {
 
+    private static final AmazonS3 S3_CLIENT = AmazonS3ClientBuilder
+            .standard()
+            .withRegion(Regions.EU_WEST_1)
+            .withCredentials(ClasspathPropertiesFileCredentialsProviderWrapper.getInstance())
+            .build();
+
     @Inject
     public HomeController() {
     }
@@ -33,20 +39,22 @@ public class HomeController extends Controller {
             return redirect(routes.LogInController.logIn());
         }
         if (request.cookies().getCookie("userType").get().value().equals("candidate")) {
-            return ok(views.html.candidate.index.render());
+            boolean uploadedCV = FileHandler.getInstance(S3_CLIENT, new JFileChooser())
+                    .doesUserHaveUploadedCV(request.cookies().getCookie("username").get().value());
+            return ok(views.html.candidate.index.render(uploadedCV));
         } else {
             return ok(views.html.recruiter.recruiterIndex.render());
         }
     }
 
     public Result uploadFile(Http.Request request) {
-         AmazonS3 s3Client = AmazonS3ClientBuilder
-                .standard()
-                .withRegion(Regions.EU_WEST_1)
-                .withCredentials(ClasspathPropertiesFileCredentialsProviderWrapper.getInstance())
-                .build();
-        FileHandler.getInstance(s3Client, new JFileChooser()).uploadFile(request.cookie("username").value());
-        return ok(views.html.candidate.index.render());
+        FileHandler.getInstance(S3_CLIENT, new JFileChooser()).uploadFile(request.cookie("username").value());
+        return ok(views.html.candidate.index.render(true));
+    }
+
+    public Result viewCv(Http.Request request) {
+        FileHandler.getInstance(S3_CLIENT, new JFileChooser()).getFileFromUsername(request.cookie("username").value());
+        return ok(views.html.candidate.index.render(true));
     }
 
     public Result logOut(Http.Request request) {
