@@ -3,10 +3,12 @@ package controllers;
 import awsWrappers.DynamoDbTableProvider;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import models.KsaForm;
+import models.UserKsas;
 import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import utilities.DynamoAccessor;
 import utilities.DynamoTables;
 
 import javax.inject.Inject;
@@ -22,6 +24,11 @@ public class KsaFormController extends Controller {
 
     public Result loadForm(Http.Request request) {
         return ok(views.html.candidate.ksaForm.render(views.html.ksaFormContent.render()));
+    }
+
+    public Result editKsas(Http.Request request) {
+        UserKsas userKsas = DynamoAccessor.getInstance().getKsasForUser(request.cookie("username").value());
+        return ok(views.html.candidate.ksaForm.render(views.html.populatedKsaFormContent.render(userKsas)));
     }
 
     public Result submitForm(Http.Request request) {

@@ -8,6 +8,7 @@ import models.UserAccountDetails;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import utilities.DynamoAccessor;
 import utilities.FileHandler;
 import utilities.LoginChecker;
 
@@ -44,7 +45,8 @@ public class HomeController extends Controller {
         if (request.cookies().getCookie("userType").get().value().equals("candidate")) {
             boolean uploadedCV = FileHandler.getInstance(S3_CLIENT, new JFileChooser())
                     .doesUserHaveUploadedCV(request.cookies().getCookie("username").get().value());
-            return ok(views.html.candidate.index.render(uploadedCV));
+            boolean completedKsas = DynamoAccessor.getInstance().doesUserHaveKsas(request.cookies().getCookie("username").get().value());
+            return ok(views.html.candidate.index.render(uploadedCV, completedKsas));
         } else {
             return ok(views.html.recruiter.recruiterIndex.render());
         }
@@ -52,12 +54,12 @@ public class HomeController extends Controller {
 
     public Result uploadFile(Http.Request request) {
         FileHandler.getInstance(S3_CLIENT, new JFileChooser()).uploadFile(request.cookie("username").value());
-        return ok(views.html.candidate.index.render(true));
+        return ok(views.html.candidate.index.render(true, true));
     }
 
     public Result viewCv(Http.Request request) {
         FileHandler.getInstance(S3_CLIENT, new JFileChooser()).getFileFromUsername(request.cookie("username").value());
-        return ok(views.html.candidate.index.render(true));
+        return ok(views.html.candidate.index.render(true, true));
     }
 
     public Result viewCvForUser(Http.Request request, String username, String jobTitle) {

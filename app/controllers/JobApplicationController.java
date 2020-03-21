@@ -77,7 +77,7 @@ public class JobApplicationController extends Controller {
 
     public Result editJobDescription(String recruiter, String referenceCode) {
         JobDescription jobDescription = dynamoAccessor.getJobDescription(recruiter, referenceCode);
-        return ok(views.html.recruiter.editJobApplication.render(jobDescription, views.html.populatedKsaFormContent.render(jobDescription)));
+        return ok(views.html.recruiter.editJobApplication.render(jobDescription, views.html.populatedKsaFormContent.render(jobDescription.getUserKsasFromJobDescription())));
     }
 
     public Result deleteJobDescription(Http.Request request, String referenceCode) {

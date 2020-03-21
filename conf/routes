@@ -12,6 +12,7 @@ GET     /upload                     controllers.HomeController.uploadFile(reques
 GET     /viewCv                     controllers.HomeController.viewCv(request: Request)
 GET     /viewCvForUser              controllers.HomeController.viewCvForUser(request:Request, username: String, referenceCode: String)
 GET     /ksaForm                    controllers.KsaFormController.loadForm(request: Request)
+GET     /editKsas                   controllers.KsaFormController.editKsas(request: Request)
 GET     /logOut                     controllers.HomeController.logOut(request: Request)
 GET     /editAccount                controllers.EditAccountController.editAccount(request: Request)
 GET     /uploadJobApplication       controllers.JobApplicationController.uploadJobApplication(request: Request)
