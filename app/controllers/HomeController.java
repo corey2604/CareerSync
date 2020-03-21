@@ -53,8 +53,8 @@ public class HomeController extends Controller {
     }
 
     public Result uploadFile(Http.Request request) {
-        FileHandler.getInstance(S3_CLIENT, new JFileChooser()).uploadFile(request.cookie("username").value());
-        return ok(views.html.candidate.index.render(true, true));
+        boolean successfullyUploaded = FileHandler.getInstance(S3_CLIENT, new JFileChooser()).uploadFile(request.cookie("username").value());
+        return ok(views.html.candidate.index.render(successfullyUploaded, successfullyUploaded));
     }
 
     public Result viewCv(Http.Request request) {

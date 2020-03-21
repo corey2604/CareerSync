@@ -65,14 +65,20 @@ public class FileHandler {
         s3Client.putObject(putObjectRequest);
     }
 
-    public void uploadFile(String folderName) {
+    public boolean uploadFile(String folderName) {
         createFolder(folderName);
         fileChooser.showDialog(null, "Please Select the File You Wish to Upload");
         fileChooser.setVisible(true);
         File chosenFile = fileChooser.getSelectedFile();
         String fileName = folderName + SUFFIX;
-        s3Client.putObject(new PutObjectRequest(BUCKET_NAME, fileName, chosenFile));
-        extractKsasFromFile(folderName);
+        try {
+            s3Client.putObject(new PutObjectRequest(BUCKET_NAME, fileName, chosenFile));
+            extractKsasFromFile(folderName);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Could not upload CV");
+            return false;
+        }
     }
 
     public boolean doesUserHaveUploadedCV(String username) {
