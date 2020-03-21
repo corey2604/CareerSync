@@ -1,8 +1,13 @@
 package controllers;
 
 import awsWrappers.AmazonDynamoDbClientWrapper;
+import awsWrappers.AwsCognitoIdentityProviderWrapper;
+import awsWrappers.ClasspathPropertiesFileCredentialsProviderWrapper;
 import awsWrappers.DynamoDbTableProvider;
 import com.amazonaws.AmazonServiceException;
+import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
+import com.amazonaws.services.cognitoidp.model.AdminSetUserPasswordRequest;
+import com.amazonaws.services.cognitoidp.model.ChangePasswordRequest;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.AttributeValueUpdate;
@@ -34,6 +39,15 @@ public class EditAccountController extends Controller {
 
     public Result updateUserAccountDetails() {
         UserAccountDetails userAccountDetails = formFactory.form(UserAccountDetails.class).bindFromRequest().get();
+        AWSCognitoIdentityProvider cognitoClient = AwsCognitoIdentityProviderWrapper.getInstance();
+        AdminSetUserPasswordRequest setUserPasswordRequest = new AdminSetUserPasswordRequest()
+                .withPassword(userAccountDetails.getPassword())
+                .withUsername(userAccountDetails.getUsername())
+                .withPermanent(true)
+                .withUserPoolId("eu-west-1_FehhvQScE");
+
+        cognitoClient.adminSetUserPassword(setUserPasswordRequest);
+
         UpdateItemRequest updateRequest = new UpdateItemRequest();
         updateRequest.setTableName("CareerSync-Users");
 

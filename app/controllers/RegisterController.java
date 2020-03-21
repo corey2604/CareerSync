@@ -45,8 +45,9 @@ public class RegisterController extends Controller {
     public UserType awsSignUp(Form<UserSignUpRequest> userSignUpForm) {
         UserSignUpRequest signUpRequest = userSignUpForm.get();
         AWSCognitoIdentityProvider cognitoClient = AwsCognitoIdentityProviderWrapper.getInstance();
+        String userPoolId = config.getString("userPoolId");
         AdminCreateUserRequest cognitoRequest = new AdminCreateUserRequest()
-                .withUserPoolId(config.getString("userPoolId"))
+                .withUserPoolId(userPoolId)
                 .withUsername(signUpRequest.getUsername())
                 .withUserAttributes(
                         new AttributeType()
@@ -75,9 +76,16 @@ public class RegisterController extends Controller {
                 .with("userType", signUpRequest.getUserType());
         DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName()).putItem(careerSyncUser);
 
-
         AdminCreateUserResult createUserResult = cognitoClient.adminCreateUser(cognitoRequest);
         UserType cognitoUser = createUserResult.getUser();
+
+        AdminSetUserPasswordRequest setUserPasswordRequest = new AdminSetUserPasswordRequest()
+                .withPassword(signUpRequest.getPassword())
+                .withUsername(signUpRequest.getUsername())
+                .withPermanent(true)
+                .withUserPoolId(userPoolId);
+
+        cognitoClient.adminSetUserPassword(setUserPasswordRequest);
 
         return cognitoUser;
 
