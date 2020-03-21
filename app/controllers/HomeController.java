@@ -3,14 +3,17 @@ package controllers;
 import awsWrappers.ClasspathPropertiesFileCredentialsProviderWrapper;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import models.UserAccountDetails;
+import play.mvc.Controller;
+import play.mvc.Http;
+import play.mvc.Result;
 import utilities.FileHandler;
 import utilities.LoginChecker;
-import play.mvc.*;
 
 import javax.inject.Inject;
 import javax.swing.*;
+import java.util.List;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -55,6 +58,11 @@ public class HomeController extends Controller {
     public Result viewCv(Http.Request request) {
         FileHandler.getInstance(S3_CLIENT, new JFileChooser()).getFileFromUsername(request.cookie("username").value());
         return ok(views.html.candidate.index.render(true));
+    }
+
+    public Result viewCvForUser(Http.Request request, String username, String jobTitle) {
+        FileHandler.getInstance(S3_CLIENT, new JFileChooser()).getFileFromUsername(username);
+        return redirect(routes.JobApplicationController.getPotentialCandidates(request.cookie("username").value(), jobTitle));
     }
 
     public Result logOut(Http.Request request) {

@@ -106,9 +106,9 @@ public class JobApplicationController extends Controller {
         return ok(views.html.candidateKsaProfile.render(fullName, userKsas));
     }
 
-    public Result viewRecruiterDetails(String recruiterName) {
-        UserAccountDetails recruiterDetails = DynamoAccessor.getInstance().getUserAccountDetails(recruiterName);
-        return ok(views.html.candidate.viewRecruiterDetails.render(recruiterDetails));
+    public Result viewUserDetails(String userName) {
+        UserAccountDetails userAccountDetails = DynamoAccessor.getInstance().getUserAccountDetails(userName);
+        return ok(views.html.candidate.userContactInformation.render(userAccountDetails));
     }
 
     private void putJobDescriptionInTable(JobDescription jobDescription) {
