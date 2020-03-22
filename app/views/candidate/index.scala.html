@@ -1,13 +1,25 @@
-@()
+@(userHasUploadedCv:Boolean=false, userHasKsas:Boolean=false)
 
 @main("CareerSync") {
     <div class="container">
         <div class="jumbotron">
             <h1 class="display-1 text-center">CareerSync</h1>
         </div>
-        <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.HomeController.uploadFile">Upload File</a>
-        <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.KsaFormController.loadForm()">Complete KSA Form</a>
-        <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.KsaMatcherController.viewJobRecommendations()">View Job Recommendations</a>
+        @if(!userHasUploadedCv) {
+            <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.HomeController.uploadFile">
+                Upload CV</a>
+        } else {
+            <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.HomeController.viewCv">
+                View Uploaded CV</a>
+            <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.HomeController.uploadFile">
+                Upload New CV</a>
+        }
+        @if(!userHasKsas) {
+            <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.KsaFormController.loadForm()">Complete KSA Form</a>
+        } else {
+            <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.KsaFormController.editKsas()">Edit your KSA's</a>
+            <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.KsaMatcherController.viewJobRecommendations()">View Job Recommendations</a>
+        }
     </div>
     <script type="text/javascript" src="@routes.Assets.versioned("javascripts/transformed.js")"></script>
 }

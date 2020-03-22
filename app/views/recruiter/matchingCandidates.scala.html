@@ -10,18 +10,22 @@
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">Name</th>
-                    <th scope="col">Email Address</th>
-                    <th scope="col">Contact Number</th>
-                    <th scope="col"></th>
+                    <th scope="col">Candidate Profile</th>
+                    <th scope="col">Contact Information</th>
                 </tr>
             </thead>
             <tbody>
             @for(candidate <- matchingCandidates) {
                 <tr>
                     <th>@candidate.getFirstName @candidate.getSurname</th>
-                    <th>@candidate.getEmailAddress</th>
-                    <th>@candidate.getPhoneNumber</th>
-                    <td><a class="btn active btn-primary btn-sm m-0" href="@routes.JobApplicationController.getCandidateKsaProfile(candidate.getFirstName, candidate.getSurname, candidate.getUsername)">View Ksa Profile</a></td>
+                    <td>
+                        <a class="btn active btn-primary btn-sm m-0" href="@routes.JobApplicationController.getCandidateKsaProfile(candidate.getFirstName, candidate.getSurname, candidate.getUsername)">View Ksa Profile</a>
+                        <a class="btn active btn-primary btn-sm m-0" role="button" href="@routes.HomeController.viewCvForUser(candidate.getUsername, referenceCode)">
+                            Download Candidate CV</a>
+                    </td>
+                    <td>
+                        <a class="btn active btn-primary btn-sm m-0" href="@routes.JobApplicationController.viewUserDetails(candidate.getUsername)">Contact Candidate</a>
+                    </td>
                 </tr>
             }
             </tbody>

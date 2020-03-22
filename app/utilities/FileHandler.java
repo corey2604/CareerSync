@@ -14,8 +14,10 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import scala.reflect.internal.util.FileUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -63,14 +65,57 @@ public class FileHandler {
         s3Client.putObject(putObjectRequest);
     }
 
-    public void uploadFile(String folderName) {
-        createFolder(folderName);
-        fileChooser.showDialog(null, "Please Select the File You Wish to Upload");
+    public boolean uploadFile(String folderName) {
+        if (!doesUserHaveUploadedCV(folderName)) {
+            createFolder(folderName);
+        }
         fileChooser.setVisible(true);
-        File chosenFile = fileChooser.getSelectedFile();
+        fileChooser.showDialog(null, "Please Select the File You Wish to Upload");
+        Optional<File> chosenFile = Optional.ofNullable(fileChooser.getSelectedFile());
         String fileName = folderName + SUFFIX;
-        s3Client.putObject(new PutObjectRequest(BUCKET_NAME, fileName, chosenFile));
-        extractKsasFromFile(folderName);
+        if (chosenFile.isPresent()) {
+            try {
+                s3Client.putObject(new PutObjectRequest(BUCKET_NAME, fileName, chosenFile.get()));
+                extractKsasFromFile(folderName);
+                return true;
+            } catch (Exception e) {
+                fileChooser.cancelSelection();
+                fileChooser.setVisible(false);
+                System.out.println("Could not upload CV");
+                return false;
+            }
+        }
+        fileChooser.cancelSelection();
+        fileChooser.setVisible(false);
+        return false;
+    }
+
+    public boolean doesUserHaveUploadedCV(String username) {
+        String fileName = username + SUFFIX;
+        try {
+            S3Object cvFile = s3Client.getObject(new GetObjectRequest(BUCKET_NAME, fileName));
+            return (cvFile.getObjectMetadata().getContentLength() > 0);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public void getFileFromUsername(String username) {
+        try {
+            String fileName = username + SUFFIX;
+            File localFile = new File(System.getProperty("user.home") + "/CV.docx");
+            s3Client.getObject(new GetObjectRequest(BUCKET_NAME, fileName), localFile);
+            if(!Desktop.isDesktopSupported()){
+                System.out.println("Desktop is not supported");
+                return;
+            }
+
+            Desktop desktop = Desktop.getDesktop();
+            if(localFile.exists()) desktop.open(localFile);
+
+        } catch (Exception e) {
+            System.out.println("No CV found");
+        }
     }
 
     private void extractKsasFromFile(String username) {

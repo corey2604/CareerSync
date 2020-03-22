@@ -9,7 +9,10 @@ GET     /                           controllers.HomeController.index(request: Re
 GET     /register                   controllers.RegisterController.register(request: Request)
 GET     /logIn                      controllers.LogInController.logIn(request: Request)
 GET     /upload                     controllers.HomeController.uploadFile(request: Request)
+GET     /viewCv                     controllers.HomeController.viewCv(request: Request)
+GET     /viewCvForUser              controllers.HomeController.viewCvForUser(request:Request, username: String, referenceCode: String)
 GET     /ksaForm                    controllers.KsaFormController.loadForm(request: Request)
+GET     /editKsas                   controllers.KsaFormController.editKsas(request: Request)
 GET     /logOut                     controllers.HomeController.logOut(request: Request)
 GET     /editAccount                controllers.EditAccountController.editAccount(request: Request)
 GET     /uploadJobApplication       controllers.JobApplicationController.uploadJobApplication(request: Request)
@@ -20,7 +23,7 @@ GET     /deleteJobDescription       controllers.JobApplicationController.deleteJ
 GET     /viewJobRecommendations     controllers.KsaMatcherController.viewJobRecommendations(request: Request)
 GET     /getPotentialCandidates     controllers.JobApplicationController.getPotentialCandidates(recruiter: String, referenceCode: String)
 GET     /getCandidateKsaProfile     controllers.JobApplicationController.getCandidateKsaProfile(firstName: String, surname: String, username: String)
-GET     /getRecruiterDetails        controllers.JobApplicationController.viewRecruiterDetails(recruiterUsername: String)
+GET     /getRecruiterDetails        controllers.JobApplicationController.viewUserDetails(recruiterUsername: String)
 
 +nocsrf
 POST    /register/submit            controllers.RegisterController.registerSubmit()

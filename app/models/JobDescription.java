@@ -300,4 +300,17 @@ public class JobDescription {
         allKsas.addAll(this.administrativeOrOrganisational);
         return allKsas;
     }
+
+    public UserKsas getUserKsasFromJobDescription() {
+        UserKsas userKsas = new UserKsas();
+        userKsas.setQualificationLevel(this.qualificationLevel);
+        userKsas.setQualificationArea(this.qualificationArea);
+        userKsas.setCommunicationSkills(this.communicationSkills);
+        userKsas.setPeopleSkills(this.peopleSkills);
+        userKsas.setFinancialKnowledgeAndSkills(this.financialKnowledgeAndSkills);
+        userKsas.setThinkingAndAnalysis(this.thinkingAndAnalysis);
+        userKsas.setCreativeOrInnovative(this.creativeOrInnovative);
+        userKsas.setAdministrativeOrOrganisational(this.administrativeOrOrganisational);
+        return userKsas;
+    }
 }

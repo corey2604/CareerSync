@@ -84,4 +84,24 @@ public class DynamoAccessor {
         }
         return userKsas.get(0);
     }
+
+    public boolean doesUserHaveKsas(String username) {
+        Table userKsaTable = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USER_KSAS.getName());
+        QuerySpec spec = new QuerySpec()
+                .withKeyConditionExpression("username = :username")
+                .withValueMap(new ValueMap()
+                        .withString(":username", username)
+                );
+
+        ItemCollection<QueryOutcome> items = userKsaTable.query(spec);
+
+        Iterator<Item> iterator = items.iterator();
+        Item item;
+        List<UserKsas> userKsas = new ArrayList<>();
+        while (iterator.hasNext()) {
+            item = iterator.next();
+            userKsas.add(new UserKsas(item));
+        }
+        return userKsas.size() > 0;
+    }
 }

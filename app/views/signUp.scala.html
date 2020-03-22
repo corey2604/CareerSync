@@ -20,6 +20,11 @@
                     <input type="email" name="email" />
                 </div>
                 <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" />
+                    <small id="passwordHelp" class="form-text text-muted">Your password must be at least 8 characters long, contain a number and a special character.</small>
+                </div>
+                <div class="form-group">
                     <label for="firstName">First Name:</label>
                     <input type="text" name="firstName">
                 </div>
@@ -38,8 +43,12 @@
                         <option value="candidate">Candidate</option>
                     </select>
                 </div>
-                <input type="submit" class="btn btn-black" value="Sign Up" />
+                <input type="submit" class="btn btn-black btn-block" value="Sign Up" />
             }
+                <br/>
+                <div class="d-flex">
+                    Already have have an account? <a href="@routes.LogInController.logIn()" class="ml-2">Log In</a>
+                </div>
             </div>
         </div>
     </div>

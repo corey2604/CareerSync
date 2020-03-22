@@ -77,7 +77,7 @@ public class JobApplicationController extends Controller {
 
     public Result editJobDescription(String recruiter, String referenceCode) {
         JobDescription jobDescription = dynamoAccessor.getJobDescription(recruiter, referenceCode);
-        return ok(views.html.recruiter.editJobApplication.render(jobDescription, views.html.populatedKsaFormContent.render(jobDescription)));
+        return ok(views.html.recruiter.editJobApplication.render(jobDescription, views.html.populatedKsaFormContent.render(jobDescription.getUserKsasFromJobDescription())));
     }
 
     public Result deleteJobDescription(Http.Request request, String referenceCode) {
@@ -106,9 +106,9 @@ public class JobApplicationController extends Controller {
         return ok(views.html.candidateKsaProfile.render(fullName, userKsas));
     }
 
-    public Result viewRecruiterDetails(String recruiterName) {
-        UserAccountDetails recruiterDetails = DynamoAccessor.getInstance().getUserAccountDetails(recruiterName);
-        return ok(views.html.candidate.viewRecruiterDetails.render(recruiterDetails));
+    public Result viewUserDetails(String userName) {
+        UserAccountDetails userAccountDetails = DynamoAccessor.getInstance().getUserAccountDetails(userName);
+        return ok(views.html.candidate.userContactInformation.render(userAccountDetails));
     }
 
     private void putJobDescriptionInTable(JobDescription jobDescription) {
