@@ -66,26 +66,35 @@ public class FileHandler {
     }
 
     public boolean uploadFile(String folderName) {
-        createFolder(folderName);
-        fileChooser.showDialog(null, "Please Select the File You Wish to Upload");
-        fileChooser.setVisible(true);
-        File chosenFile = fileChooser.getSelectedFile();
-        String fileName = folderName + SUFFIX;
-        try {
-            s3Client.putObject(new PutObjectRequest(BUCKET_NAME, fileName, chosenFile));
-            extractKsasFromFile(folderName);
-            return true;
-        } catch (Exception e) {
-            System.out.println("Could not upload CV");
-            return false;
+        if (!doesUserHaveUploadedCV(folderName)) {
+            createFolder(folderName);
         }
+        fileChooser.setVisible(true);
+        fileChooser.showDialog(null, "Please Select the File You Wish to Upload");
+        Optional<File> chosenFile = Optional.ofNullable(fileChooser.getSelectedFile());
+        String fileName = folderName + SUFFIX;
+        if (chosenFile.isPresent()) {
+            try {
+                s3Client.putObject(new PutObjectRequest(BUCKET_NAME, fileName, chosenFile.get()));
+                extractKsasFromFile(folderName);
+                return true;
+            } catch (Exception e) {
+                fileChooser.cancelSelection();
+                fileChooser.setVisible(false);
+                System.out.println("Could not upload CV");
+                return false;
+            }
+        }
+        fileChooser.cancelSelection();
+        fileChooser.setVisible(false);
+        return false;
     }
 
     public boolean doesUserHaveUploadedCV(String username) {
         String fileName = username + SUFFIX;
         try {
-            s3Client.getObject(new GetObjectRequest(BUCKET_NAME, fileName));
-            return true;
+            S3Object cvFile = s3Client.getObject(new GetObjectRequest(BUCKET_NAME, fileName));
+            return (cvFile.getObjectMetadata().getContentLength() > 0);
         } catch (Exception e) {
             return false;
         }
