@@ -32,19 +32,27 @@ public class LogInController extends Controller {
 //        if (LoginChecker.isLoggedin(request)) {
 //            return redirect(routes.HomeController.index());
 //        }
-        return ok(views.html.logIn.render());
+        return ok(views.html.logIn.render(false));
     }
 
     public Result logInSubmit() {
         Form<UserSignInRequest> userSignInForm = formFactory.form(UserSignInRequest.class).bindFromRequest();
-        String username = awsSignIn(userSignInForm);
-        String userType = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName())
-                .getItem("username", username)
-                .get("userType")
-                .toString();
-        return redirect(routes.HomeController.index()).withCookies(
-                Http.Cookie.builder("username", username).build(),
-                Http.Cookie.builder("userType", userType).build());
+        if (userSignInForm.hasErrors()) {
+            return badRequest("Hello There");
+        } else {
+            try {
+                String username = awsSignIn(userSignInForm);
+                String userType = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName())
+                        .getItem("username", username)
+                        .get("userType")
+                        .toString();
+                return redirect(routes.HomeController.index()).withCookies(
+                        Http.Cookie.builder("username", username).build(),
+                        Http.Cookie.builder("userType", userType).build());
+            } catch (Exception e) {
+                return badRequest(views.html.logIn.render(true));
+            }
+        }
     }
 
     public String awsSignIn(Form<UserSignInRequest> signInRequestForm) {

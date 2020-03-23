@@ -1,12 +1,17 @@
 package utilities;
 
+import awsWrappers.AmazonDynamoDbClientWrapper;
 import awsWrappers.DynamoDbTableProvider;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.ItemCollection;
 import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.ScanRequest;
+import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import models.JobDescription;
 import models.UserAccountDetails;
 import models.UserKsas;
@@ -14,6 +19,7 @@ import models.UserKsas;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class DynamoAccessor {
     private static DynamoAccessor dynamoAccessor = null;
@@ -103,5 +109,20 @@ public class DynamoAccessor {
             userKsas.add(new UserKsas(item));
         }
         return userKsas.size() > 0;
+    }
+
+    public List<String> getAllUsernames() {
+        AmazonDynamoDB client = AmazonDynamoDbClientWrapper.getInstance();
+
+        ScanRequest scanRequest = new ScanRequest()
+                .withTableName(DynamoTables.CAREER_SYNC_USERS.getName())
+                .withProjectionExpression("username");
+
+        ScanResult result = client.scan(scanRequest);
+        List<String> usernames = new ArrayList<>();
+        for (Map<String, AttributeValue> item : result.getItems()) {
+            usernames.add(item.get("username").getS());
+        }
+        return usernames;
     }
 }
