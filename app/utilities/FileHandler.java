@@ -1,5 +1,6 @@
 package utilities;
 
+import Enums.DynamoTables;
 import awsWrappers.DynamoDbTableProvider;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.s3.AmazonS3;
@@ -14,7 +15,6 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import scala.reflect.internal.util.FileUtils;
 
 import javax.swing.*;
 import java.awt.*;

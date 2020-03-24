@@ -11,9 +11,10 @@ import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import Enums.CareerSyncErrorMessages;
 import utilities.DynamoAccessor;
-import utilities.DynamoTables;
-import utilities.SignUpErrors;
+import Enums.DynamoTables;
+import utilities.ValidationHelper;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -41,16 +42,16 @@ public class RegisterController extends Controller {
 
     public Result registerSubmit() {
         UserSignUpRequest userSignUpRequest = formFactory.form(UserSignUpRequest.class).bindFromRequest().get();
-        List<SignUpErrors> errorMessages = new ArrayList<>();
+        List<CareerSyncErrorMessages> errorMessages = new ArrayList<>();
         DynamoAccessor.getInstance().getAllUsernames();
         if (DynamoAccessor.getInstance().getAllUsernames().contains(userSignUpRequest.getUsername())){
-            errorMessages.add(SignUpErrors.USERNAME_TAKEN);
+            errorMessages.add(CareerSyncErrorMessages.USERNAME_TAKEN);
         }
         if (!userSignUpRequest.getPhoneNumber().matches("\\d+")) {
-            errorMessages.add(SignUpErrors.INVALID_PHONE_NUMBER);
+            errorMessages.add(CareerSyncErrorMessages.INVALID_PHONE_NUMBER);
         }
-        if (!passwordIsValid(userSignUpRequest.getPassword())) {
-            errorMessages.add(SignUpErrors.PASSWORD_DOES_NOT_CONFORM);
+        if (!ValidationHelper.getInstance().passwordIsValid(userSignUpRequest.getPassword())) {
+            errorMessages.add(CareerSyncErrorMessages.PASSWORD_DOES_NOT_CONFORM);
         }
         if (errorMessages.size() == 0){
             try {
@@ -59,27 +60,10 @@ public class RegisterController extends Controller {
                         Http.Cookie.builder("username", user.getUsername()).build(),
                         Http.Cookie.builder("userType", userSignUpRequest.getUserType()).build());
             } catch (Exception e) {
-                errorMessages.add(SignUpErrors.GENERAL_SUBMISSION_ERROR);
+                errorMessages.add(CareerSyncErrorMessages.GENERAL_SUBMISSION_ERROR);
             }
         }
         return badRequest(views.html.signUp.render(errorMessages, Optional.of(userSignUpRequest)));
-    }
-
-    private boolean passwordIsValid(String password) {
-        if (password.length() < 8) {
-            return false;
-        }
-        if (password.equals(password.toLowerCase())) {
-            return false;
-        }
-        if (!password.matches("(.)*(\\d)(.)*")) {
-            return false;
-        }
-        //Checks at least one char is not alpha numeric)
-        if (password.matches("[A-Za-z0-9 ]*")) {
-            return false;
-        }
-        return true;
     }
 
     public UserType awsSignUp(UserSignUpRequest signUpRequest) {

@@ -1,5 +1,5 @@
-@import utilities.SignUpErrors
-@(errors: List[SignUpErrors], signUpDetails: Optional[UserSignUpRequest])
+@import Enums.CareerSyncErrorMessages
+@(errors: List[CareerSyncErrorMessages], signUpDetails: Optional[UserSignUpRequest])
 
 @main("Register", false) {
     <div class="sidenav">
@@ -12,9 +12,9 @@
         <div class="col-md-6 col-sm-12">
             <div class="register-form">
             @helper.form(action = routes.RegisterController.registerSubmit()) {
-                @if(errors.contains(SignUpErrors.GENERAL_SUBMISSION_ERROR)) {
+                @if(errors.contains(CareerSyncErrorMessages.GENERAL_SUBMISSION_ERROR)) {
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        @SignUpErrors.GENERAL_SUBMISSION_ERROR.getErrorMessage
+                        @CareerSyncErrorMessages.GENERAL_SUBMISSION_ERROR.getErrorMessage
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -28,9 +28,9 @@
                         <input class="form-control" type="text" name="username" required/>
                     }
                 </div>
-                @if(errors.contains(SignUpErrors.USERNAME_TAKEN)) {
+                @if(errors.contains(CareerSyncErrorMessages.USERNAME_TAKEN)) {
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        @SignUpErrors.USERNAME_TAKEN.getErrorMessage
+                        @CareerSyncErrorMessages.USERNAME_TAKEN.getErrorMessage
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -49,9 +49,9 @@
                     <input type="password" class="form-control" name="password" required/>
                     <small id="passwordHelp" class="form-text text-muted">Your password must be at least 6 characters long, contain a number and a special character.</small>
                 </div>
-                @if(errors.contains(SignUpErrors.PASSWORD_DOES_NOT_CONFORM)) {
+                @if(errors.contains(CareerSyncErrorMessages.PASSWORD_DOES_NOT_CONFORM)) {
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        @SignUpErrors.PASSWORD_DOES_NOT_CONFORM.getErrorMessage
+                        @CareerSyncErrorMessages.PASSWORD_DOES_NOT_CONFORM.getErrorMessage
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -81,9 +81,9 @@
                         <input type="text" class="form-control" name="phoneNumber" required>
                     }
                 </div>
-                @if(errors.contains(SignUpErrors.INVALID_PHONE_NUMBER)) {
+                @if(errors.contains(CareerSyncErrorMessages.INVALID_PHONE_NUMBER)) {
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        @SignUpErrors.INVALID_PHONE_NUMBER.getErrorMessage
+                        @CareerSyncErrorMessages.INVALID_PHONE_NUMBER.getErrorMessage
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

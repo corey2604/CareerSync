@@ -1,5 +1,6 @@
 package utilities;
 
+import Enums.DynamoTables;
 import awsWrappers.AmazonDynamoDbClientWrapper;
 import awsWrappers.DynamoDbTableProvider;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;

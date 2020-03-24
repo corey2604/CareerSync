@@ -1,4 +1,4 @@
-package utilities;
+package Enums;
 
 public enum DynamoTables {
     CAREER_SYNC_USERS("CareerSync-Users"),

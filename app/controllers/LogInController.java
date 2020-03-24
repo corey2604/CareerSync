@@ -11,7 +11,7 @@ import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import utilities.DynamoTables;
+import Enums.DynamoTables;
 import utilities.LoginChecker;
 
 import javax.inject.Inject;

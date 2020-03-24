@@ -18,7 +18,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import utilities.DynamoAccessor;
-import utilities.DynamoTables;
+import Enums.DynamoTables;
 import utilities.KsaMatcher;
 
 import javax.inject.Inject;
