@@ -6,25 +6,26 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class JobDescription {
     private String recruiter;
     private String referenceCode;
     private String jobTitle;
-    private String duration;
+    private Optional<String> duration;
     private String location;
     private String companyOrOrganisation;
-    private String department;
-    private String section;
-    private String grade;
-    private String reportsTo;
-    private String responsibleTo;
+    private Optional<String> department;
+    private Optional<String> section;
+    private Optional<String> grade;
+    private Optional<String> reportsTo;
+    private Optional<String> responsibleTo;
     private String hours;
     private String salary;
     private String mainPurposeOfJob;
     private String mainResponsibilities;
-    private String general;
+    private Optional<String> general;
     private String qualificationLevel;
     private String qualificationArea;
     private List<String> communicationSkills;
@@ -34,7 +35,6 @@ public class JobDescription {
     private List<String> creativeOrInnovative;
     private List<String> administrativeOrOrganisational;
 
-
     public JobDescription() {
     }
 
@@ -42,19 +42,19 @@ public class JobDescription {
         this.recruiter = item.get("recruiter").toString();
         this.referenceCode = item.get("referenceCode").toString();
         this.jobTitle = item.get("jobTitle").toString();
-        this.duration = item.get("duration").toString();
+        this.duration = getNullSafeValue(item, "duration");
         this.location = item.get("location").toString();
         this.companyOrOrganisation = item.get("companyOrOrganisation").toString();
-        this.department = item.get("department").toString();
-        this.section = item.get("section").toString();
-        this.grade = item.get("grade").toString();
-        this.reportsTo = item.get("reportsTo").toString();
-        this.responsibleTo = item.get("responsibleTo").toString();
+        this.department = getNullSafeValue(item, "department");
+        this.section = getNullSafeValue(item, "section");
+        this.grade = getNullSafeValue(item, "grade");
+        this.reportsTo = getNullSafeValue(item, "reportsTo");
+        this.responsibleTo = getNullSafeValue(item, "responsibleTo");
         this.hours = item.get("hours").toString();
         this.salary = item.get("salary").toString();
         this.mainPurposeOfJob = item.get("mainPurposeOfJob").toString();
         this.mainResponsibilities = item.get("mainResponsibilities").toString();
-        this.general = item.get("general").toString();
+        this.general = getNullSafeValue(item, "general");
         this.qualificationLevel = item.get("qualificationLevel").toString();
         this.qualificationArea = item.get("qualificationArea").toString();
         this.communicationSkills = (List<String>) item.get("communicationSkills");
@@ -69,19 +69,19 @@ public class JobDescription {
         this.recruiter = item.get("recruiter").getS();
         this.referenceCode = item.get("referenceCode").getS();
         this.jobTitle = item.get("jobTitle").getS();
-        this.duration = item.get("duration").getS();
+        this.duration = Optional.ofNullable(item.get("duration").getS());
         this.location = item.get("location").getS();
         this.companyOrOrganisation = item.get("companyOrOrganisation").getS();
-        this.department = item.get("department").getS();
-        this.section = item.get("section").getS();
-        this.grade = item.get("grade").getS();
-        this.reportsTo = item.get("reportsTo").getS();
-        this.responsibleTo = item.get("responsibleTo").getS();
+        this.department = Optional.ofNullable(item.get("department").getS());
+        this.section = Optional.ofNullable(item.get("section").getS());
+        this.grade = Optional.ofNullable(item.get("grade").getS());
+        this.reportsTo = Optional.ofNullable(item.get("reportsTo").getS());
+        this.responsibleTo = Optional.ofNullable(item.get("responsibleTo").getS());
         this.hours = item.get("hours").getS();
         this.salary = item.get("salary").getS();
         this.mainPurposeOfJob = item.get("mainPurposeOfJob").getS();
         this.mainResponsibilities = item.get("mainResponsibilities").getS();
-        this.general = item.get("general").getS();
+        this.general = Optional.ofNullable(item.get("general").getS());
         this.qualificationLevel = item.get("qualificationLevel").getS();
         this.qualificationArea = item.get("qualificationArea").getS();
         this.communicationSkills = getListOfStringsFromItem(item, "communicationSkills");
@@ -90,6 +90,14 @@ public class JobDescription {
         this.thinkingAndAnalysis = getListOfStringsFromItem(item, "thinkingAndAnalysis");
         this.creativeOrInnovative = getListOfStringsFromItem(item,"creativeOrInnovative");
         this.administrativeOrOrganisational = getListOfStringsFromItem(item, "administrativeOrOrganisational");
+    }
+
+    private Optional<String> getNullSafeValue(Item item, String field) {
+        return (item.get(field) != null) ? Optional.ofNullable(item.get(field).toString()) : Optional.empty();
+    }
+
+    private Optional<String> setOptionalValue(String field) {
+       return (field.isEmpty()) ? Optional.empty() : Optional.ofNullable(field);
     }
 
     private List<String> getListOfStringsFromItem(Map<String, AttributeValue> item, String key) {
@@ -120,12 +128,12 @@ public class JobDescription {
         this.jobTitle = jobTitle;
     }
 
-    public String getDuration() {
+    public Optional<String> getDuration() {
         return duration;
     }
 
     public void setDuration(String duration) {
-        this.duration = duration;
+        this.duration = setOptionalValue(duration);
     }
 
     public String getLocation() {
@@ -144,44 +152,44 @@ public class JobDescription {
         this.companyOrOrganisation = companyOrOrganisation;
     }
 
-    public String getDepartment() {
+    public Optional<String> getDepartment() {
         return department;
     }
 
     public void setDepartment(String department) {
-        this.department = department;
+        this.department = setOptionalValue(department);
     }
 
-    public String getSection() {
+    public Optional<String> getSection() {
         return section;
     }
 
     public void setSection(String section) {
-        this.section = section;
+        this.section = setOptionalValue(section);
     }
 
-    public String getGrade() {
+    public Optional<String> getGrade() {
         return grade;
     }
 
     public void setGrade(String grade) {
-        this.grade = grade;
+        this.grade = setOptionalValue(grade);
     }
 
-    public String getReportsTo() {
+    public Optional<String> getReportsTo() {
         return reportsTo;
     }
 
     public void setReportsTo(String reportsTo) {
-        this.reportsTo = reportsTo;
+        this.reportsTo = setOptionalValue(reportsTo);
     }
 
-    public String getResponsibleTo() {
+    public Optional<String> getResponsibleTo() {
         return responsibleTo;
     }
 
     public void setResponsibleTo(String responsibleTo) {
-        this.responsibleTo = responsibleTo;
+        this.responsibleTo = setOptionalValue(responsibleTo);
     }
 
     public String getHours() {
@@ -216,12 +224,12 @@ public class JobDescription {
         this.mainResponsibilities = mainResponsibilities;
     }
 
-    public String getGeneral() {
+    public Optional<String> getGeneral() {
         return general;
     }
 
     public void setGeneral(String general) {
-        this.general = general;
+        this.general = setOptionalValue(general);
     }
 
     public String getQualificationLevel() {

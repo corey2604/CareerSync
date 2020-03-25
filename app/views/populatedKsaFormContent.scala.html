@@ -17,7 +17,6 @@
 <h1>Skills and Abilities</h1>
 <h2>Communication</h2>
 <div class="form-group">
-    @userKsas.getCommunicationSkills
 @for((communicationSkill, index) <- KsaValues.getCommunicationSkills.zipWithIndex) {
     <div class="form-check">
         <input class="form-check-input" type="checkbox" value="@communicationSkill" @if(userKsas.getCommunicationSkills.contains(communicationSkill)) {checked} name="communicationSkills[@index]">
