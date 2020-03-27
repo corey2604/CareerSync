@@ -2,7 +2,7 @@
 <h1>Qualifications</h1>
 <div class="form-group">
     <label for="qualificationLevel">Please select your highest level of qualification: </label>
-    <select id="qualificationLevel" name="qualificationLevel">
+    <select class="form-control" id="qualificationLevel" name="qualificationLevel">
     @for(qualificationLevel <- QualificationLevels.getQualificationLevels) {
         <option value="@qualificationLevel">@qualificationLevel</option>
     }

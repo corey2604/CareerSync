@@ -8,9 +8,11 @@ import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.ItemCollection;
 import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.GetItemRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import models.JobDescription;
@@ -41,26 +43,11 @@ public class DynamoAccessor {
     }
 
     public JobDescription getJobDescription(String recruiter, String referenceCode) {
-        Table jobDescriptionsTable = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_JOB_DESCRIPTIONS.getName());
-        QuerySpec spec = new QuerySpec()
-                .withKeyConditionExpression("recruiter = :recruiter")
-                .withFilterExpression("referenceCode = :referenceCode")
-                .withValueMap(new ValueMap()
-                        .withString(":recruiter", recruiter)
-                        .withString(":referenceCode", referenceCode)
-                );
+        GetItemRequest getItemRequest = new GetItemRequest().withTableName(DynamoTables.CAREER_SYNC_JOB_DESCRIPTIONS.getName())
+                .addKeyEntry("recruiter", new AttributeValue().withS(recruiter))
+                .addKeyEntry("referenceCode", new AttributeValue().withS(referenceCode));
 
-        ItemCollection<QueryOutcome> items = jobDescriptionsTable.query(spec);
-
-        Iterator<Item> iterator = items.iterator();
-        List<JobDescription> jobDescriptions = new ArrayList<JobDescription>();
-        Item item;
-        while (iterator.hasNext()) {
-            item = iterator.next();
-            jobDescriptions.add(new JobDescription(item));
-            System.out.println(item.toJSONPretty());
-        }
-        return jobDescriptions.get(0);
+        return new JobDescription(AmazonDynamoDbClientWrapper.getInstance().getItem(getItemRequest).getItem());
     }
 
     public UserAccountDetails getUserAccountDetails(String username) {

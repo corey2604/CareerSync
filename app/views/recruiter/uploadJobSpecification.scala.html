@@ -24,12 +24,19 @@
                 <input type="text" class="form-control" name="companyOrOrganisation" required>
             </div>
             <div class="form-group">
-                <label for="hours"><strong>Hours:</strong></label>
-                <input type="text" class="form-control" name="hours" required>
+                <label for="duration"><strong>Duration:</strong></label>
+                <select class="form-control" id="duration" name="duration">
+                    <option value="Permanent">Permanent</option>
+                    <option value="Temporary">Temporary</option>
+                </select>
             </div>
             <div class="form-group">
-                <label for="salary"><strong>Salary:</strong></label>
-                <input type="text" class="form-control" name="salary" required>
+                <label for="hours"><strong>Hours per Week:</strong></label>
+                <input type="number" class="form-control" name="hours" step=".01" required>
+            </div>
+            <div class="form-group">
+                <label for="salary"><strong>Annual Salary (£):</strong></label>
+                <input type="number" class="form-control" name="salary" step=".01" placeholder="£"required>
             </div>
             <div class="form-group">
                 <label for="mainPurposeOfJob"><strong>Main Purpose of Job:</strong></label>
@@ -45,14 +52,6 @@
                 <input type="text" class="form-control" name="department">
             </div>
             <div class="form-group">
-                <label for="section"><strong>Section:</strong></label>
-                <input type="text" class="form-control" name="section">
-            </div>
-            <div class="form-group">
-                <label for="grade"><strong>Grade:</strong></label>
-                <input type="text" class="form-control" name="grade">
-            </div>
-            <div class="form-group">
                 <label for="reportsTo"><strong>Reports To:</strong></label>
                 <input type="text" class="form-control" name="reportsTo">
             </div>
@@ -61,12 +60,17 @@
                 <input type="text" class="form-control" name="responsibleTo">
             </div>
             <div class="form-group">
-                <label for="duration"><strong>Duration:</strong></label>
-                <input type="text" class="form-control" name="duration">
+                <label for="general"><strong>General Information:</strong></label>
+                <textarea class="form-control" name="general" rows="10"></textarea>
+            </div>
+            <h4>Public Sector Information</h4>
+            <div class="form-group">
+                <label for="section"><strong>Section:</strong></label>
+                <input type="text" class="form-control" name="section">
             </div>
             <div class="form-group">
-                <label for="general"><strong>General:</strong></label>
-                <textarea class="form-control" name="general" rows="10"></textarea>
+                <label for="grade"><strong>Grade:</strong></label>
+                <input type="text" class="form-control" name="grade">
             </div>
             <div class="row text-center pt-5">
                 <h2 class="display-6">Employee Specification:</h2>

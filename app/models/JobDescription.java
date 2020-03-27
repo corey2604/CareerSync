@@ -72,16 +72,16 @@ public class JobDescription {
         this.duration = Optional.ofNullable(item.get("duration").getS());
         this.location = item.get("location").getS();
         this.companyOrOrganisation = item.get("companyOrOrganisation").getS();
-        this.department = Optional.ofNullable(item.get("department").getS());
-        this.section = Optional.ofNullable(item.get("section").getS());
-        this.grade = Optional.ofNullable(item.get("grade").getS());
-        this.reportsTo = Optional.ofNullable(item.get("reportsTo").getS());
-        this.responsibleTo = Optional.ofNullable(item.get("responsibleTo").getS());
+        this.department = setOptionalValueFromAttribute(item.get("department"));
+        this.section =setOptionalValueFromAttribute(item.get("section"));
+        this.grade = setOptionalValueFromAttribute(item.get("grade"));
+        this.reportsTo = setOptionalValueFromAttribute(item.get("reportsTo"));
+        this.responsibleTo = setOptionalValueFromAttribute(item.get("responsibleTo"));
         this.hours = item.get("hours").getS();
         this.salary = item.get("salary").getS();
         this.mainPurposeOfJob = item.get("mainPurposeOfJob").getS();
         this.mainResponsibilities = item.get("mainResponsibilities").getS();
-        this.general = Optional.ofNullable(item.get("general").getS());
+        this.general = setOptionalValueFromAttribute(item.get("general"));
         this.qualificationLevel = item.get("qualificationLevel").getS();
         this.qualificationArea = item.get("qualificationArea").getS();
         this.communicationSkills = getListOfStringsFromItem(item, "communicationSkills");
@@ -94,6 +94,10 @@ public class JobDescription {
 
     private Optional<String> getNullSafeValue(Item item, String field) {
         return (item.get(field) != null) ? Optional.ofNullable(item.get(field).toString()) : Optional.empty();
+    }
+
+    private Optional<String> setOptionalValueFromAttribute(AttributeValue attributeValue) {
+        return (Optional.ofNullable(attributeValue).isPresent()) ? Optional.ofNullable(attributeValue.getS()) : Optional.empty();
     }
 
     private Optional<String> setOptionalValue(String field) {
