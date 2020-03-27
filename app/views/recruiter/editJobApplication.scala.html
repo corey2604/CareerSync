@@ -14,10 +14,17 @@
                 <label for="jobTitle"><strong>Job Title:</strong></label>
                 <input type="text" class="form-control" name="jobTitle" value="@jobDescription.getJobTitle">
             </div>
-            <div class="form-group">
-                <label for="duration"><strong>Duration:</strong></label>
-                <input type="text" class="form-control" name="duration" value="@jobDescription.getDuration">
-            </div>
+            @if(jobDescription.getDuration.isPresent) {
+                <div class="form-group">
+                    <label for="duration"><strong>Duration:</strong></label>
+                    <input type="text" class="form-control" name="duration" value="@jobDescription.getDuration.get()">
+                </div>
+            } else {
+                <div class="form-group">
+                    <label for="duration"><strong>Duration:</strong></label>
+                    <input type="text" class="form-control" name="duration">
+                </div>
+            }
             <div class="form-group">
                 <label for="location"><strong>Location:</strong></label>
                 <input type="text" class="form-control" name="location" value="@jobDescription.getLocation">
@@ -26,26 +33,61 @@
                 <label for="companyOrOrganisation"><strong>Company/Organisation:</strong></label>
                 <input type="text" class="form-control" name="companyOrOrganisation" value="@jobDescription.getCompanyOrOrganisation">
             </div>
-            <div class="form-group">
-                <label for="department"><strong>Department:</strong></label>
-                <input type="text" class="form-control" name="department" value="@jobDescription.getDepartment">
-            </div>
-            <div class="form-group">
-                <label for="section"><strong>Section:</strong></label>
-                <input type="text" class="form-control" name="section" value="@jobDescription.getSection">
-            </div>
-            <div class="form-group">
-                <label for="grade"><strong>Grade:</strong></label>
-                <input type="text" class="form-control" name="grade" value="@jobDescription.getGrade">
-            </div>
-            <div class="form-group">
-                <label for="reportsTo"><strong>Reports To:</strong></label>
-                <input type="text" class="form-control" name="reportsTo" value="@jobDescription.getReportsTo">
-            </div>
-            <div class="form-group">
-                <label for="responsibleTo"><strong>Responsible To:</strong></label>
-                <input type="text" class="form-control" name="responsibleTo" value="@jobDescription.getResponsibleTo">
-            </div>
+            @if(jobDescription.getDepartment.isPresent) {
+                <div class="form-group">
+                    <label for="department"><strong>Department:</strong></label>
+                    <input type="text" class="form-control" name="department" value="@jobDescription.getDepartment.get()">
+                </div>
+            } else {
+                <div class="form-group">
+                    <label for="department"><strong>Department:</strong></label>
+                    <input type="text" class="form-control" name="department">
+                </div>
+            }
+            @if(jobDescription.getSection.isPresent) {
+                <div class="form-group">
+                    <label for="section"><strong>Section:</strong></label>
+                    <input type="text" class="form-control" name="section" value="@jobDescription.getSection.get()">
+                </div>
+            } else {
+                <div class="form-group">
+                    <label for="section"><strong>Section:</strong></label>
+                    <input type="text" class="form-control" name="section">
+                </div>
+            }
+            @if(jobDescription.getGrade.isPresent) {
+                <div class="form-group">
+                    <label for="grade"><strong>Grade:</strong></label>
+                    <input type="text" class="form-control" name="grade" value="@jobDescription.getGrade.get()">
+                </div>
+            } else {
+                <div class="form-group">
+                    <label for="grade"><strong>Grade:</strong></label>
+                    <input type="text" class="form-control" name="grade">
+                </div>
+            }
+            @if(jobDescription.getReportsTo.isPresent) {
+                <div class="form-group">
+                    <label for="reportsTo"><strong>Reports To:</strong></label>
+                    <input type="text" class="form-control" name="reportsTo" value="@jobDescription.getReportsTo.get()">
+                </div>
+            } else {
+                <div class="form-group">
+                    <label for="reportsTo"><strong>Reports To:</strong></label>
+                    <input type="text" class="form-control" name="reportsTo">
+                </div>
+            }
+            @if(jobDescription.getResponsibleTo.isPresent) {
+                <div class="form-group">
+                    <label for="responsibleTo"><strong>Responsible To:</strong></label>
+                    <input type="text" class="form-control" name="responsibleTo" value="@jobDescription.getResponsibleTo.get()">
+                </div>
+            } else {
+                <div class="form-group">
+                    <label for="responsibleTo"><strong>Responsible To:</strong></label>
+                    <input type="text" class="form-control" name="responsibleTo">
+                </div>
+            }
             <div class="form-group">
                 <label for="hours"><strong>Hours:</strong></label>
                 <input type="text" class="form-control" name="hours" value="@jobDescription.getHours">
@@ -62,10 +104,17 @@
                 <label for="mainResponsibilities"><strong>Main Responsibilities:</strong></label>
                 <textarea class="form-control" name="mainResponsibilities" rows="10">@jobDescription.getMainResponsibilities</textarea>
             </div>
-            <div class="form-group">
-                <label for="general"><strong>General:</strong></label>
-                <textarea class="form-control" name="general" rows="10">@jobDescription.getGeneral</textarea>
-            </div>
+            @if(jobDescription.getGeneral.isPresent) {
+                <div class="form-group">
+                    <label for="general"><strong>General:</strong></label>
+                    <textarea class="form-control" name="general" rows="10">@jobDescription.getGeneral.get</textarea>
+                </div>
+            } else {
+                <div class="form-group">
+                    <label for="general"><strong>General:</strong></label>
+                    <textarea class="form-control" name="general" rows="10"></textarea>
+                </div>
+            }
             @populatedKsaFormPage
         }
     </div>

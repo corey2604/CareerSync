@@ -18,13 +18,11 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import utilities.DynamoAccessor;
-import utilities.DynamoTables;
+import Enums.DynamoTables;
 import utilities.KsaMatcher;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class JobApplicationController extends Controller {
@@ -112,31 +110,63 @@ public class JobApplicationController extends Controller {
     }
 
     private void putJobDescriptionInTable(JobDescription jobDescription) {
+        Optional<List<String>> communicaticationSkills = Optional.ofNullable(jobDescription.getCommunicationSkills());
+        Optional<List<String>> peopleSkills = Optional.ofNullable(jobDescription.getPeopleSkills());
+        Optional<List<String>> financialKnowledgeAndSkills = Optional.ofNullable(jobDescription.getFinancialKnowledgeAndSkills());
+        Optional<List<String>> thinkingAndAnalysis = Optional.ofNullable(jobDescription.getThinkingAndAnalysis());
+        Optional<List<String>> creativeOrInnovative = Optional.ofNullable(jobDescription.getCreativeOrInnovative());
+        Optional<List<String>> administrativeOrOrganisational = Optional.ofNullable(jobDescription.getAdministrativeOrOrganisational());
         Item jobDescriptionItem = new Item()
                 .withPrimaryKey("referenceCode", jobDescription.getReferenceCode())
                 .with("recruiter", jobDescription.getRecruiter())
                 .with("jobTitle", jobDescription.getJobTitle())
-                .with("duration", jobDescription.getDuration())
                 .with("location", jobDescription.getLocation())
                 .with("companyOrOrganisation", jobDescription.getCompanyOrOrganisation())
-                .with("department", jobDescription.getDepartment())
-                .with("section", jobDescription.getSection())
-                .with("grade", jobDescription.getGrade())
-                .with("reportsTo", jobDescription.getReportsTo())
-                .with("responsibleTo", jobDescription.getResponsibleTo())
                 .with("hours", jobDescription.getHours())
                 .with("salary", jobDescription.getSalary())
                 .with("mainPurposeOfJob", jobDescription.getMainPurposeOfJob())
                 .with("mainResponsibilities", jobDescription.getMainResponsibilities())
-                .with("general", jobDescription.getGeneral())
                 .with("qualificationLevel", jobDescription.getQualificationLevel())
                 .with("qualificationArea", jobDescription.getQualificationArea())
-                .withList("communicationSkills", jobDescription.getCommunicationSkills().stream().filter(item -> item != null).collect(Collectors.toList()))
-                .withList("peopleSkills", jobDescription.getPeopleSkills().stream().filter(item -> item != null).collect(Collectors.toList()))
-                .withList("financialKnowledgeAndSkills", jobDescription.getFinancialKnowledgeAndSkills().stream().filter(item -> item != null).collect(Collectors.toList()))
-                .withList("thinkingAndAnalysis", jobDescription.getThinkingAndAnalysis().stream().filter(item -> item != null).collect(Collectors.toList()))
-                .withList("creativeOrInnovative", jobDescription.getCreativeOrInnovative().stream().filter(item -> item != null).collect(Collectors.toList()))
-                .withList("administrativeOrOrganisational", jobDescription.getAdministrativeOrOrganisational().stream().filter(item -> item != null).collect(Collectors.toList()));
+                .withList("communicationSkills", convertSkillsToList(communicaticationSkills))
+                .withList("peopleSkills", convertSkillsToList(peopleSkills))
+                .withList("financialKnowledgeAndSkills", convertSkillsToList(financialKnowledgeAndSkills))
+                .withList("thinkingAndAnalysis", convertSkillsToList(thinkingAndAnalysis))
+                .withList("creativeOrInnovative", convertSkillsToList(creativeOrInnovative))
+                .withList("administrativeOrOrganisational", convertSkillsToList(administrativeOrOrganisational));
+
+        if (jobDescription.getDuration().isPresent()) {
+            jobDescriptionItem.with("duration", jobDescription.getDuration().get());
+        }
+
+        if (jobDescription.getDepartment().isPresent()) {
+            jobDescriptionItem.with("department", jobDescription.getDepartment().get());
+        }
+
+        if (jobDescription.getSection().isPresent()) {
+            jobDescriptionItem.with("section", jobDescription.getSection().get());
+        }
+
+        if (jobDescription.getGrade().isPresent()) {
+            jobDescriptionItem.with("grade", jobDescription.getGrade().get());
+        }
+
+        if (jobDescription.getReportsTo().isPresent()) {
+            jobDescriptionItem.with("reportsTo", jobDescription.getReportsTo().get());
+        }
+
+        if (jobDescription.getResponsibleTo().isPresent()) {
+            jobDescriptionItem.with("responsibleTo", jobDescription.getResponsibleTo().get());
+        }
+
+        if (jobDescription.getGeneral().isPresent()) {
+            jobDescriptionItem.with("general", jobDescription.getGeneral().get());
+        }
+
         DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_JOB_DESCRIPTIONS.getName()).putItem(jobDescriptionItem);
+    }
+
+    private List<String> convertSkillsToList(Optional<List<String>> skills) {
+        return (skills.isPresent()) ? skills.get().stream().filter(item -> item != null).collect(Collectors.toList()) : Collections.EMPTY_LIST;
     }
 }

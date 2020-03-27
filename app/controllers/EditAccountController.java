@@ -1,29 +1,28 @@
 package controllers;
 
+import Enums.CareerSyncSuccessMessage;
 import awsWrappers.AmazonDynamoDbClientWrapper;
 import awsWrappers.AwsCognitoIdentityProviderWrapper;
-import awsWrappers.ClasspathPropertiesFileCredentialsProviderWrapper;
-import awsWrappers.DynamoDbTableProvider;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.model.AdminSetUserPasswordRequest;
-import com.amazonaws.services.cognitoidp.model.ChangePasswordRequest;
-import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.AttributeValueUpdate;
 import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest;
-import com.google.common.annotations.VisibleForTesting;
 import models.UserAccountDetails;
 import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import Enums.CareerSyncErrorMessages;
 import utilities.DynamoAccessor;
-import utilities.DynamoTables;
+import Enums.DynamoTables;
+import utilities.ValidationHelper;
 
 import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class EditAccountController extends Controller {
     private FormFactory formFactory;
@@ -34,22 +33,29 @@ public class EditAccountController extends Controller {
     }
 
     public Result editAccount(Http.Request request) {
-        return ok(views.html.editAccount.render(DynamoAccessor.getInstance().getUserAccountDetails(request.cookie("username").value())));
+        return ok(views.html.editAccount.render(DynamoAccessor.getInstance().getUserAccountDetails(request.cookie("username").value()),  Optional.empty(), Optional.empty()));
     }
 
     public Result updateUserAccountDetails() {
         UserAccountDetails userAccountDetails = formFactory.form(UserAccountDetails.class).bindFromRequest().get();
-        AWSCognitoIdentityProvider cognitoClient = AwsCognitoIdentityProviderWrapper.getInstance();
-        AdminSetUserPasswordRequest setUserPasswordRequest = new AdminSetUserPasswordRequest()
-                .withPassword(userAccountDetails.getPassword())
-                .withUsername(userAccountDetails.getUsername())
-                .withPermanent(true)
-                .withUserPoolId("eu-west-1_FehhvQScE");
+        boolean passwordIsEmpty = userAccountDetails.getPassword().isEmpty();
+        if (!passwordIsEmpty && !ValidationHelper.getInstance().passwordIsValid(userAccountDetails.getPassword())) {
+            return badRequest(views.html.editAccount.render(userAccountDetails,
+                    Optional.of(CareerSyncErrorMessages.PASSWORD_DOES_NOT_CONFORM),
+                    Optional.empty()));
+        } else if (!passwordIsEmpty) {
+            AWSCognitoIdentityProvider cognitoClient = AwsCognitoIdentityProviderWrapper.getInstance();
+            AdminSetUserPasswordRequest setUserPasswordRequest = new AdminSetUserPasswordRequest()
+                    .withPassword(userAccountDetails.getPassword())
+                    .withUsername(userAccountDetails.getUsername())
+                    .withPermanent(true)
+                    .withUserPoolId("eu-west-1_FehhvQScE");
 
-        cognitoClient.adminSetUserPassword(setUserPasswordRequest);
+            cognitoClient.adminSetUserPassword(setUserPasswordRequest);
+        }
 
         UpdateItemRequest updateRequest = new UpdateItemRequest();
-        updateRequest.setTableName("CareerSync-Users");
+        updateRequest.setTableName(DynamoTables.CAREER_SYNC_USERS.getName());
 
         Map<String, AttributeValue> keysMap = new HashMap<String, AttributeValue>();
         keysMap.put("username", new AttributeValue(userAccountDetails.getUsername()));
@@ -68,6 +74,6 @@ public class EditAccountController extends Controller {
         } catch (AmazonServiceException e) {
             System.out.println(e.getErrorMessage());
         }
-        return redirect(routes.EditAccountController.editAccount());
+        return ok(views.html.editAccount.render(userAccountDetails,  Optional.empty(), Optional.of(CareerSyncSuccessMessage.DETAILS_UPDATED)));
     }
 }

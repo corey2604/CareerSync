@@ -1,14 +1,8 @@
 package utilities;
 
+import Enums.DynamoTables;
 import awsWrappers.AmazonDynamoDbClientWrapper;
-import awsWrappers.DynamoDbTableProvider;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.ItemCollection;
-import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
-import com.amazonaws.services.dynamodbv2.document.Table;
-import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
-import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
@@ -16,7 +10,10 @@ import models.JobDescription;
 import models.UserAccountDetails;
 import models.UserKsas;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class KsaMatcher {
     private static KsaMatcher ksaMatcher = null;
@@ -103,7 +100,7 @@ public class KsaMatcher {
             UserKsas userKsas = new UserKsas(item);
             List<String> allUserKsas = userKsas.getAllKsas();
             long ksaCount = allUserKsas.stream().filter(ksa -> allJobDescriptionRelatedKsas.contains(ksa)).count();
-            double percentMatch = (ksaCount <= allJobDescriptionRelatedKsas.size()) ? (ksaCount * 100) / allJobDescriptionRelatedKsas.size() : 100;;
+            double percentMatch = (ksaCount <= allJobDescriptionRelatedKsas.size()) ? (ksaCount * 100) / allJobDescriptionRelatedKsas.size() : 100;
             System.out.println("Percentage Match: " + percentMatch);
 
             if (percentMatch > PERCENTAGE_THRESHOLD) {

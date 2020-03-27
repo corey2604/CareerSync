@@ -9,7 +9,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import utilities.DynamoAccessor;
-import utilities.DynamoTables;
+import Enums.DynamoTables;
 
 import javax.inject.Inject;
 import java.util.stream.Collectors;

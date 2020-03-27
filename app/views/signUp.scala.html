@@ -1,4 +1,5 @@
-@()
+@import Enums.CareerSyncErrorMessages
+@(errors: List[CareerSyncErrorMessages], signUpDetails: Optional[UserSignUpRequest])
 
 @main("Register", false) {
     <div class="sidenav">
@@ -9,33 +10,85 @@
     </div>
     <div class="main">
         <div class="col-md-6 col-sm-12">
-            <div class="login-form">
+            <div class="register-form">
             @helper.form(action = routes.RegisterController.registerSubmit()) {
+                @if(errors.contains(CareerSyncErrorMessages.GENERAL_SUBMISSION_ERROR)) {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @CareerSyncErrorMessages.GENERAL_SUBMISSION_ERROR.getErrorMessage
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                }
                 <div class="form-group">
                     <label for="username">Username:</label>
-                    <input type="text" name="username" />
+                    @if(signUpDetails.isPresent) {
+                        <input class="form-control" type="text" name="username" value="@signUpDetails.get.getUsername"required>
+                    } else {
+                        <input class="form-control" type="text" name="username" required/>
+                    }
                 </div>
+                @if(errors.contains(CareerSyncErrorMessages.USERNAME_TAKEN)) {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @CareerSyncErrorMessages.USERNAME_TAKEN.getErrorMessage
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                }
                 <div class="form-group">
                     <label for="email">Email:</label>
-                    <input type="email" name="email" />
+                    @if(signUpDetails.isPresent) {
+                        <input type="email" class="form-control" name="email" value="@signUpDetails.get.getEmail" required/>
+                    } else {
+                         <input type="email" class="form-control" name="email" required/>
+                    }
                 </div>
                 <div class="form-group">
                     <label for="password">Password:</label>
-                    <input type="password" name="password" />
-                    <small id="passwordHelp" class="form-text text-muted">Your password must be at least 8 characters long, contain a number and a special character.</small>
+                    <input type="password" class="form-control" name="password" required/>
+                    <small id="passwordHelp" class="form-text text-muted">Your password must be at least 6 characters long, contain a number and a special character.</small>
                 </div>
+                @if(errors.contains(CareerSyncErrorMessages.PASSWORD_DOES_NOT_CONFORM)) {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @CareerSyncErrorMessages.PASSWORD_DOES_NOT_CONFORM.getErrorMessage
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                }
                 <div class="form-group">
                     <label for="firstName">First Name:</label>
-                    <input type="text" name="firstName">
+                    @if(signUpDetails.isPresent) {
+                        <input type="text" class="form-control" name="firstName" value="@signUpDetails.get.getFirstName"required>
+                    } else {
+                        <input type="text" class="form-control" name="firstName" required>
+                    }
                 </div>
                 <div class="form-group">
                     <label for="lastName">Last Name:</label>
-                    <input type="text" name="lastName">
+                    @if(signUpDetails.isPresent) {
+                        <input type="text" class="form-control" name="lastName" value="@signUpDetails.get.getLastName"required>
+                    } else {
+                        <input type="text" class="form-control" name="lastName" required>
+                    }
                 </div>
                 <div class="form-group">
                     <label for="PhoneNumber">Phone Number:</label>
-                    <input type="text" name="phoneNumber">
+                    @if(signUpDetails.isPresent) {
+                        <input type="text" class="form-control" name="phoneNumber" value="@signUpDetails.get.getPhoneNumber"required>
+                    } else {
+                        <input type="text" class="form-control" name="phoneNumber" required>
+                    }
                 </div>
+                @if(errors.contains(CareerSyncErrorMessages.INVALID_PHONE_NUMBER)) {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @CareerSyncErrorMessages.INVALID_PHONE_NUMBER.getErrorMessage
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                }
                 <div class="form-group">
                     <label for="userType">Type of user:</label>
                     <select class="form-control" name="userType">
@@ -49,6 +102,7 @@
                 <div class="d-flex">
                     Already have have an account? <a href="@routes.LogInController.logIn()" class="ml-2">Log In</a>
                 </div>
+                <br/>
             </div>
         </div>
     </div>

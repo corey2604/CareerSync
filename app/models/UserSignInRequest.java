@@ -1,7 +1,11 @@
 package models;
 
+import play.data.validation.Constraints;
+
 public class UserSignInRequest {
+    @Constraints.Required
     private String username;
+    @Constraints.Required
     private String password;
 
     public UserSignInRequest(){}
