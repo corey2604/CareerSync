@@ -1,90 +1,99 @@
 @(userKsas: UserKsas)
-<h1>Qualifications</h1>
-<div class="form-group">
-    <label for="qualificationLevel">Please select your highest level of qualification: </label>
-    <select id="qualificationLevel" name="qualificationLevel">
-        @for(qualificationLevel <- QualificationLevels.getQualificationLevels) {
-            <option value="@qualificationLevel" @if(userKsas.getQualificationLevel.equals(qualificationLevel)){selected}>@qualificationLevel</option>
+<section>
+    <div class="container">
+        <div class="section-title text-center">
+            <h1>Qualifications</h1>
+        </div>
+        <div class="form-group">
+            <label for="qualificationLevel">Please select your highest level of qualification: </label>
+            <select id="qualificationLevel" name="qualificationLevel">
+                @for(qualificationLevel <- QualificationLevels.getQualificationLevels) {
+                    <option value="@qualificationLevel" @if(userKsas.getQualificationLevel.equals(qualificationLevel)){selected}>@qualificationLevel</option>
+                }
+            </select>
+        </div>
+        <div>
+            <label for="qualificationArea">Please indicate in what area(s) below:</label>
+            <textarea class="form-control" name="qualificationArea" rows="10">@userKsas.getQualificationArea</textarea>
+        </div>
+    </div>
+</section>
+<section class="light-bg">
+    <div class="container">
+        <div class="section-title text-center">
+            <h1>Skills and Abilities</h1>
+        </div>
+        <h2>Communication Skills</h2>
+        <div class="form-group">
+        @for((communicationSkill, index) <- KsaValues.getCommunicationSkills.zipWithIndex) {
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="@communicationSkill" @if(userKsas.getCommunicationSkills.contains(communicationSkill)) {checked} name="communicationSkills[@index]">
+                <label class="form-check-label" for="@communicationSkill">
+                @communicationSkill
+                </label>
+            </div>
         }
-    </select>
-</div>
-<div>
-    <label for="qualificationArea">Please indicate in what area(s) below:</label>
-    <textarea class="form-control" name="qualificationArea" rows="10">@userKsas.getQualificationArea</textarea>
-</div>
-<br>
-<hr>
-<h1>Skills and Abilities</h1>
-<h2>Communication</h2>
-<div class="form-group">
-@for((communicationSkill, index) <- KsaValues.getCommunicationSkills.zipWithIndex) {
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="@communicationSkill" @if(userKsas.getCommunicationSkills.contains(communicationSkill)) {checked} name="communicationSkills[@index]">
-        <label class="form-check-label" for="@communicationSkill">
-        @communicationSkill
-        </label>
+        </div>
+        <hr>
+        <h2>People Skills</h2>
+        <div class="form-group">
+        @for((peopleSkill, index) <- KsaValues.getPeopleSkills.zipWithIndex) {
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="@peopleSkill" @if(userKsas.getPeopleSkills.contains(peopleSkill)) {checked} name="peopleSkills[@index]">
+                <label class="form-check-label" for="defaultCheck1">
+                @peopleSkill
+                </label>
+            </div>
+        }
+        </div>
+        <hr>
+        <h2>Financial Knowledge and Skills</h2>
+        <div class="form-group">
+        @for((financialKnowledge, index) <- KsaValues.getFinancialKnowledgeAndSkills.zipWithIndex) {
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="@financialKnowledge" @if(userKsas.getFinancialKnowledgeAndSkills.contains(financialKnowledge)) {checked} name="financialKnowledgeAndSkills[@index]">
+                <label class="form-check-label" for="defaultCheck1">
+                @financialKnowledge
+                </label>
+            </div>
+        }
+        </div>
+        <hr>
+        <h2>Thinking and Analytical Skills</h2>
+        <div class="form-group">
+        @for((analyticalSkill, index) <- KsaValues.getThinkingAndAnalysis.zipWithIndex) {
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="@analyticalSkill" @if(userKsas.getThinkingAndAnalysis.contains(analyticalSkill)) {checked} name="thinkingAndAnalysis[@index]">
+                <label class="form-check-label" for="defaultCheck1">
+                @analyticalSkill
+                </label>
+            </div>
+        }
+        </div>
+        <hr>
+        <h2>Creative/Innovative Skills</h2>
+        <div class="form-group">
+        @for((creativeSkill, index) <- KsaValues.getCreativeOrInnovative.zipWithIndex) {
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="@creativeSkill" @if(userKsas.getCreativeOrInnovative.contains(creativeSkill)) {checked} name="creativeOrInnovative[@index]">
+                <label class="form-check-label" for="defaultCheck1">
+                @creativeSkill
+                </label>
+            </div>
+        }
+        </div>
+        <hr>
+        <h2>Administrative/Organisational Skills</h2>
+        <div class="form-group">
+        @for((administrativeSkill, index) <- KsaValues.getAdministrativeOrOrganisational.zipWithIndex) {
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="@administrativeSkill" @if(userKsas.getAdministrativeOrOrganisational.contains(administrativeSkill)) {checked} name="administrativeOrOrganisational[@index]">
+                <label class="form-check-label" for="defaultCheck1">
+                @administrativeSkill
+                </label>
+            </div>
+        }
+        </div>
+        <button type="submit" class="btn btn-purple btn-lg btn-block active">Submit</button>
     </div>
-}
-</div>
-<hr>
-<h2>People Skills</h2>
-<div class="form-group">
-@for((peopleSkill, index) <- KsaValues.getPeopleSkills.zipWithIndex) {
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="@peopleSkill" @if(userKsas.getPeopleSkills.contains(peopleSkill)) {checked} name="peopleSkills[@index]">
-        @userKsas.getPeopleSkills.contains(peopleSkill)
-        <label class="form-check-label" for="defaultCheck1">
-        @peopleSkill
-        </label>
-    </div>
-}
-</div>
-<hr>
-<h2>Financial Knowledge and Skills</h2>
-<div class="form-group">
-@for((financialKnowledge, index) <- KsaValues.getFinancialKnowledgeAndSkills.zipWithIndex) {
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="@financialKnowledge" @if(userKsas.getFinancialKnowledgeAndSkills.contains(financialKnowledge)) {checked} name="financialKnowledgeAndSkills[@index]">
-        <label class="form-check-label" for="defaultCheck1">
-        @financialKnowledge
-        </label>
-    </div>
-}
-</div>
-<hr>
-<h2>Thinking and Analysis</h2>
-<div class="form-group">
-@for((analyticalSkill, index) <- KsaValues.getThinkingAndAnalysis.zipWithIndex) {
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="@analyticalSkill" @if(userKsas.getThinkingAndAnalysis.contains(analyticalSkill)) {checked} name="thinkingAndAnalysis[@index]">
-        <label class="form-check-label" for="defaultCheck1">
-        @analyticalSkill
-        </label>
-    </div>
-}
-</div>
-<hr>
-<h2>Creative/Innovative</h2>
-<div class="form-group">
-@for((creativeSkill, index) <- KsaValues.getCreativeOrInnovative.zipWithIndex) {
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="@creativeSkill" @if(userKsas.getCreativeOrInnovative.contains(creativeSkill)) {checked} name="creativeOrInnovative[@index]">
-        <label class="form-check-label" for="defaultCheck1">
-        @creativeSkill
-        </label>
-    </div>
-}
-</div>
-<hr>
-<h2>Administrative/Organisational</h2>
-<div class="form-group">
-@for((administrativeSkill, index) <- KsaValues.getAdministrativeOrOrganisational.zipWithIndex) {
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="@administrativeSkill" @if(userKsas.getAdministrativeOrOrganisational.contains(administrativeSkill)) {checked} name="administrativeOrOrganisational[@index]">
-        <label class="form-check-label" for="defaultCheck1">
-        @administrativeSkill
-        </label>
-    </div>
-}
-</div>
-<button type="submit" class="btn btn-primary btn-lg btn-block active">Submit</button>
+</section>

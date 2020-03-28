@@ -1,8 +1,12 @@
 @(jobDescriptions:List[JobDescription])
 
 @main("Uploaded Job Specifications"){
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1 class="display-2 font-weight-normal">Your Job Recommendations</h1>
+        </div>
+    </section>
     <div class="container">
-        <h1 class="display-4 text-center pt-5">Your Job Recommendations</h1>
         <div class="row">
             @if(!jobDescriptions.isEmpty) {
                 <table class="table">
@@ -30,13 +34,16 @@
                     }
                     </tbody>
                 </table>
+            </div>
             } else {
-                <h3>
-                    There are no job descriptions listed which match your knowledge, skills and abilities.
-                    <br/>
-                    <small class="text-muted">Please check back later.</small>
-                </h3>
+                <section class="text-center">
+                    <div class="container">
+                        <h3>
+                            There are currently no job descriptions listed which match your knowledge, skills and abilities.
+                        </h3>
+                        <p class="text-muted">Please check back later.</p>
+                    </div>
+                </section>
             }
-        </div>
     </div>
 }

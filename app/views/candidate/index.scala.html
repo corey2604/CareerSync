@@ -1,25 +1,74 @@
 @(userHasUploadedCv:Boolean=false, userHasKsas:Boolean=false)
 
 @main("CareerSync") {
-    <div class="container">
-        <div class="jumbotron">
-            <h1 class="display-1 text-center">CareerSync</h1>
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1 class="display-2 font-weight-normal">CareerSync</h1>
+            <p class="">Welcome to CareerSync, an application that provides you with job recommendations tied to your personal knowledge, skills and abilities</p>
         </div>
-        @if(!userHasUploadedCv) {
-            <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.HomeController.uploadFile">
-                Upload CV</a>
-        } else {
-            <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.HomeController.viewCv">
-                View Uploaded CV</a>
-            <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.HomeController.uploadFile">
-                Upload New CV</a>
-        }
+    </section>
+            @if(!userHasUploadedCv) {
+                <section class="text-center">
+                    <div class="container">
+                        <div class="section-title">
+                <h2 class="display-4 font-weight-normal">CareerSync</h2>
+                <p class="lead text-muted">Welcome to CareerSync, an application that provides you with job recommendations tied to your personal knowledge, skills and abilities</p>
+                <a class="btn btn-purple btn-lg active" role="button" href="@routes.HomeController.uploadFile">
+                    Upload CV</a>
+                        </div>
+                    </div>
+                </section>
+            } else {
+                <section class="text-center">
+                    <div class="container">
+                        <div class="section-title">
+                            <h2 class="display-10 font-weight-normal">Download a copy of your CV</h2>
+                            <p class="text-muted">This is the CV that will be shown to recruiters.</p>
+                            <a class="btn btn-purple btn-lg active" role="button" href="@routes.HomeController.viewCv">
+                                View Uploaded CV</a>
+                        </div>
+                    </div>
+                </section>
+                <section class="text-center light-bg">
+                    <div class="container">
+                        <div class="section-title">
+                            <h2 class="display-10 font-weight-normal">Upload a new CV</h2>
+                            <p class="text-muted">Replace your existing CV. Please use the .docx format.</p>
+                            <a class="btn btn-purple btn-lg active" role="button" href="@routes.HomeController.uploadFile">
+                                Upload New CV</a>
+                        </div>
+                    </div>
+                </section>
+            }
         @if(!userHasKsas) {
-            <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.KsaFormController.loadForm()">Complete KSA Form</a>
+            <section class="text-center light-bg">
+                <div class="container">
+                    <div class="section-title">
+                        <h2 class="display-10 font-weight-normal">Complete your KSA Form</h2>
+                        <p class="text-muted">This is the CV that will be shown to recruiters.</p>
+                        <a class="btn btn-purple btn-lg active" role="button" href="@routes.KsaFormController.loadForm()">Complete KSA Form</a>
+                    </div>
+                </div>
+            </section>
         } else {
-            <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.KsaFormController.editKsas()">Edit your KSA's</a>
-            <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.KsaMatcherController.viewJobRecommendations()">View Job Recommendations</a>
+            <section class="text-center">
+                <div class="container">
+                    <div class="section-title">
+                        <h2 class="display-10 font-weight-normal">Review and edit your Knowledge, Skills and Abilities (KSA's)</h2>
+                        <p class="text-muted">Review and update your personal KSA's.</p>
+                        <a class="btn btn-purple btn-lg active" role="button" href="@routes.KsaFormController.editKsas()">Edit your KSA's</a>
+                    </div>
+                </div>
+            </section>
+            <section class="text-center light-bg">
+                <div class="container">
+                    <div class="section-title">
+                        <h2 class="display-10 font-weight-normal">View Job Recommendations</h2>
+                        <p class="text-muted">View job recommendations specifically tailored to you.</p>
+                        <a class="btn btn-purple btn-lg active" role="button" href="@routes.KsaMatcherController.viewJobRecommendations()">View Job Recommendations</a>
+                    </div>
+                </div>
+            </section>
         }
-    </div>
     <script type="text/javascript" src="@routes.Assets.versioned("javascripts/transformed.js")"></script>
 }

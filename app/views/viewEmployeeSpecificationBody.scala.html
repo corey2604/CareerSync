@@ -1,74 +1,78 @@
 @(jobDescription: JobDescription)
-<hr/>
-<h1 class="display-4 text-center">Employee Specification:</h1>
-    <div class="row">
-        <strong>Qualification Level:</strong>
-        <p name="referenceCode">@jobDescription.getQualificationLevel</p>
+<section class="light-bg">
+    <div class="container">
+        <div class="section-title text-center">
+            <h1 class="">Employee Specification:</h1>
+        </div>
+        <div class="row">
+            <strong>Qualification Level:</strong>
+            <p name="referenceCode">@jobDescription.getQualificationLevel</p>
+        </div>
+        <div class="row">
+            <strong>Qualification Area:</strong>
+            <p name="referenceCode">@jobDescription.getQualificationArea</p>
+        </div>
+        <div class="row">
+            <strong>Required Communication Skills:</strong>
+        </div>
+        <ul class="list-group list-group-flush">
+        @for(communicationSkill <- jobDescription.getCommunicationSkills) {
+            <li name="referenceCode">@communicationSkill</li>
+        }
+        </ul>
+        <br/>
+        <div class="row">
+            <strong>Required People Skills:</strong>
+        </div>
+        <ul class="list-group list-group-flush">
+        @for(peopleSkill <- jobDescription.getPeopleSkills) {
+            <li name="referenceCode">@peopleSkill</li>
+        }
+        </ul>
+        <br/>
+        <div class="row">
+            <strong>Required Financial Knowledge and Skills:</strong>
+        </div>
+        <ul class="list-group list-group-flush">
+        @for(financialKnowledge <- jobDescription.getFinancialKnowledgeAndSkills) {
+            <li name="referenceCode">@financialKnowledge</li>
+        }
+        </ul>
+        <br/>
+        <div class="row">
+            <strong>Required Communication Skills:</strong>
+        </div>
+        <ul class="list-group list-group-flush">
+        @for(communicationSkill <- jobDescription.getCommunicationSkills) {
+            <li name="referenceCode">@communicationSkill</li>
+        }
+        </ul>
+        <br/>
+        <div class="row">
+            <strong>Required Thinking and Analytical Skills:</strong>
+        </div>
+        <ul class="list-group list-group-flush">
+        @for(analyticalSkill <- jobDescription.getThinkingAndAnalysis) {
+            <li name="referenceCode">@analyticalSkill</li>
+        }
+        </ul>
+        <br/>
+        <div class="row">
+            <strong>Required Creative/Innovative Skills:</strong>
+        </div>
+        <ul class="list-group list-group-flush">
+        @for(creativeSkill <- jobDescription.getCreativeOrInnovative) {
+            <li name="referenceCode">@creativeSkill</li>
+        }
+        </ul>
+        <br/>
+        <div class="row">
+            <strong>Required Administrative/Organisation Skills:</strong>
+        </div>
+        <ul class="list-group list-group-flush">
+        @for(administrativeSkill <- jobDescription.getAdministrativeOrOrganisational) {
+            <li name="referenceCode">@administrativeSkill</li>
+        }
+        </ul>
     </div>
-    <div class="row">
-        <strong>Qualification Area:</strong>
-        <p name="referenceCode">@jobDescription.getQualificationArea</p>
-    </div>
-    <div class="row">
-        <strong>Required Communication Skills:</strong>
-    </div>
-    <ul class="list-group list-group-flush">
-    @for(communicationSkill <- jobDescription.getCommunicationSkills) {
-        <li name="referenceCode">@communicationSkill</li>
-    }
-    </ul>
-    <br/>
-    <div class="row">
-        <strong>Required People Skills:</strong>
-    </div>
-    <ul class="list-group list-group-flush">
-    @for(peopleSkill <- jobDescription.getPeopleSkills) {
-        <li name="referenceCode">@peopleSkill</li>
-    }
-    </ul>
-    <br/>
-    <div class="row">
-        <strong>Required Financial Knowledge and Skills:</strong>
-    </div>
-    <ul class="list-group list-group-flush">
-    @for(financialKnowledge <- jobDescription.getFinancialKnowledgeAndSkills) {
-        <li name="referenceCode">@financialKnowledge</li>
-    }
-    </ul>
-    <br/>
-    <div class="row">
-        <strong>Required Communication Skills:</strong>
-    </div>
-    <ul class="list-group list-group-flush">
-    @for(communicationSkill <- jobDescription.getCommunicationSkills) {
-        <li name="referenceCode">@communicationSkill</li>
-    }
-    </ul>
-    <br/>
-    <div class="row">
-        <strong>Required Thinking and Analytical Skills:</strong>
-    </div>
-    <ul class="list-group list-group-flush">
-    @for(analyticalSkill <- jobDescription.getThinkingAndAnalysis) {
-        <li name="referenceCode">@analyticalSkill</li>
-    }
-    </ul>
-    <br/>
-    <div class="row">
-        <strong>Required Creative/Innovative Skills:</strong>
-    </div>
-    <ul class="list-group list-group-flush">
-    @for(creativeSkill <- jobDescription.getCreativeOrInnovative) {
-        <li name="referenceCode">@creativeSkill</li>
-    }
-    </ul>
-    <br/>
-    <div class="row">
-        <strong>Required Administrative/Organisation Skills:</strong>
-    </div>
-    <ul class="list-group list-group-flush">
-    @for(administrativeSkill <- jobDescription.getAdministrativeOrOrganisational) {
-        <li name="referenceCode">@administrativeSkill</li>
-    }
-    </ul>
-<hr/>
+</section>

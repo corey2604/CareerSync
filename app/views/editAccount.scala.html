@@ -3,10 +3,12 @@
 @(userAccountDetails: UserAccountDetails, error: Optional[CareerSyncErrorMessages], success: Optional[CareerSyncSuccessMessage])
 
 @main("Edit Account") {
+        <section class="jumbotron text-center">
+            <div class="container">
+                <h2 class="display-4 font-weight-normal">Edit your details below</h2>
+            </div>
+        </section>
     <div class="container">
-        <div class="row text-center pt-5">
-            <h1 class="display-4">Edit your details below:</h1>
-        </div>
             @helper.form(action = routes.EditAccountController.updateUserAccountDetails()) {
             <div class="form-group row">
                 <label class="col-sm-1 col-form-label" for="username"><strong>Username:</strong></label>
@@ -42,7 +44,7 @@
                         </button>
                     </div>
                 }
-                <input type="submit" class="btn btn-primary btn-block" value="Update Details" />
+                <input type="submit" class="btn btn-purple btn-lg btn-block" value="Update Details" />
                 <br/>
                 @if(success.isPresent) {
                     <div class="alert alert-success alert-dismissible fade show" role="alert">

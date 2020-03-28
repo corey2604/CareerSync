@@ -1,12 +1,29 @@
 @()
 
 @main("CareerSync - Recruiter Page") {
-    <div class="container">
-        <div class="jumbotron">
-            <h1 class="display-1 text-center">CareerSync</h1>
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1 class="display-2 font-weight-normal">CareerSync</h1>
+            <p class="">Welcome to CareerSync, an application that allows you to find applicants with the specific knowledge, skills and abilities to match your rob requirements.</p>
         </div>
-        <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.JobApplicationController.uploadJobApplication">Add Job Specification</a>
-        <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.JobApplicationController.getUploadedJobSpecifications">View Uploaded Job Specifications</a>
-    </div>
+    </section>
+        <section class="text-center">
+            <div class="container">
+                <div class="section-title">
+                    <h2 class="display-4 font-weight-normal">Add Job Specification</h2>
+                    <p class="lead text-muted">Add a job specification that you would like to fill</p>
+                    <a class="btn btn-purple btn-lg active" role="button" href="@routes.JobApplicationController.uploadJobApplication">Add Job Specification</a>
+                </div>
+            </div>
+        </section>
+        <section class="text-center light-bg">
+            <div class="container">
+                <div class="section-title">
+                    <h2 class="display-4 font-weight-normal">View Uploaded Job Specifications</h2>
+                    <p class="lead text-muted">View the job specifications you've previously uploaded and find matching candidates</p>
+                    <a class="btn btn-purple btn-lg active" role="button" href="@routes.JobApplicationController.getUploadedJobSpecifications">View Uploaded Job Specifications</a>
+                </div>
+            </div>
+        </section>
     <script type="text/javascript" src="@routes.Assets.versioned("javascripts/transformed.js")"></script>
 }
