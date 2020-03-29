@@ -1,11 +1,19 @@
 @(jobDescription: JobDescription, populatedKsaFormPage: Html)
 
-@main("Edit Job Application") {
-    <div class="container">
-        <div class="row text-center pt-5">
-            <h1 class="display-4">Job Specification Details:</h1>
+@main("Edit Job Description") {
+    @(recruiterNavbar("Uploaded Job Descriptions"))
+    <div class="hero-image jobDescription-image">
+        <div class="hero-text">
+            <h1 class="display-2 font-weight-normal">Update Job Description Details:</h1>
+            <p class="">@jobDescription.getReferenceCode - @jobDescription.getJobTitle</p>
         </div>
-        @helper.form(action = routes.JobApplicationController.submitJobDescription()) {
+    </div>
+    <section>
+        <div class="container">
+            <div class="section-title text-center">
+                <h1 class="">Job Details:</h1>
+            </div>
+        @helper.form(action = routes.JobDescriptionController.submitJobDescription()) {
             <div class="form-group">
                 <label for="referenceCode"><strong>Reference Code:</strong></label>
                 <input type="text" class="form-control" name="referenceCode" value="@jobDescription.getReferenceCode">
@@ -115,7 +123,13 @@
                     <textarea class="form-control" name="general" rows="10"></textarea>
                 </div>
             }
+        </div>
+    </section>
+    <section class="light-bg">
+    <div class="section-title text-center">
+        <h1 class="">Employee Specification:</h1>
+    </div>
             @populatedKsaFormPage
         }
-    </div>
+    </section>
 }

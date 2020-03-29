@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 import static play.mvc.Http.Status.OK;
 
 @RunWith(MockitoJUnitRunner.class)
-public class JobApplicationControllerTest {
+public class JobDescriptionControllerTest {
 
     @Mock
     private FormFactory mockFormFactory;
@@ -62,7 +62,7 @@ public class JobApplicationControllerTest {
         Http.RequestImpl request = Helpers.fakeRequest().build();
 
         //when
-        Result result = new JobApplicationController(mockFormFactory).uploadJobApplication(request);
+        Result result = new JobDescriptionController(mockFormFactory).uploadJobApplication(request);
 
         //then
         assertEquals(OK, result.status());
@@ -78,7 +78,7 @@ public class JobApplicationControllerTest {
                 .build();
 
         //when
-        Result result = new JobApplicationController(mockFormFactory).getUploadedJobSpecifications(request);
+        Result result = new JobDescriptionController(mockFormFactory).getUploadedJobDescriptions(request);
 
         //then
         assertEquals(OK, result.status());
@@ -94,7 +94,7 @@ public class JobApplicationControllerTest {
                 .build();
 
         //when
-        Result result = new JobApplicationController(mockFormFactory).deleteJobDescription(request, "101");
+        Result result = new JobDescriptionController(mockFormFactory).deleteJobDescription(request, "101");
 
         //then
         assertEquals(OK, result.status());

@@ -1,21 +1,23 @@
 @import java.util
+@import views.html.recruiter.recruiterNavbar
 @(jobDescriptions:List[JobDescription])
 
-@main("Uploaded Job Specifications"){
-    <section class="jumbotron text-center">
-        <div class="container">
-            <h1 class="display-2 font-weight-normal">Your Job Specifications</h1>
+@main("Uploaded Job Descriptions"){
+    @(recruiterNavbar("Uploaded Job Descriptions"))
+    <div class="hero-image uploadedJobDescriptions-image">
+        <div class="hero-text">
+            <h1 class="display-2 font-weight-normal">Your Job Descriptions</h1>
         </div>
-    </section>
+    </div>
+    <br/>
     @if(!jobDescriptions.isEmpty) {
         <div class="container">
-            <div class="table-responsive">
-            <table class="table">
+            <table class="table" id="jobDescriptionTable">
                 <thead class="thead-dark">
                     <tr>
                         <th scope="col">Reference Number</th>
                         <th scope="col">Job Title</th>
-                        <th scope="col">Company/Organisation</th>
+                        <th scope="col">Organisation</th>
                         <th scope="col">Location</th>
                         <th scope="col"></th>
                         <th scope="col"></th>
@@ -31,30 +33,29 @@
                         <td>@jobDescription.getCompanyOrOrganisation</td>
                         <td>@jobDescription.getLocation</td>
                         <td>
-                            <a class="btn active btn-purple btn-block m-0" href="@routes.JobApplicationController.viewJobDescription(jobDescription.getRecruiter, jobDescription.getReferenceCode)">View Details</a>
+                            <a class="btn active btn-purple btn-block m-0" href="@routes.JobDescriptionController.viewJobDescription(jobDescription.getRecruiter, jobDescription.getReferenceCode)">View Details</a>
                         </td>
                         <td>
-                            <a class="btn active btn-purple btn-block m-0" href="@routes.JobApplicationController.editJobDescription(jobDescription.getRecruiter, jobDescription.getReferenceCode)">Edit</a>
+                            <a class="btn active btn-purple btn-block m-0" href="@routes.JobDescriptionController.editJobDescription(jobDescription.getRecruiter, jobDescription.getReferenceCode)">Edit</a>
                         </td>
                         <td>
-                            <a class="btn active btn-purple btn-block m-0" href="@routes.JobApplicationController.deleteJobDescription(jobDescription.getReferenceCode)">Delete</a>
+                            <a class="btn active btn-purple btn-block m-0" href="@routes.JobDescriptionController.deleteJobDescription(jobDescription.getReferenceCode)">Delete</a>
                         </td>
                         <td>
-                            <a class="btn active btn-purple btn-block m-0" href="@routes.JobApplicationController.getPotentialCandidates(jobDescription.getRecruiter, jobDescription.getReferenceCode)">View Potential Applicants</a>
+                            <a class="btn active btn-purple btn-block m-0" href="@routes.JobDescriptionController.getPotentialCandidates(jobDescription.getRecruiter, jobDescription.getReferenceCode)">View Candidates</a>
                         </td>
                     </tr>
                 }
                 </tbody>
             </table>
         </div>
-        </div>
     } else {
         <section class="text-center">
             <div class="container">
                 <h3>
-                    You have not uploaded any job specifications.
+                    You have not uploaded any Job Descriptions.
                 </h3>
-                <p class="text-muted">You can upload job specifications <a  href="@routes.JobApplicationController.uploadJobApplication">here.</a></p>
+                <p class="text-muted">You can upload Job Descriptions <a  href="@routes.JobDescriptionController.uploadJobApplication">here.</a></p>
             </div>
         </section>
     }

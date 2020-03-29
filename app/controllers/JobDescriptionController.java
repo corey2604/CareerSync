@@ -25,27 +25,29 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class JobApplicationController extends Controller {
+public class JobDescriptionController extends Controller {
 
     private FormFactory formFactory;
     private DynamoAccessor dynamoAccessor = DynamoAccessor.getInstance();
 
     @Inject
-    public JobApplicationController(FormFactory formFactory) {
+    public JobDescriptionController(FormFactory formFactory) {
         this.formFactory = formFactory;
     }
 
     public Result uploadJobApplication(Http.Request request) {
-        return ok(views.html.recruiter.uploadJobSpecification.render(views.html.ksaFormContent.render()));
+        return ok(views.html.recruiter.uploadJobDescription.render(views.html.ksaFormContent.render()));
     }
 
-    public Result viewJobDescription(String recruiter, String referenceCode) {
+    public Result viewJobDescription(Http.Request request, String recruiter, String referenceCode) {
         JobDescription jobDescription = dynamoAccessor.getJobDescription(recruiter, referenceCode);
-        return ok(views.html.recruiter.viewJobSpecification.render(views.html.viewJobSpecificationBody.render(jobDescription),
-                views.html.viewEmployeeSpecificationBody.render(jobDescription)));
+        return ok(views.html.recruiter.viewJobDescription.render(views.html.viewJobSpecificationBody.render(jobDescription),
+                views.html.viewEmployeeSpecificationBody.render(jobDescription),
+                request.cookie("userType").value(),
+                DynamoAccessor.getInstance().doesUserHaveKsas(request.cookie("username").value())));
     }
 
-    public Result getUploadedJobSpecifications(Http.Request request) {
+    public Result getUploadedJobDescriptions(Http.Request request) {
         Table jobDescriptionsTable = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_JOB_DESCRIPTIONS.getName());
 
         QuerySpec spec = new QuerySpec()
@@ -63,7 +65,7 @@ public class JobApplicationController extends Controller {
             jobDescriptions.add(new JobDescription(item));
             System.out.println(item.toJSONPretty());
         }
-        return ok(views.html.recruiter.uploadedJobSpecifications.render(jobDescriptions));
+        return ok(views.html.recruiter.uploadedJobDescriptions.render(jobDescriptions));
     }
 
     public Result submitJobDescription(Http.Request request) {
@@ -89,7 +91,7 @@ public class JobApplicationController extends Controller {
                         .withString(":val", referenceCode))
                 .withReturnValues(ReturnValue.ALL_OLD);
         jobDescriptionsTable.deleteItem(deleteItemSpec);
-        return getUploadedJobSpecifications(request);
+        return getUploadedJobDescriptions(request);
     }
 
     public Result getPotentialCandidates(String recruiter, String referenceCode) {
@@ -104,9 +106,10 @@ public class JobApplicationController extends Controller {
         return ok(views.html.candidateKsaProfile.render(fullName, userKsas));
     }
 
-    public Result viewUserDetails(String userName) {
-        UserAccountDetails userAccountDetails = DynamoAccessor.getInstance().getUserAccountDetails(userName);
-        return ok(views.html.candidate.userContactInformation.render(userAccountDetails));
+    public Result viewUserDetails(Http.Request request, String usernameToFindDetails) {
+        UserAccountDetails userAccountDetails = DynamoAccessor.getInstance().getUserAccountDetails(usernameToFindDetails);
+        Boolean userHasKsas = DynamoAccessor.getInstance().doesUserHaveKsas(request.cookie("username").value());
+        return ok(views.html.candidate.userContactInformation.render(userAccountDetails, request.cookie("userType").value(), userHasKsas));
     }
 
     private void putJobDescriptionInTable(JobDescription jobDescription) {

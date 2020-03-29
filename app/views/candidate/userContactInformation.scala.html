@@ -1,9 +1,21 @@
-@(userAccountDetails: UserAccountDetails)
+@import views.html.recruiter.recruiterNavbar
+@import views.html.candidate.candidateNavbar
+@(userAccountDetails: UserAccountDetails, userType: String, userHasKsas: Boolean)
 
 @main("Ksa Profile") {
-    <div class="container">
-        <h1 class="display-4 text-center pt-5">User Details</h1>
-        <hr/>
+    @if(userType.equals("recruiter")) {
+        @(recruiterNavbar(""))
+    } else {
+        @(candidateNavbar(userHasKsas, ""))
+    }
+    <div class="hero-image contact-image">
+        <div class="hero-text">
+            <h1 class="display-2 font-weight-normal">@userAccountDetails.getFirstName @userAccountDetails.getSurname</h1>
+            <p class="">Contact Information</p>
+        </div>
+    </div>
+            <br/>
+   <div class="container">
         <div class="row">
             <strong>Name:</strong>
             <p name="referenceCode">@userAccountDetails.getFirstName @userAccountDetails.getSurname</p>
@@ -16,8 +28,15 @@
             <strong>Contact Number:</strong>
             <p name="referenceCode">@userAccountDetails.getPhoneNumber</p>
         </div>
-        <div class="row">
-            <a class="btn active btn-primary btn-block" href="mailto:@userAccountDetails.getEmailAddress?subject=Job Enquiry">Send an email</a>
+        <div class="row text-center">
+            <a class="btn active btn-purple btn-lg btn-block" href="mailto:@userAccountDetails.getEmailAddress?subject=Job Enquiry">Send an email</a>
         </div>
+       <br/>
+       <div class="row text-center">
+           <a class="btn btn-purple btn-block btn-lg" role="button" href="#" onclick="history.go(-1)">
+               <i class="fa fa-arrow-left" aria-hidden="true"></i>
+               Return
+           </a>
+       </div>
     </div>
 }

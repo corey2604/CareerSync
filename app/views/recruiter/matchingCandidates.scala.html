@@ -1,20 +1,24 @@
+@import views.html.recruiter.recruiterNavbar
 @(referenceCode:String, jobTitle:String, matchingCandidates: List[UserAccountDetails])
 
 @main("Matching Candidates") {
-    <section class="jumbotron text-center">
-        <div class="container">
+    @(recruiterNavbar("Uploaded Job Descriptions"))
+    <div class="hero-image candidate-image">
+        <div class="hero-text">
             <h1 class="display-2 font-weight-normal">Matching Candidates</h1>
             <p class="">@referenceCode - @jobTitle</p>
         </div>
-    </section>
+    </div>
+    <br/>
     @if(!matchingCandidates.isEmpty) {
         <div class="container">
-            <table class="table">
+            <table class="table" id="matchingCandidatesTable">
                 <thead class="thead-dark">
                     <tr>
                         <th scope="col">Name</th>
-                        <th scope="col">Candidate Profile</th>
-                        <th scope="col">Contact Information</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -22,17 +26,25 @@
                     <tr>
                         <th>@candidate.getFirstName @candidate.getSurname</th>
                         <td>
-                            <a class="btn active btn-primary btn-sm m-0" href="@routes.JobApplicationController.getCandidateKsaProfile(candidate.getFirstName, candidate.getSurname, candidate.getUsername)">View Ksa Profile</a>
-                            <a class="btn active btn-primary btn-sm m-0" role="button" href="@routes.HomeController.viewCvForUser(candidate.getUsername, referenceCode)">
-                            Download Candidate CV</a>
+                            <a class="btn active btn-purple btn-sm m-0" href="@routes.JobDescriptionController.getCandidateKsaProfile(candidate.getFirstName, candidate.getSurname, candidate.getUsername)">View KSA Profile</a>
                         </td>
                         <td>
-                            <a class="btn active btn-primary btn-sm m-0" href="@routes.JobApplicationController.viewUserDetails(candidate.getUsername)">Contact Candidate</a>
+                            <a class="btn active btn-purple btn-sm m-0" role="button" href="@routes.HomeController.viewCvForUser(candidate.getUsername, referenceCode)">
+                                Download Candidate CV</a>
+                        </td>
+                        <td>
+                            <a class="btn active btn-purple btn-sm m-0" href="@routes.JobDescriptionController.viewUserDetails(candidate.getUsername)">Contact Candidate</a>
                         </td>
                     </tr>
                 }
                 </tbody>
             </table>
+            <div class="row text-center">
+                <a class="btn btn-purple btn-block btn-lg" role="button" href="#" onclick="history.go(-1)">
+                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                    Return
+                </a>
+            </div>
         </div>
     } else {
         <section class="text-center">
@@ -41,6 +53,12 @@
                     There are currently no candidates which match the requirements you've specified.
                 </h3>
                 <p class="text-muted">Please check back later.</p>
+                <div class="row text-center">
+                    <a class="btn btn-purple btn-block btn-lg" role="button" href="#" onclick="history.go(-1)">
+                        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                        Return
+                    </a>
+                </div>
             </div>
         </section>
     }

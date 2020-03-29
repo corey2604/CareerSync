@@ -1,19 +1,21 @@
+@import views.html.recruiter.recruiterNavbar
 @(ksaFormPage: Html)
 
-@main("Upload Job Application") {
-    <section class="jumbotron text-center">
-        <div class="container">
-            <h1 class="display-2 font-weight-normal">Job Specification Details</h1>
-            <p class="">A job specification is comprised of two components: job details and an employee specification.</p>
+@main("Upload Job Description") {
+    @(recruiterNavbar("Add Job Description"))
+    <div class="hero-image jobDescription-image">
+        <div class="hero-text">
+            <h1 class="display-2 font-weight-normal">Job Description Details</h1>
+            <p class="">A Job Description is comprised of two components, a job specification and an employee specification.</p>
         </div>
-    </section>
+    </div>
     <section class="">
         <div class="section-title text-center">
-            <h1>Job Details</h1>
+            <h1>Job Specification</h1>
             <p>Please outline the details associated with your job role.</p>
         </div>
     <div class="container">
-        @helper.form(action = routes.JobApplicationController.submitJobDescription()) {
+        @helper.form(action = routes.JobDescriptionController.submitJobDescription()) {
             <h3 class="font-weight-bold">Required Fields:</h3>
             <div class="form-group">
                 <label for="referenceCode"><strong>Reference Code:</strong></label>

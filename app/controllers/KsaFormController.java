@@ -23,12 +23,13 @@ public class KsaFormController extends Controller {
     }
 
     public Result loadForm(Http.Request request) {
-        return ok(views.html.candidate.ksaForm.render(views.html.ksaFormContent.render()));
+        boolean userHasKsas = DynamoAccessor.getInstance().doesUserHaveKsas(request.cookie("username").value());
+        return ok(views.html.candidate.ksaForm.render(views.html.ksaFormContent.render(), userHasKsas));
     }
 
     public Result editKsas(Http.Request request) {
         UserKsas userKsas = DynamoAccessor.getInstance().getKsasForUser(request.cookie("username").value());
-        return ok(views.html.candidate.ksaForm.render(views.html.populatedKsaFormContent.render(userKsas)));
+        return ok(views.html.candidate.ksaForm.render(views.html.populatedKsaFormContent.render(userKsas), true));
     }
 
     public Result submitForm(Http.Request request) {

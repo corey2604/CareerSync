@@ -1,20 +1,20 @@
 @(userHasUploadedCv:Boolean=false, userHasKsas:Boolean=false)
 
 @main("CareerSync") {
-    <section class="jumbotron text-center">
-        <div class="container">
-            <h1 class="display-2 font-weight-normal">CareerSync</h1>
-            <p class="">Welcome to CareerSync, an application that provides you with job recommendations tied to your personal knowledge, skills and abilities</p>
+        @(candidateNavbar(userHasKsas, "Home"))
+        <div class="hero-image main-image">
+            <div class="hero-text">
+                <h1 class="display-1 font-weight-normal">CareerSync</h1>
+                <p class="">Welcome to CareerSync, an application that provides you with job recommendations tied to your personal knowledge, skills and abilities</p>
+            </div>
         </div>
-    </section>
             @if(!userHasUploadedCv) {
                 <section class="text-center">
                     <div class="container">
                         <div class="section-title">
-                <h2 class="display-4 font-weight-normal">CareerSync</h2>
-                <p class="lead text-muted">Welcome to CareerSync, an application that provides you with job recommendations tied to your personal knowledge, skills and abilities</p>
-                <a class="btn btn-purple btn-lg active" role="button" href="@routes.HomeController.uploadFile">
-                    Upload CV</a>
+                            <h2 class="display-10 font-weight-normal">Upload CV</h2>
+                            <p class="text-muted">Upload a CV. This will allow us to automatically detect your key knowledge, skills and abilities. This CV will also be shown to recruiters.</p>
+                             <a class="btn btn-purple btn-lg active" role="button" href="@routes.HomeController.uploadFile">Upload CV</a>
                         </div>
                     </div>
                 </section>
@@ -45,7 +45,7 @@
                 <div class="container">
                     <div class="section-title">
                         <h2 class="display-10 font-weight-normal">Complete your KSA Form</h2>
-                        <p class="text-muted">This is the CV that will be shown to recruiters.</p>
+                        <p class="text-muted">Manually input your own key knowledge, skills and abilities.</p>
                         <a class="btn btn-purple btn-lg active" role="button" href="@routes.KsaFormController.loadForm()">Complete KSA Form</a>
                     </div>
                 </div>
