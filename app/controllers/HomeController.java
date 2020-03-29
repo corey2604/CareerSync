@@ -64,7 +64,7 @@ public class HomeController extends Controller {
 
     public Result viewCvForUser(Http.Request request, String username, String jobTitle) {
         FileHandler.getInstance(S3_CLIENT, new JFileChooser()).getFileFromUsername(username);
-        return redirect(routes.JobApplicationController.getPotentialCandidates(request.cookie("username").value(), jobTitle));
+        return redirect(routes.JobDescriptionController.getPotentialCandidates(request.cookie("username").value(), jobTitle));
     }
 
     public Result logOut(Http.Request request) {
