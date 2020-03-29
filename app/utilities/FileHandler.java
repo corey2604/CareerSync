@@ -13,6 +13,7 @@ import models.KsaValues;
 import models.QualificationLevels;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
@@ -23,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -122,6 +124,7 @@ public class FileHandler {
         String fileName = username + SUFFIX;
         S3Object object = s3Client.getObject(new GetObjectRequest(BUCKET_NAME, fileName));
         InputStream objectData = object.getObjectContent();
+        ZipSecureFile.setMinInflateRatio(-1.0d);
         XWPFDocument xdoc = null;
         try {
             xdoc = new XWPFDocument(OPCPackage.open(objectData));
@@ -129,56 +132,76 @@ public class FileHandler {
             e.printStackTrace();
         }
         XWPFWordExtractor extractor = new XWPFWordExtractor(xdoc);
+        String lowercaseText = extractor.getText().toLowerCase();
+        String[] lines = extractor.getText().split("\r?\n");
+        List<String> cvWords = new ArrayList<>();
+        for (String line : lines) {
+            cvWords.addAll(Arrays.asList(line.toLowerCase().split(" ")));
+        }
+        List<String> lineList = Arrays.asList(lines);
         Optional<String> qualificationLevel = QualificationLevels.getQualificationLevels()
                 .stream()
-                .filter(ql -> extractor.getText().toLowerCase().contains(ql.toLowerCase()))
+                .filter(ql -> cvWords.contains(ql.toLowerCase()))
                 .findFirst();
 
-        String[] lines = extractor.getText().split("\n");
         String qualificationLine = "";
-        for (String line : lines) {
-            Optional<String> qualificationsLineOpt = QualificationLevels.getQualificationLevels()
-                    .stream()
-                    .filter(ql -> line.toLowerCase().contains(ql.toLowerCase()))
-                    .findFirst();
+        if (qualificationLevel.isPresent()) {
+            Optional<String> qualificationsLineOpt = lineList.stream().filter(line -> line.toLowerCase().contains(qualificationLevel.get().toLowerCase())).findFirst();
             if (qualificationsLineOpt.isPresent()) {
-                qualificationLine = line;
+                qualificationLine = qualificationsLineOpt.get();
             }
         }
-        String qualificationArea = qualificationLine.replace(qualificationLevel.get(), "");
+        int qualificationLevelIndex = qualificationLine.toLowerCase().indexOf(qualificationLevel.get().toLowerCase());
+        String substringStartingFromQualificationLevel = qualificationLine.substring(qualificationLevelIndex);
+        int firstFullStop = substringStartingFromQualificationLevel.indexOf(".");
+        int firstNewline = substringStartingFromQualificationLevel.indexOf("\n");
+        String qualificationArea = "";
+        if (!(firstFullStop == -1 && firstNewline == -1)) {
+            if (firstFullStop == -1) {
+                qualificationArea = substringStartingFromQualificationLevel.substring(0, firstNewline);
+            } else if (firstNewline == -1) {
+                qualificationArea = substringStartingFromQualificationLevel.substring(0, firstFullStop);
+            } else {
+                int indexToUse = (firstFullStop < firstNewline) ? firstFullStop : firstNewline;
+                qualificationArea = substringStartingFromQualificationLevel.substring(0, indexToUse);
+            }
+        }
+        //.replace(qualificationLevel.get(), "");
+
         List<String> communicationSkills = new ArrayList<>();
         List<String> peopleSkills = new ArrayList<>();
         List<String> financialKnowledgeSkills = new ArrayList<>();
         List<String> thinkingAndAnalysisSkills = new ArrayList<>();
         List<String> creativeOrInnovativeSkills = new ArrayList<>();
         List<String> administrativeOrOrganisationalSkills = new ArrayList<>();
+
         KsaValues.getCommunicationSkills().forEach(ksa -> {
             if (extractor.getText().contains(ksa)) {
                 communicationSkills.add(ksa);
             }
         });
         KsaValues.getPeopleSkills().forEach(ksa -> {
-            if (extractor.getText().contains(ksa)) {
+            if (lowercaseText.contains(ksa.toLowerCase())) {
                 peopleSkills.add(ksa);
             }
         });
         KsaValues.getFinancialKnowledgeAndSkills().forEach(ksa -> {
-            if (extractor.getText().contains(ksa)) {
+            if (lowercaseText.contains(ksa.toLowerCase())) {
                 financialKnowledgeSkills.add(ksa);
             }
         });
         KsaValues.getThinkingAndAnalysis().forEach(ksa -> {
-            if (extractor.getText().contains(ksa)) {
+            if (lowercaseText.contains(ksa.toLowerCase())) {
                 thinkingAndAnalysisSkills.add(ksa);
             }
         });
         KsaValues.getCreativeOrInnovative().forEach(ksa -> {
-            if (extractor.getText().contains(ksa)) {
+            if (lowercaseText.contains(ksa.toLowerCase())) {
                 creativeOrInnovativeSkills.add(ksa);
             }
         });
         KsaValues.getAdministrativeOrOrganisational().forEach(ksa -> {
-            if (extractor.getText().contains(ksa)) {
+            if (lowercaseText.contains(ksa.toLowerCase())) {
                 administrativeOrOrganisationalSkills.add(ksa);
             }
         });

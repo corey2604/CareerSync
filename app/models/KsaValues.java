@@ -5,25 +5,31 @@ import java.util.List;
 
 public class KsaValues {
     private static final List<String> communicationSkills = Arrays.asList(
-            "Listening, understanding information",
+            "Listening",
+            "Understanding information",
             "Clearly convey information",
             "Presentation Skills",
             "Telephone Skills",
             "Analyse information",
-            "Report Writng"
+            "Report Writing"
     );
 
     private static final List<String> peopleSkills = Arrays.asList(
             "Identifying needs",
-            "Building up working relationships",
+            "Building relationships",
             "Training or coaching others",
-            "Delegating and managing others",
+            "Delegating",
+            "Managing others",
             "Leading",
-            "Encouraging, motivating",
+            "Encouraging",
+            "Motivating",
             "Counselling",
-            "Negotiating: Conflict Management",
-            "Interviewing, appraising",
-            "Persuading, encouraging, changing others’ views"
+            "Negotiating",
+            "Conflict Management",
+            "Interviewing",
+            "Appraising",
+            "Persuading",
+            "Changing views"
     );
 
     private static final List<String> financialKnowledgeAndSkills = Arrays.asList(
@@ -40,7 +46,7 @@ public class KsaValues {
     );
 
     private static final List<String> thinkingAndAnalysis = Arrays.asList(
-            "Project Management tools",
+            "Project Management",
             "Statistics",
             "Risk Management",
             "Flow-charting",
@@ -61,7 +67,7 @@ public class KsaValues {
     private static final List<String> administrativeOrOrganisational = Arrays.asList(
             "Time Management",
             "Planning",
-            "Operating procedures",
+            "Operating policies",
             "Meeting deadlines",
             "Procedures",
             "Achieve objectives/targets",
