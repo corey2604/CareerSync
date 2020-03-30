@@ -1,17 +1,25 @@
+@import views.html.candidate.candidateNavbar
 @(jobDescriptions:List[JobDescription])
 
-@main("Uploaded Job Specifications"){
+@main("Uploaded Job Descriptions"){
+    @(candidateNavbar(true, "Job Recommendations"))
+    <div class="hero-image jobRecommendation-image">
+        <div class="hero-text">
+            <h1 class="display-1 font-weight-normal">Your Job Recommendations</h1>
+        </div>
+    </div>
+    <br>
     <div class="container">
-        <h1 class="display-4 text-center pt-5">Your Job Recommendations</h1>
         <div class="row">
             @if(!jobDescriptions.isEmpty) {
-                <table class="table">
+                <table class="table" id="jobRecommendationsTable">
                     <thead class="thead-dark">
                         <tr>
                             <th scope="col">Job Title</th>
                             <th scope="col">Company/Organisation</th>
                             <th scope="col">Location</th>
-                            <th scope="col">Salary</th>
+                            <th scope="col">Annual Salary</th>
+                            <th scope="col"></th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -21,22 +29,27 @@
                             <td>@jobDescription.getJobTitle</td>
                             <td>@jobDescription.getCompanyOrOrganisation</td>
                             <td>@jobDescription.getLocation</td>
-                            <td>@jobDescription.getSalary</td>
+                            <td>£@jobDescription.getSalary</td>
                             <td>
-                                <a class="btn active btn-primary btn-sm m-0" href="@routes.JobApplicationController.viewJobDescription(jobDescription.getRecruiter, jobDescription.getReferenceCode)">View Details</a>
-                                <a class="btn active btn-primary btn-sm m-0" href="@routes.JobApplicationController.viewUserDetails(jobDescription.getRecruiter)">Contact Recruiter</a>
+                                <a class="btn active btn-purple btn-sm m-0" href="@routes.JobDescriptionController.viewJobDescription(jobDescription.getRecruiter, jobDescription.getReferenceCode)">View Details</a>
+                            </td>
+                            <td>
+                                <a class="btn active btn-purple btn-sm m-0" href="@routes.JobDescriptionController.viewUserDetails(jobDescription.getRecruiter)">Contact Recruiter</a>
                             </td>
                         </tr>
                     }
                     </tbody>
                 </table>
+            </div>
             } else {
-                <h3>
-                    There are no job descriptions listed which match your knowledge, skills and abilities.
-                    <br/>
-                    <small class="text-muted">Please check back later.</small>
-                </h3>
+                <section class="text-center">
+                    <div class="container">
+                        <h3>
+                            There are currently no job descriptions listed which match your knowledge, skills and abilities.
+                        </h3>
+                        <p class="text-muted">Please check back later.</p>
+                    </div>
+                </section>
             }
-        </div>
     </div>
 }

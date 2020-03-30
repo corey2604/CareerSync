@@ -16,7 +16,7 @@ public class AmazonDynamoDbClientWrapper {
         if (client == null) {
             client = AmazonDynamoDBClientBuilder
                     .standard()
-                    .withCredentials(ClasspathPropertiesFileCredentialsProviderWrapper.getInstance())
+                    //.withCredentials(ClasspathPropertiesFileCredentialsProviderWrapper.getInstance())
                     .withRegion(Regions.EU_WEST_1)
                     .build();;
         }

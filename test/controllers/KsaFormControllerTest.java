@@ -16,7 +16,10 @@ public class KsaFormControllerTest {
     public void testLoadForm() {
         //given
         FormFactory mockFormFactory = mock(FormFactory.class);
-        Http.RequestImpl request = Helpers.fakeRequest().build();
+        Http.RequestImpl request = Helpers.fakeRequest()
+                .cookie(Http.Cookie.builder("username", "fakeName").build())
+                .cookie(Http.Cookie.builder("userType", "candidate").build())
+                .build();
 
         //when
         Result result = new KsaFormController(mockFormFactory).loadForm(request);

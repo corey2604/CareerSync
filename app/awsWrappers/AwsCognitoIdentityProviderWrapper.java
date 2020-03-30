@@ -19,7 +19,7 @@ public class AwsCognitoIdentityProviderWrapper {
     public static AWSCognitoIdentityProvider getInstance() {
         if (awsCognitoIdentityProvider == null) {
             awsCognitoIdentityProvider = AWSCognitoIdentityProviderClientBuilder.standard()
-                    .withCredentials(ClasspathPropertiesFileCredentialsProviderWrapper.getInstance())
+                    //.withCredentials(ClasspathPropertiesFileCredentialsProviderWrapper.getInstance())
                     .withRegion(Regions.EU_WEST_1)
                     .build();
         }

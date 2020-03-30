@@ -1,12 +1,15 @@
-@(ksaFormContent: Html)
+@import views.html.candidate.candidateNavbar
+@(ksaFormContent: Html, userHasKsas: Boolean)
 
 @main("KSA Form") {
-    <div class="container">
-        <div class="jumbotron">
-            <h1 class="display-4">KSA Form</h1>
+@(candidateNavbar(userHasKsas, "KSA Profile"))
+    <div class="hero-image ksa-image">
+        <div class="hero-text">
+            <h1 class="display-1 font-weight-normal">Your KSA Profile</h1>
+            <p class="">This your personal profile of your knowledge, skills and abilities. Submit any updates you'd like to make by clicking the submit button below.</p>
         </div>
-        @helper.form(action = routes.KsaFormController.submitForm()) {
+    </div>
+        @helper.form(action = routes.KsaFormController.submitForm()){
             @ksaFormContent
         }
-    </div>
 }
