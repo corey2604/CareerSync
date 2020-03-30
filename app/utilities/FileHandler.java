@@ -214,20 +214,6 @@ public class FileHandler {
         ksaForm.setThinkingAndAnalysis(thinkingAndAnalysisSkills);
         ksaForm.setCreativeOrInnovative(creativeOrInnovativeSkills);
         ksaForm.setAdministrativeOrOrganisational(administrativeOrOrganisationalSkills);
-        putKsasInTable(username, ksaForm);
-    }
-
-    private void putKsasInTable(String username, KsaForm ksaForm) {
-        Item jobDescriptionItem = new Item()
-                .withPrimaryKey("username", username)
-                .with("qualificationLevel", ksaForm.getQualificationLevel())
-                .with("qualificationArea", ksaForm.getQualificationArea())
-                .withList("communicationSkills", ksaForm.getCommunicationSkills().stream().filter(item -> item != null).collect(Collectors.toList()))
-                .withList("peopleSkills", ksaForm.getPeopleSkills().stream().filter(item -> item != null).collect(Collectors.toList()))
-                .withList("financialKnowledgeAndSkills", ksaForm.getFinancialKnowledgeAndSkills().stream().filter(item -> item != null).collect(Collectors.toList()))
-                .withList("thinkingAndAnalysis", ksaForm.getThinkingAndAnalysis().stream().filter(item -> item != null).collect(Collectors.toList()))
-                .withList("creativeOrInnovative", ksaForm.getCreativeOrInnovative().stream().filter(item -> item != null).collect(Collectors.toList()))
-                .withList("administrativeOrOrganisational", ksaForm.getAdministrativeOrOrganisational().stream().filter(item -> item != null).collect(Collectors.toList()));
-        DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USER_KSAS.getName()).putItem(jobDescriptionItem);
+        DynamoAccessor.getInstance().putKsasInTable(username, ksaForm);
     }
 }

@@ -15,13 +15,12 @@ import com.amazonaws.services.dynamodbv2.model.GetItemRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import models.JobDescription;
+import models.KsaForm;
 import models.UserAccountDetails;
 import models.UserKsas;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DynamoAccessor {
     private static DynamoAccessor dynamoAccessor = null;
@@ -111,5 +110,28 @@ public class DynamoAccessor {
             usernames.add(item.get("username").getS());
         }
         return usernames;
+    }
+
+    public void putKsasInTable(String username, KsaForm ksaForm) {
+        Item jobDescriptionItem = new Item()
+                .withPrimaryKey("username", username)
+                .with("qualificationLevel", ksaForm.getQualificationLevel())
+                .with("qualificationArea", ksaForm.getQualificationArea());
+        addSkillListIfPresent(jobDescriptionItem, "communicationSkills", ksaForm.getCommunicationSkills());
+        addSkillListIfPresent(jobDescriptionItem, "peopleSkills", ksaForm.getPeopleSkills());
+        addSkillListIfPresent(jobDescriptionItem, "financialKnowledgeAndSkills", ksaForm.getFinancialKnowledgeAndSkills());
+        addSkillListIfPresent(jobDescriptionItem, "thinkingAndAnalysis", ksaForm.getThinkingAndAnalysis());
+        addSkillListIfPresent(jobDescriptionItem, "creativeOrInnovative", ksaForm.getCreativeOrInnovative());
+        addSkillListIfPresent(jobDescriptionItem, "administrativeOrOrganisational", ksaForm.getAdministrativeOrOrganisational());
+        DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USER_KSAS.getName()).putItem(jobDescriptionItem);
+    }
+
+    private void addSkillListIfPresent(Item jobDescriptionItem, String fieldName, List<String> skillList) {
+        Optional<List<String>> optSkillList = Optional.ofNullable(skillList);
+        if (optSkillList.isPresent()) {
+            jobDescriptionItem.withList(fieldName, optSkillList.get().stream().filter(item -> item != null).collect(Collectors.toList()));
+        } else {
+            jobDescriptionItem.withList(fieldName, Collections.EMPTY_LIST);
+        }
     }
 }

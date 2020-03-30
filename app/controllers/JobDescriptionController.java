@@ -170,6 +170,6 @@ public class JobDescriptionController extends Controller {
     }
 
     private List<String> convertSkillsToList(Optional<List<String>> skills) {
-        return (skills.isPresent()) ? skills.get().stream().filter(item -> item != null).collect(Collectors.toList()) : Collections.EMPTY_LIST;
+        return skills.map(strings -> strings.stream().filter(Objects::nonNull).collect(Collectors.toList())).orElse(Collections.EMPTY_LIST);
     }
 }

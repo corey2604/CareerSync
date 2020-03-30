@@ -73,7 +73,7 @@ public class JobDescription {
         this.location = item.get("location").getS();
         this.companyOrOrganisation = item.get("companyOrOrganisation").getS();
         this.department = setOptionalValueFromAttribute(item.get("department"));
-        this.section =setOptionalValueFromAttribute(item.get("section"));
+        this.section = setOptionalValueFromAttribute(item.get("section"));
         this.grade = setOptionalValueFromAttribute(item.get("grade"));
         this.reportsTo = setOptionalValueFromAttribute(item.get("reportsTo"));
         this.responsibleTo = setOptionalValueFromAttribute(item.get("responsibleTo"));
