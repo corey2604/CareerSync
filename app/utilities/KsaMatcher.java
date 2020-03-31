@@ -30,6 +30,10 @@ public class KsaMatcher {
         return ksaMatcher;
     }
 
+    public static void setInstance(KsaMatcher ksaMatcherInstance) {
+        ksaMatcher = ksaMatcherInstance;
+    }
+
     public List<JobDescription> getJobRecommendations(String username) {
         UserKsas userKsas = DynamoAccessor.getInstance().getKsasForUser(username);
         ScanResult allJobDescriptions = getAllJobDescriptions();
