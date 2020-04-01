@@ -25,4 +25,8 @@ public class AwsCognitoIdentityProviderWrapper {
         }
         return awsCognitoIdentityProvider;
     }
+
+    public static void setInstance(AWSCognitoIdentityProvider awsCognitoIdentityProviderInstance) {
+        awsCognitoIdentityProvider = awsCognitoIdentityProviderInstance;
+    }
 }
