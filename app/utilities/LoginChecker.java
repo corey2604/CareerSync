@@ -31,6 +31,7 @@ public class LoginChecker {
         AWSCognitoIdentityProvider cognitoCreate = AwsCognitoIdentityProviderWrapper.getInstance();
 
         try {
+            System.out.println("Username: " + cognitoCreate.getUser(request).getUsername());
             return cognitoCreate.getUser(request).getUsername();
         } catch (Exception e) {
             e.getMessage();
