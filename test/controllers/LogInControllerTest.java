@@ -44,8 +44,8 @@ public class LogInControllerTest {
         Http.RequestImpl request = Helpers.fakeRequest()
                 .build();
         Config config = mock(Config.class);
-        doReturn(System.getenv("AWS_CLIENT_ID")).when(config).getString("clientId");
-        doReturn(System.getenv("AWS_USER_POOL_ID")).when(config).getString("userPoolId");
+        doReturn("41c3s16c84v5pakuejkjn8sslp").when(config).getString("clientId");
+        doReturn("eu-west-1_FehhvQScE").when(config).getString("userPoolId");
         FormFactory mockFormFactory = mock(FormFactory.class);
         Form mockForm = mock(Form.class);
         UserSignInRequest signInRequest = spy(UserSignInRequest.class);
