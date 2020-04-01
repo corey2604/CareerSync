@@ -36,7 +36,10 @@ public class LogInController extends Controller {
     }
 
     public Result logInSubmit() {
+        System.out.println("log in submit called.");
         Form<UserSignInRequest> userSignInForm = formFactory.form(UserSignInRequest.class).bindFromRequest();
+        System.out.println("username:" + userSignInForm.get().getUsername());
+        System.out.println("password:" + userSignInForm.get().getPassword());
         try {
             String username = awsSignIn(userSignInForm);
             String userType = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName())
@@ -52,6 +55,7 @@ public class LogInController extends Controller {
     }
 
     public String awsSignIn(Form<UserSignInRequest> signInRequestForm) {
+        System.out.println("Attempting sign in.");
         UserSignInRequest signInRequest = signInRequestForm.get();
         AuthenticationResultType authenticationResult;
         AWSCognitoIdentityProvider cognitoClient = AwsCognitoIdentityProviderWrapper.getInstance();
@@ -65,6 +69,9 @@ public class LogInController extends Controller {
                 .withClientId(config.getString("clientId"))
                 .withUserPoolId(config.getString("userPoolId"))
                 .withAuthParameters(authParams);
+
+        System.out.println("clientId:" + config.getString("clientId"));
+        System.out.println("userPoolId:" + config.getString("userPoolId"));
 
         AdminInitiateAuthResult result = cognitoClient.adminInitiateAuth(authRequest);
         authenticationResult = result.getAuthenticationResult();
