@@ -42,14 +42,17 @@ public class LogInController extends Controller {
         System.out.println("password:" + userSignInForm.get().getPassword());
         try {
             String username = awsSignIn(userSignInForm);
+            System.out.println("DynamoTable: " + DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName()).getTableName());
             String userType = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName())
                     .getItem("username", username)
                     .get("userType")
                     .toString();
+            System.out.println("UserType: " + userType);
             return redirect(routes.HomeController.index()).withCookies(
                     Http.Cookie.builder("username", username).build(),
                     Http.Cookie.builder("userType", userType).build());
         } catch (Exception e) {
+            System.out.println("Caught exception: " + e);
             return badRequest(views.html.logIn.render(true));
         }
     }
