@@ -1,5 +1,6 @@
 package controllers;
 
+import Enums.DynamoTables;
 import awsWrappers.AwsCognitoIdentityProviderWrapper;
 import awsWrappers.DynamoDbTableProvider;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
@@ -11,7 +12,6 @@ import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import Enums.DynamoTables;
 import utilities.LoginChecker;
 
 import javax.inject.Inject;
@@ -37,21 +37,17 @@ public class LogInController extends Controller {
 
     public Result logInSubmit() {
         Form<UserSignInRequest> userSignInForm = formFactory.form(UserSignInRequest.class).bindFromRequest();
-        if (userSignInForm.hasErrors()) {
-            return badRequest("Hello There");
-        } else {
-            try {
-                String username = awsSignIn(userSignInForm);
-                String userType = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName())
-                        .getItem("username", username)
-                        .get("userType")
-                        .toString();
-                return redirect(routes.HomeController.index()).withCookies(
-                        Http.Cookie.builder("username", username).build(),
-                        Http.Cookie.builder("userType", userType).build());
-            } catch (Exception e) {
-                return badRequest(views.html.logIn.render(true));
-            }
+        try {
+            String username = awsSignIn(userSignInForm);
+            String userType = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName())
+                    .getItem("username", username)
+                    .get("userType")
+                    .toString();
+            return redirect(routes.HomeController.index()).withCookies(
+                    Http.Cookie.builder("username", username).build(),
+                    Http.Cookie.builder("userType", userType).build());
+        } catch (Exception e) {
+            return badRequest(views.html.logIn.render(true));
         }
     }
 
