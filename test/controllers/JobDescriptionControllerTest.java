@@ -8,6 +8,7 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.internal.IteratorSupport;
 import com.amazonaws.services.dynamodbv2.document.spec.DeleteItemSpec;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +21,7 @@ import play.test.Helpers;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static play.mvc.Http.Status.OK;
 
@@ -100,5 +101,15 @@ public class JobDescriptionControllerTest {
         assertEquals(OK, result.status());
         assertEquals("text/html", result.contentType().get());
         assertEquals("utf-8", result.charset().get());
+    }
+
+    @After
+    public void tearDown() {
+        reset(mockFormFactory,
+                mockDB,
+                mockTable,
+                mockDeleteItemOutcome,
+                mockItemCollection,
+                mockIterator);
     }
 }
