@@ -15,7 +15,7 @@ jobs:
         java-version: 1.8
     - name: Run tests
       env: 
-        AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
         AWS_CLIENT_KEY: ${{ secrets.AWS_CLIENT_KEY }}
         AWS_USER_POOL_ID: ${{ secrets.AWS_USER_POOL_ID }}
