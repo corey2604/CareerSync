@@ -42,6 +42,7 @@ public class LogInController extends Controller {
         System.out.println("password:" + userSignInForm.get().getPassword());
         try {
             String username = awsSignIn(userSignInForm);
+            System.out.println("DynamoTable Name:" + DynamoTables.CAREER_SYNC_USERS.getName());
             System.out.println("DynamoTable: " + DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName()).getTableName());
             String userType = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName())
                     .getItem("username", username)
