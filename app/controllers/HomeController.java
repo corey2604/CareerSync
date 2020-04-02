@@ -25,7 +25,6 @@ public class HomeController extends Controller {
     private static final AmazonS3 S3_CLIENT = AmazonS3ClientBuilder
             .standard()
             .withRegion(Regions.EU_WEST_1)
-            //.withCredentials(ClasspathPropertiesFileCredentialsProviderWrapper.getInstance())
             .build();
 
     @Inject

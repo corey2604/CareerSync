@@ -5,7 +5,12 @@ import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigValueFactory;
 import models.UserAccountDetails;
 import models.UserSignInRequest;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Http;
@@ -19,7 +24,18 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 import static play.mvc.Http.Status.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class LogInControllerTest {
+
+    @Mock
+    private Config mockConfig;
+
+    @Mock
+    private FormFactory mockFormFactory;
+
+    @Mock
+    private Form mockForm;
+
 
     @Test
     public void testLogIn() {
@@ -27,10 +43,9 @@ public class LogInControllerTest {
         FormFactory mockFormFactory = mock(FormFactory.class);
         Http.RequestImpl request = Helpers.fakeRequest()
                 .build();
-        Config config = mock(Config.class);
 
         //when
-        Result result = new LogInController(config, mockFormFactory).logIn(request);
+        Result result = new LogInController(mockConfig, mockFormFactory).logIn(request);
 
         //then
         assertEquals(OK, result.status());
@@ -43,11 +58,8 @@ public class LogInControllerTest {
         //given
         Http.RequestImpl request = Helpers.fakeRequest()
                 .build();
-        Config config = mock(Config.class);
-        doReturn("41c3s16c84v5pakuejkjn8sslp").when(config).getString("clientId");
-        doReturn("eu-west-1_FehhvQScE").when(config).getString("userPoolId");
-        FormFactory mockFormFactory = mock(FormFactory.class);
-        Form mockForm = mock(Form.class);
+        doReturn("41c3s16c84v5pakuejkjn8sslp").when(mockConfig).getString("clientId");
+        doReturn("eu-west-1_FehhvQScE").when(mockConfig).getString("userPoolId");
         UserSignInRequest signInRequest = spy(UserSignInRequest.class);
         doReturn(mockForm).when(mockFormFactory).form(any());
         doReturn(mockForm).when(mockForm).bindFromRequest();
@@ -56,7 +68,7 @@ public class LogInControllerTest {
         signInRequest.setPassword("Test12345@");
 
         //when
-        Result result = new LogInController(config, mockFormFactory).logInSubmit();
+        Result result = new LogInController(mockConfig, mockFormFactory).logInSubmit();
 
         //then
 
@@ -74,9 +86,6 @@ public class LogInControllerTest {
         //given
         Http.RequestImpl request = Helpers.fakeRequest()
                 .build();
-        Config config = mock(Config.class);
-        FormFactory mockFormFactory = mock(FormFactory.class);
-        Form mockForm = mock(Form.class);
         UserSignInRequest signInRequest = spy(UserSignInRequest.class);
         doReturn(mockForm).when(mockFormFactory).form(any());
         doReturn(mockForm).when(mockForm).bindFromRequest();
@@ -85,7 +94,7 @@ public class LogInControllerTest {
         signInRequest.setPassword("invalidPassword");
 
         //when
-        Result result = new LogInController(config, mockFormFactory).logInSubmit();
+        Result result = new LogInController(mockConfig, mockFormFactory).logInSubmit();
 
         //then
         assertEquals(BAD_REQUEST, result.status());
@@ -95,5 +104,10 @@ public class LogInControllerTest {
         //Assert cookies aren't populated
         assertNull(request.cookie("username"));
         assertNull(request.cookie("userType"));
+    }
+
+    @After
+    public void tearDown() {
+        reset(mockConfig, mockFormFactory, mockForm);
     }
 }
