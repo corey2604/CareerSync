@@ -17,6 +17,9 @@ import static play.mvc.Http.Status.OK;
 public class RegisterControllerTest {
 
     @Mock
+    private Config mockConfig;
+
+    @Mock
     private FormFactory mockFormFactory;
 
     @Test
@@ -26,10 +29,9 @@ public class RegisterControllerTest {
                 .cookie(Http.Cookie.builder("username", "fakeName").build())
                 .cookie(Http.Cookie.builder("userType", "candidate").build())
                 .build();
-        Config config = mock(Config.class);
 
         //when
-        Result result = new RegisterController(config, mockFormFactory).register(request);
+        Result result = new RegisterController(mockConfig, mockFormFactory).register(request);
 
         //then
         assertEquals(OK, result.status());
