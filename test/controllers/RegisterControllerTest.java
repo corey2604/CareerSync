@@ -29,6 +29,8 @@ public class RegisterControllerTest {
                 .cookie(Http.Cookie.builder("username", "fakeName").build())
                 .cookie(Http.Cookie.builder("userType", "candidate").build())
                 .build();
+        doReturn(System.getenv("AWS_CLIENT_ID")).when(mockConfig).getString("clientId");
+        doReturn(System.getenv("AWS_USER_POOL_ID")).when(mockConfig).getString("userPoolId");
 
         //when
         Result result = new RegisterController(mockConfig, mockFormFactory).register(request);
