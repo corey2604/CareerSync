@@ -12,6 +12,10 @@ public class DynamoDbTableProvider {
         //Private constructor
     }
 
+    public static void setInstance(DynamoDB dynamoDBInstance) {
+        dynamoDB = dynamoDBInstance;
+    }
+
     //Factory method
     public static Table getTable(String tableName) {
         System.out.println("Table Name within method: " + tableName);

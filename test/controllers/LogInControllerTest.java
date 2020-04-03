@@ -1,5 +1,9 @@
 package controllers;
 
+import awsWrappers.DynamoDbTableProvider;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.Table;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigValueFactory;
@@ -36,6 +40,18 @@ public class LogInControllerTest {
     @Mock
     private Form mockForm;
 
+    @Mock
+    private DynamoDB mockDynamoDb;
+
+    @Mock
+    private Table mockTable;
+
+    @Mock
+    private Item mockItem;
+
+    @Mock
+    private Object mockObject;
+
 
     @Test
     public void testLogIn() {
@@ -59,11 +75,16 @@ public class LogInControllerTest {
         Http.RequestImpl request = Helpers.fakeRequest()
                 .build();
         UserSignInRequest signInRequest = spy(UserSignInRequest.class);
+        DynamoDbTableProvider.setInstance(mockDynamoDb);
         doReturn("41c3s16c84v5pakuejkjn8sslp").when(mockConfig).getString("clientId");
         doReturn("eu-west-1_FehhvQScE").when(mockConfig).getString("userPoolId");
         doReturn(mockForm).when(mockFormFactory).form(any());
         doReturn(mockForm).when(mockForm).bindFromRequest();
         doReturn(signInRequest).when(mockForm).get();
+        doReturn(mockTable).when(mockDynamoDb).getTable(any());
+        doReturn(mockItem).when(mockTable).getItem(any(), any());
+        doReturn(mockObject).when(mockItem).get("userType");
+        doReturn("recruiter").when(mockObject).toString();
         signInRequest.setUsername("validUsername");
         signInRequest.setPassword("Test12345@");
 
@@ -110,6 +131,8 @@ public class LogInControllerTest {
 
     @After
     public void tearDown() {
-        reset(mockConfig, mockFormFactory, mockForm);
+        reset(mockConfig,
+                mockFormFactory,
+                mockForm);
     }
 }
