@@ -20,6 +20,7 @@ public class DynamoDbTableProvider {
             dynamoDB = new DynamoDB(AmazonDynamoDbClientWrapper.getInstance());
             System.out.println("DynamoDBTableProvider set.");
         }
+        System.out.println("DynamoDb tables" + dynamoDB.listTables());
         return dynamoDB.getTable(tableName);
     }
 
