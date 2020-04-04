@@ -46,6 +46,6 @@ public class RegisterControllerTest {
 
     @After
     public void tearDown() {
-        reset(mockFormFactory);
+        reset(mockConfig, mockFormFactory);
     }
 }

@@ -102,6 +102,7 @@ public class HomeControllerTest extends WithApplication {
     @After
     public void tearDown() {
         reset(mockDynamoAccessor);
+        DynamoAccessor.setDynamoAccessor(null);
     }
 
 }

@@ -111,5 +111,6 @@ public class JobDescriptionControllerTest {
                 mockDeleteItemOutcome,
                 mockItemCollection,
                 mockIterator);
+        DynamoDbTableProvider.setDynamoDb(null);
     }
 }

@@ -52,5 +52,6 @@ public class KsaFormControllerTest {
     @After
     public void tearDown() {
         reset(mockDynamoAccessor, mockFormFactory);
+        DynamoAccessor.setDynamoAccessor(null);
     }
 }

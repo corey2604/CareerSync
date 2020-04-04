@@ -133,6 +133,11 @@ public class LogInControllerTest {
     public void tearDown() {
         reset(mockConfig,
                 mockFormFactory,
-                mockForm);
+                mockForm,
+                mockDynamoDb,
+                mockTable,
+                mockItem,
+                mockObject);
+        DynamoDbTableProvider.setInstance(null);
     }
 }
