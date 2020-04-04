@@ -117,7 +117,7 @@ public class RegisterControllerTest {
         doReturn("test@email.com").when(mockSignUpRequest).getEmail();
         doReturn("UnitTest").when(mockSignUpRequest).getFirstName();
         doReturn("User").when(mockSignUpRequest).getLastName();
-        doReturn(System.getenv("AWS_USER_POOL_ID")).when(mockConfig).getString("userPoolId");
+        doReturn("eu-west-1_FehhvQScE").when(mockConfig).getString("userPoolId");
         doReturn(mockForm).when(mockFormFactory).form(UserSignUpRequest.class);
         doReturn(mockSignUpRequest).when(mockForm).get();
 
