@@ -69,7 +69,6 @@ public class EditAccountControllerTest {
         doReturn(mockForm).when(mockFormFactory).form(any());
         doReturn(mockForm).when(mockForm).bindFromRequest();
         doReturn(mockUserAccountDetails).when(mockForm).get();
-        DynamoAccessor mockDynamoAccessor = mock(DynamoAccessor.class);
         DynamoAccessor.setDynamoAccessor(mockDynamoAccessor);
         Http.RequestImpl request = Helpers.fakeRequest()
                 .cookie(Http.Cookie.builder("username", "fakeName").build())
