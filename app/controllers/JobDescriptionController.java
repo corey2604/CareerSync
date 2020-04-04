@@ -35,7 +35,7 @@ public class JobDescriptionController extends Controller {
         this.formFactory = formFactory;
     }
 
-    public Result uploadJobApplication(Http.Request request) {
+    public Result uploadJobDescription(Http.Request request) {
         return ok(views.html.recruiter.uploadJobDescription.render(views.html.ksaFormContent.render()));
     }
 

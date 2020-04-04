@@ -40,7 +40,7 @@
         @for((peopleSkill, index) <- KsaValues.getPeopleSkills.zipWithIndex) {
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="@peopleSkill" @if(userKsas.getPeopleSkills.contains(peopleSkill)) {checked} name="peopleSkills[@index]">
-                <label class="form-check-label" for="defaultCheck1">
+                <label class="form-check-label" for="@peopleSkill">
                 @peopleSkill
                 </label>
             </div>

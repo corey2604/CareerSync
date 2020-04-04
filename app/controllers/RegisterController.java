@@ -41,7 +41,7 @@ public class RegisterController extends Controller {
     }
 
     public Result registerSubmit() {
-        UserSignUpRequest userSignUpRequest = formFactory.form(UserSignUpRequest.class).bindFromRequest().get();
+        UserSignUpRequest userSignUpRequest = formFactory.form(UserSignUpRequest.class).get();
         List<CareerSyncErrorMessages> errorMessages = new ArrayList<>();
         DynamoAccessor.getInstance().getAllUsernames();
         if (DynamoAccessor.getInstance().getAllUsernames().contains(userSignUpRequest.getUsername())){
