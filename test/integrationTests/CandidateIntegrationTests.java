@@ -1,14 +1,11 @@
 package integrationTests;
 
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.UUID;
 
@@ -16,16 +13,8 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class CandidateIntegrationTests extends CareerSyncIntegrationTest {
-    WebDriver driver;
-    WebDriverWait wait;
 
-    @Before
-    public void setUp() {
-        System.setProperty("webdriver.chrome.driver", "chromedriver");
-        driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, 20);
-    }
-
+    @Ignore
     @Test
     public void testCandidateCanLogInAndEnterKsas() {
         logIn("candidateTest", "TEMPoRARY_PASSWoRD1");
@@ -45,6 +34,7 @@ public class CandidateIntegrationTests extends CareerSyncIntegrationTest {
         assertEquals(qualificationArea, driver.findElement(By.name("qualificationArea")).getText());
     }
 
+    @Ignore
     @Test
     public void testCandidateCanLogInAndViewJobRecommendations() {
         logIn("candidateTest", "TEMPoRARY_PASSWoRD1");
@@ -53,6 +43,7 @@ public class CandidateIntegrationTests extends CareerSyncIntegrationTest {
         assertEquals("http://localhost:9000/viewJobRecommendations", driver.getCurrentUrl());
     }
 
+    @Ignore
     @Test
     public void testCandidateCanLogInAndEditTheirAccountDetails() {
         String firstName = "Selenium Test Name: " + UUID.randomUUID().toString();

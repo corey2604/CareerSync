@@ -1,5 +1,6 @@
 package integrationTests;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -12,6 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 public class RecruiterIntegrationTests extends CareerSyncIntegrationTest {
 
+    @Ignore
     @Test
     public void recruiterCanLogInAndViewJobDescriptions() {
         logIn("recruiterSeleniumTest", "TestPassword12345@");
@@ -20,6 +22,7 @@ public class RecruiterIntegrationTests extends CareerSyncIntegrationTest {
         assertTrue(driver.findElement(By.id("yourJobDescriptions")).isDisplayed());
     }
 
+    @Ignore
     @Test
     public void recruiterCanLogInAndAddJobDescriptions() {
         logIn("recruiterSeleniumTest", "TestPassword12345@");

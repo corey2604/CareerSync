@@ -1,5 +1,6 @@
 package integrationTests;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -10,6 +11,7 @@ import static junit.framework.Assert.assertEquals;
 
 public class RegisterLogInTest extends CareerSyncIntegrationTest {
 
+    @Ignore
     @Test
     public void testLogIn() {
         // Launch website
@@ -17,6 +19,7 @@ public class RegisterLogInTest extends CareerSyncIntegrationTest {
         assertEquals("http://localhost:9000/", driver.getCurrentUrl());
     }
 
+    @Ignore
     @Test
     public void testRegister() {
         // Launch website
