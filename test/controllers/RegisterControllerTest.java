@@ -60,6 +60,7 @@ public class RegisterControllerTest {
         doReturn("0123456789").when(mockSignUpRequest).getPhoneNumber();
         doReturn("Test12345@").when(mockSignUpRequest).getPassword();
         doReturn(mockForm).when(mockFormFactory).form(UserSignUpRequest.class);
+        doReturn(mockForm).when(mockForm).bindFromRequest();
         doReturn(mockSignUpRequest).when(mockForm).get();
 
         //when
@@ -78,6 +79,7 @@ public class RegisterControllerTest {
         doReturn("01asdasdasd456789").when(mockSignUpRequest).getPhoneNumber();
         doReturn("Test12345@").when(mockSignUpRequest).getPassword();
         doReturn(mockForm).when(mockFormFactory).form(UserSignUpRequest.class);
+        doReturn(mockForm).when(mockForm).bindFromRequest();
         doReturn(mockSignUpRequest).when(mockForm).get();
 
         //when
@@ -96,6 +98,7 @@ public class RegisterControllerTest {
         doReturn("0123456789").when(mockSignUpRequest).getPhoneNumber();
         doReturn("Test").when(mockSignUpRequest).getPassword();
         doReturn(mockForm).when(mockFormFactory).form(UserSignUpRequest.class);
+        doReturn(mockForm).when(mockForm).bindFromRequest();
         doReturn(mockSignUpRequest).when(mockForm).get();
 
         //when
@@ -119,6 +122,7 @@ public class RegisterControllerTest {
         doReturn("User").when(mockSignUpRequest).getLastName();
         doReturn("eu-west-1_FehhvQScE").when(mockConfig).getString("userPoolId");
         doReturn(mockForm).when(mockFormFactory).form(UserSignUpRequest.class);
+        doReturn(mockForm).when(mockForm).bindFromRequest();
         doReturn(mockSignUpRequest).when(mockForm).get();
 
         //when
