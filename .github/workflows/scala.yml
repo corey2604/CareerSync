@@ -22,4 +22,4 @@ jobs:
         AWS_ENDPOINT: ${{ secrets.AWS_ENDPOINT }}
         AWS_REGION: ${{ secrets.AWS_REGION }}
         AWS_IDENTITY_POOL_ID: ${{ secrets.AWS_IDENTITY_POOL_ID }}
-      run: sbt testOnly controllers.*
+      run: sbt test
