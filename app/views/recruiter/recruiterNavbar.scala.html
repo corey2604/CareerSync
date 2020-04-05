@@ -18,14 +18,14 @@
                 } else {
                     <li class="nav-item">
                     }
-                <a class="nav-link" href="@routes.JobDescriptionController.uploadJobApplication">Add Job Description</a>
+                <a class="nav-link" href="@routes.JobDescriptionController.uploadJobDescription()" id="addJobDescription">Add Job Description</a>
             </li>
                 @if(currentPage.equals("Uploaded Job Descriptions")) {
                     <li class="nav-item active">
                 } else {
                     <li class="nav-item">
                     }
-                <a class="nav-link" href="@routes.JobDescriptionController.getUploadedJobDescriptions">Uploaded Job Descriptions</a>
+                <a class="nav-link" href="@routes.JobDescriptionController.getUploadedJobDescriptions" id="uploadedJobDescriptions">Uploaded Job Descriptions</a>
             </li>
         </ul>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

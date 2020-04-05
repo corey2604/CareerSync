@@ -1,7 +1,5 @@
 package controllers;
 
-import awsWrappers.DynamoDbTableProvider;
-import com.amazonaws.services.dynamodbv2.document.Item;
 import models.KsaForm;
 import models.UserKsas;
 import play.data.FormFactory;
@@ -9,12 +7,8 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import utilities.DynamoAccessor;
-import Enums.DynamoTables;
 
 import javax.inject.Inject;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class KsaFormController extends Controller {
     private FormFactory formFactory;

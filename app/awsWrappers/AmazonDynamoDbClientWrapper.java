@@ -16,10 +16,13 @@ public class AmazonDynamoDbClientWrapper {
         if (client == null) {
             client = AmazonDynamoDBClientBuilder
                     .standard()
-                    //.withCredentials(ClasspathPropertiesFileCredentialsProviderWrapper.getInstance())
                     .withRegion(Regions.EU_WEST_1)
                     .build();;
         }
         return client;
+    }
+
+    public static void setInstance(AmazonDynamoDB amazonDynamoDBInstance) {
+        client = amazonDynamoDBInstance;
     }
 }

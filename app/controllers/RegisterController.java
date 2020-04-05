@@ -66,7 +66,7 @@ public class RegisterController extends Controller {
         return badRequest(views.html.signUp.render(errorMessages, Optional.of(userSignUpRequest)));
     }
 
-    public UserType awsSignUp(UserSignUpRequest signUpRequest) {
+    private UserType awsSignUp(UserSignUpRequest signUpRequest) {
         AWSCognitoIdentityProvider cognitoClient = AwsCognitoIdentityProviderWrapper.getInstance();
         String userPoolId = config.getString("userPoolId");
         AdminCreateUserRequest cognitoRequest = new AdminCreateUserRequest()

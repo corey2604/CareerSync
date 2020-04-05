@@ -1,10 +1,8 @@
 package controllers;
 
-import awsWrappers.ClasspathPropertiesFileCredentialsProviderWrapper;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import models.UserAccountDetails;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -14,7 +12,6 @@ import utilities.LoginChecker;
 
 import javax.inject.Inject;
 import javax.swing.*;
-import java.util.List;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -25,7 +22,6 @@ public class HomeController extends Controller {
     private static final AmazonS3 S3_CLIENT = AmazonS3ClientBuilder
             .standard()
             .withRegion(Regions.EU_WEST_1)
-            //.withCredentials(ClasspathPropertiesFileCredentialsProviderWrapper.getInstance())
             .build();
 
     @Inject

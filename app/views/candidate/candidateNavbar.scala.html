@@ -19,14 +19,14 @@
                 } else {
                     <li class="nav-item">
                     }
-                <a class="nav-link" href="@routes.KsaFormController.editKsas()">KSA Profile</a>
+                <a class="nav-link" href="@routes.KsaFormController.editKsas()" id="ksaProfile">KSA Profile</a>
                 </li>
                 @if(currentPage.equals("Job Recommendations")) {
                     <li class="nav-item active">
                 } else {
                     <li class="nav-item">
                 }
-                    <a class="nav-link" href="@routes.KsaMatcherController.viewJobRecommendations()">Job Recommendations</a>
+                    <a class="nav-link" href="@routes.KsaMatcherController.viewJobRecommendations()" id="jobRecommendations">Job Recommendations</a>
                 </li>
             } else {
                 @if(currentPage.equals("KSA Profile")) {

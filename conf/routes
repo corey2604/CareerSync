@@ -15,7 +15,7 @@ GET         /ksaForm                        controllers.KsaFormController.loadFo
 GET         /editKsas                       controllers.KsaFormController.editKsas(request: Request)
 GET         /logOut                         controllers.HomeController.logOut(request: Request)
 GET         /editAccount                    controllers.EditAccountController.editAccount(request: Request)
-GET         /uploadJobDescription           controllers.JobDescriptionController.uploadJobApplication(request: Request)
+GET         /uploadJobDescription           controllers.JobDescriptionController.uploadJobDescription(request: Request)
 GET         /uploadedJobDescriptions        controllers.JobDescriptionController.getUploadedJobDescriptions(request: Request)
 GET         /editJobDescription             controllers.JobDescriptionController.editJobDescription(recruiter: String, referenceCode: String)
 GET         /viewJobDescription             controllers.JobDescriptionController.viewJobDescription(request: Request, recruiter: String, referenceCode: String)
