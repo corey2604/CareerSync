@@ -3,6 +3,7 @@ package models;
 public class UserSignUpRequest {
     private String username;
     private String email;
+    private String password;
     private String firstName;
     private String lastName;
     private String phoneNumber;
@@ -10,9 +11,10 @@ public class UserSignUpRequest {
 
     public UserSignUpRequest() {}
 
-    public UserSignUpRequest(String username, String email, String firstName, String lastName, String phoneNumber, String userType) {
+    public UserSignUpRequest(String username, String email, String password, String firstName, String lastName, String phoneNumber, String userType) {
         this.username = username;
         this.email = email;
+        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
@@ -33,6 +35,14 @@ public class UserSignUpRequest {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFirstName() {

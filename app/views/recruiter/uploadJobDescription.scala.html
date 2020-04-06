@@ -1,0 +1,100 @@
+@import views.html.recruiter.recruiterNavbar
+@(ksaFormPage: Html)
+
+@main("Upload Job Description") {
+    @(recruiterNavbar("Add Job Description"))
+    <div class="hero-image jobDescription-image">
+        <div class="hero-text">
+            <h1 class="display-2 font-weight-normal" id="jobDescriptionDetails">Job Description Details</h1>
+            <p class="">A Job Description is comprised of two components, a job specification and an employee specification.</p>
+        </div>
+    </div>
+    <section class="">
+        <div class="section-title text-center">
+            <h1>Job Specification</h1>
+            <p>Please outline the details associated with your job role.</p>
+        </div>
+    <div class="container">
+        @helper.form(action = routes.JobDescriptionController.submitJobDescription()) {
+            <h3 class="font-weight-bold">Required Fields:</h3>
+            <div class="form-group">
+                <label for="referenceCode"><strong>Reference Code:</strong></label>
+                <input type="text" class="form-control" name="referenceCode" required>
+            </div>
+            <div class="form-group">
+                <label for="jobTitle"><strong>Job Title:</strong></label>
+                <input type="text" class="form-control" name="jobTitle" required>
+            </div>
+            <div class="form-group">
+                <label for="location"><strong>Location:</strong></label>
+                <input type="text" class="form-control" name="location" required>
+            </div>
+            <div class="form-group">
+                <label for="companyOrOrganisation"><strong>Company/Organisation:</strong></label>
+                <input type="text" class="form-control" name="companyOrOrganisation" required>
+            </div>
+            <div class="form-group">
+                <label for="duration"><strong>Duration:</strong></label>
+                <select class="form-control" id="duration" name="duration">
+                    <option value="Permanent">Permanent</option>
+                    <option value="Temporary">Temporary</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="hours"><strong>Hours per Week:</strong></label>
+                <input type="number" class="form-control" name="hours" step=".01" required>
+            </div>
+            <div class="form-group">
+                <label for="salary"><strong>Annual Salary (£):</strong></label>
+                <input type="number" class="form-control" name="salary" step=".01" placeholder="£"required>
+            </div>
+            <div class="form-group">
+                <label for="mainPurposeOfJob"><strong>Main Purpose of Job:</strong></label>
+                <textarea class="form-control" name="mainPurposeOfJob" rows="10" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="mainResponsibilities"><strong>Main Responsibilities:</strong></label>
+                <textarea class="form-control" name="mainResponsibilities" rows="10" required></textarea>
+            </div>
+            <br/>
+            <h3 class="font-weight-bold">Additional Information:</h3>
+            <div class="form-group">
+                <label for="department"><strong>Department:</strong></label>
+                <input type="text" class="form-control" name="department">
+            </div>
+            <div class="form-group">
+                <label for="reportsTo"><strong>Reports To:</strong></label>
+                <input type="text" class="form-control" name="reportsTo">
+            </div>
+            <div class="form-group">
+                <label for="responsibleTo"><strong>Responsible To:</strong></label>
+                <input type="text" class="form-control" name="responsibleTo">
+            </div>
+            <div class="form-group">
+                <label for="general"><strong>General Information:</strong></label>
+                <textarea class="form-control" name="general" rows="10"></textarea>
+            </div>
+            <br/>
+            <h3 class="font-weight-bold">Public Sector Information:</h3>
+            <p class="text-muted">These fields are generally only associated with public sector roles.</p>
+            <div class="form-group">
+                <label for="section"><strong>Section:</strong></label>
+                <input type="text" class="form-control" name="section">
+            </div>
+            <div class="form-group">
+                <label for="grade"><strong>Grade:</strong></label>
+                <input type="text" class="form-control" name="grade">
+            </div>
+        </div>
+    </section>
+    <section class="light-bg">
+        <div class="section-title text-center">
+            <h1>Employee Specification</h1>
+            <p>Please detail the desired criteria potential candidates should display.</p>
+        </div>
+        <div class="container">
+            @ksaFormPage
+            }
+        </div>
+    </section>
+}

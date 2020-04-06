@@ -1,5 +1,6 @@
 package controllers;
 
+import Enums.DynamoTables;
 import awsWrappers.AwsCognitoIdentityProviderWrapper;
 import awsWrappers.DynamoDbTableProvider;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
@@ -11,7 +12,6 @@ import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import utilities.DynamoTables;
 import utilities.LoginChecker;
 
 import javax.inject.Inject;
@@ -32,22 +32,34 @@ public class LogInController extends Controller {
 //        if (LoginChecker.isLoggedin(request)) {
 //            return redirect(routes.HomeController.index());
 //        }
-        return ok(views.html.logIn.render());
+        return ok(views.html.logIn.render(false));
     }
 
     public Result logInSubmit() {
+        System.out.println("log in submit called.");
         Form<UserSignInRequest> userSignInForm = formFactory.form(UserSignInRequest.class).bindFromRequest();
-        String username = awsSignIn(userSignInForm);
-        String userType = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName())
-                .getItem("username", username)
-                .get("userType")
-                .toString();
-        return redirect(routes.HomeController.index()).withCookies(
-                Http.Cookie.builder("username", username).build(),
-                Http.Cookie.builder("userType", userType).build());
+        System.out.println("username:" + userSignInForm.get().getUsername());
+        System.out.println("password:" + userSignInForm.get().getPassword());
+        try {
+            String username = awsSignIn(userSignInForm);
+            System.out.println("DynamoTable Name:" + DynamoTables.CAREER_SYNC_USERS.getName());
+            System.out.println("DynamoTable: " + DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName()).getTableName());
+            String userType = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName())
+                    .getItem("username", username)
+                    .get("userType")
+                    .toString();
+            System.out.println("UserType: " + userType);
+            return redirect(routes.HomeController.index()).withCookies(
+                    Http.Cookie.builder("username", username).build(),
+                    Http.Cookie.builder("userType", userType).build());
+        } catch (Exception e) {
+            System.out.println("Caught exception: " + e);
+            return badRequest(views.html.logIn.render(true));
+        }
     }
 
     public String awsSignIn(Form<UserSignInRequest> signInRequestForm) {
+        System.out.println("Attempting sign in.");
         UserSignInRequest signInRequest = signInRequestForm.get();
         AuthenticationResultType authenticationResult;
         AWSCognitoIdentityProvider cognitoClient = AwsCognitoIdentityProviderWrapper.getInstance();
@@ -61,6 +73,9 @@ public class LogInController extends Controller {
                 .withClientId(config.getString("clientId"))
                 .withUserPoolId(config.getString("userPoolId"))
                 .withAuthParameters(authParams);
+
+        System.out.println("clientId:" + config.getString("clientId"));
+        System.out.println("userPoolId:" + config.getString("userPoolId"));
 
         AdminInitiateAuthResult result = cognitoClient.adminInitiateAuth(authRequest);
         authenticationResult = result.getAuthenticationResult();
@@ -86,6 +101,7 @@ public class LogInController extends Controller {
             authenticationResult = resultChallenge.getAuthenticationResult();
         }
 
+        System.out.println("Access Token: " + authenticationResult.getAccessToken());
         return LoginChecker.getInstance().getUsername(authenticationResult.getAccessToken());
     }
 }

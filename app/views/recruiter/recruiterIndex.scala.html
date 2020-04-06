@@ -1,12 +1,31 @@
+@import views.html.recruiter.recruiterNavbar
 @()
 
-@main("CareerSync - Recruiter Page") {
-    <div class="container">
-        <div class="jumbotron">
-            <h1 class="display-1 text-center">CareerSync</h1>
+@main("CareerSync") {
+    @(recruiterNavbar("Home"))
+    <div class="hero-image main-image">
+        <div class="hero-text">
+            <h1 class="display-1 font-weight-normal" id="careerSyncMainHeader">CareerSync</h1>
+            <p class="">Welcome to CareerSync, an application that allows you to find applicants with the specific knowledge, skills and abilities to match your rob requirements.</p>
         </div>
-        <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.JobApplicationController.uploadJobApplication">Add Job Specification</a>
-        <a class="btn btn-primary btn-lg btn-block active" role="button" href="@routes.JobApplicationController.getUploadedJobSpecifications">View Uploaded Job Specifications</a>
     </div>
+        <section class="text-center">
+            <div class="container">
+                <div class="section-title">
+                    <h2 class="display-4 font-weight-normal">Add Job Description</h2>
+                    <p class="lead text-muted">Add a Job Description that you would like to fill</p>
+                    <a class="btn btn-purple btn-lg active" role="button" href="@routes.JobDescriptionController.uploadJobDescription()">Add Job Description</a>
+                </div>
+            </div>
+        </section>
+        <section class="text-center light-bg">
+            <div class="container">
+                <div class="section-title">
+                    <h2 class="display-4 font-weight-normal">View Uploaded Job Descriptions</h2>
+                    <p class="lead text-muted">View the Job Descriptions you've previously uploaded and find matching candidates</p>
+                    <a class="btn btn-purple btn-lg active" role="button" href="@routes.JobDescriptionController.getUploadedJobDescriptions">View Uploaded Job Descriptions</a>
+                </div>
+            </div>
+        </section>
     <script type="text/javascript" src="@routes.Assets.versioned("javascripts/transformed.js")"></script>
 }

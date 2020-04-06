@@ -42,6 +42,8 @@ public class UserKsas {
         this.administrativeOrOrganisational = getListOfStringsFromItem(item, "administrativeOrOrganisational");
     }
 
+    public UserKsas() {}
+
     private List<String> getListOfStringsFromItem(Map<String, AttributeValue> item, String key) {
         return item.get(key).getL().stream().map(AttributeValue::getS).collect(Collectors.toList());
     }

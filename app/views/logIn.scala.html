@@ -1,4 +1,4 @@
-@()
+@(redirect:Boolean = false)
 
 @main("Log In", false) {
     <div class="sidenav">
@@ -10,18 +10,30 @@
     <div class="main">
         <div class="col-md-6 col-sm-12">
             <div class="login-form">
+                @if(redirect) {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Incorrect details provided. Please try again.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                }
                 @helper.form(action = routes.LogInController.logInSubmit()) {
                     <div class="form-group">
                         <label for="username">Username:</label>
-                        <input type="text" name="username" />
+                        <input type="text" class="form-control" name="username" required/>
                     </div>
                     <div class="form-group">
                         <label for="password">Password:</label>
-                        <input type="password" name="password" />
+                        <input type="password" class="form-control" name="password" required/>
                     </div>
 
-                    <input type="submit" class="btn btn-black" value="Sign In" />
+                    <input type="submit" id="logInSubmit" class="btn btn-purple btn-block" value="Sign In" />
                 }
+                <br/>
+                <div class="d-flex">
+                    Don't have an account? <a href="@routes.RegisterController.register()" class="ml-2">Sign Up</a>
+                </div>
             </div>
         </div>
     </div>

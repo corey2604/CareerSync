@@ -1,0 +1,18 @@
+@import views.html.recruiter.recruiterNavbar
+@import views.html.candidate.candidateNavbar
+@(jobSpecificationSection: Html, employeeSpecificationSection: Html, userType: String, userHasKsas: Boolean)
+
+@main("View Job Description") {
+    @if(userType.equals("recruiter")) {
+        @(recruiterNavbar(""))
+    } else {
+        @(candidateNavbar(userHasKsas, ""))
+    }
+    <div class="hero-image jobDescription-image">
+        <div class="hero-text">
+            <h1 class="display-2 font-weight-normal">Job Description Details</h1>
+        </div>
+    </div>
+        @jobSpecificationSection
+        @employeeSpecificationSection
+}

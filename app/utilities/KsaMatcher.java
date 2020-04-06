@@ -1,14 +1,8 @@
 package utilities;
 
+import Enums.DynamoTables;
 import awsWrappers.AmazonDynamoDbClientWrapper;
-import awsWrappers.DynamoDbTableProvider;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.ItemCollection;
-import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
-import com.amazonaws.services.dynamodbv2.document.Table;
-import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
-import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
@@ -16,7 +10,10 @@ import models.JobDescription;
 import models.UserAccountDetails;
 import models.UserKsas;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class KsaMatcher {
     private static KsaMatcher ksaMatcher = null;
@@ -33,6 +30,10 @@ public class KsaMatcher {
         return ksaMatcher;
     }
 
+    public static void setInstance(KsaMatcher ksaMatcherInstance) {
+        ksaMatcher = ksaMatcherInstance;
+    }
+
     public List<JobDescription> getJobRecommendations(String username) {
         UserKsas userKsas = DynamoAccessor.getInstance().getKsasForUser(username);
         ScanResult allJobDescriptions = getAllJobDescriptions();
@@ -45,7 +46,7 @@ public class KsaMatcher {
         return getMatchingCandidates(jobDescription, allCandidates);
     }
 
-    public ScanResult getAllJobDescriptions() {
+    private ScanResult getAllJobDescriptions() {
         AmazonDynamoDB client = AmazonDynamoDbClientWrapper.getInstance();
 
         ScanRequest scanRequest = new ScanRequest()
@@ -54,7 +55,7 @@ public class KsaMatcher {
         return client.scan(scanRequest);
     }
 
-    public ScanResult getAllCandidates() {
+    private ScanResult getAllCandidates() {
         AmazonDynamoDB client = AmazonDynamoDbClientWrapper.getInstance();
 
         ScanRequest scanRequest = new ScanRequest()
@@ -63,23 +64,7 @@ public class KsaMatcher {
         return client.scan(scanRequest);
     }
 
-
-    public void readAllJobDescriptionsFromRecruiter(String recruiterName) {
-        AmazonDynamoDB client = AmazonDynamoDbClientWrapper.getInstance();
-
-        Map<String, AttributeValue> expressionAttributeValues = Collections.singletonMap(":recruiterName", new AttributeValue(recruiterName));
-        ScanRequest scanRequest = new ScanRequest()
-                .withTableName(DynamoTables.CAREER_SYNC_JOB_DESCRIPTIONS.getName())
-                .withFilterExpression("recruiter = :recruiterName")
-                .withExpressionAttributeValues(expressionAttributeValues);
-
-        ScanResult result = client.scan(scanRequest);
-        for (Map<String, AttributeValue> item : result.getItems()) {
-            System.out.println(item);
-        }
-    }
-
-    public List<JobDescription> getMatchingJobDescriptions(UserKsas userKsas, ScanResult allJobDescriptions) {
+    private List<JobDescription> getMatchingJobDescriptions(UserKsas userKsas, ScanResult allJobDescriptions) {
         List<String> allKsas = userKsas.getAllKsas();
         List<JobDescription> matchingJobDescriptions = new ArrayList<>();
         for (Map<String, AttributeValue> item : allJobDescriptions.getItems()) {
@@ -96,21 +81,23 @@ public class KsaMatcher {
         return matchingJobDescriptions;
     }
 
-    public List<UserAccountDetails> getMatchingCandidates(JobDescription jobDescription, ScanResult allCandidates) {
+    private List<UserAccountDetails> getMatchingCandidates(JobDescription jobDescription, ScanResult allCandidates) {
         List<String> allJobDescriptionRelatedKsas = jobDescription.getAllJobRelatedKsas();
-        List<UserAccountDetails> matchingUsers = new ArrayList<>();
-        for (Map<String, AttributeValue> item : allCandidates.getItems()) {
-            UserKsas userKsas = new UserKsas(item);
-            List<String> allUserKsas = userKsas.getAllKsas();
-            long ksaCount = allUserKsas.stream().filter(ksa -> allJobDescriptionRelatedKsas.contains(ksa)).count();
-            double percentMatch = (ksaCount <= allJobDescriptionRelatedKsas.size()) ? (ksaCount * 100) / allJobDescriptionRelatedKsas.size() : 100;;
-            System.out.println("Percentage Match: " + percentMatch);
+        if (allJobDescriptionRelatedKsas.size() > 0) {
+            List<UserAccountDetails> matchingUsers = new ArrayList<>();
+            for (Map<String, AttributeValue> item : allCandidates.getItems()) {
+                UserKsas userKsas = new UserKsas(item);
+                List<String> allUserKsas = userKsas.getAllKsas();
+                long ksaCount = allUserKsas.stream().filter(ksa -> allJobDescriptionRelatedKsas.contains(ksa)).count();
+                double percentMatch = (ksaCount <= allJobDescriptionRelatedKsas.size()) ? (ksaCount * 100) / allJobDescriptionRelatedKsas.size() : 100;
+                System.out.println("Percentage Match: " + percentMatch);
 
-            if (percentMatch > PERCENTAGE_THRESHOLD) {
-                matchingUsers.add(DynamoAccessor.getInstance().getUserAccountDetails(userKsas.getUsername()));
+                if (percentMatch > PERCENTAGE_THRESHOLD) {
+                    matchingUsers.add(DynamoAccessor.getInstance().getUserAccountDetails(userKsas.getUsername()));
+                }
             }
+            return matchingUsers;
         }
-        return matchingUsers;
+        return Collections.EMPTY_LIST;
     }
-
 }

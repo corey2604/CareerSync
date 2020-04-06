@@ -7,14 +7,20 @@ import com.amazonaws.services.cognitoidp.model.*;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.typesafe.config.Config;
 import models.UserSignUpRequest;
-import play.data.Form;
 import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import utilities.DynamoTables;
+import Enums.CareerSyncErrorMessages;
+import utilities.DynamoAccessor;
+import Enums.DynamoTables;
+import utilities.ValidationHelper;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public class RegisterController extends Controller {
 
@@ -31,22 +37,40 @@ public class RegisterController extends Controller {
 //        if (LoginChecker.isLoggedin(request)) {
 //            return redirect(routes.HomeController.index());
 //        }
-        return ok(views.html.signUp.render());
+        return ok(views.html.signUp.render(Collections.emptyList(), Optional.empty()));
     }
 
     public Result registerSubmit() {
-        Form<UserSignUpRequest> userSignUpForm = formFactory.form(UserSignUpRequest.class).bindFromRequest();
-        UserType user = awsSignUp(userSignUpForm);
-        return redirect(routes.HomeController.index()).withCookies(
-                Http.Cookie.builder("username", user.getUsername()).build(),
-                Http.Cookie.builder("userType", userSignUpForm.value().get().getUserType()).build());
+        UserSignUpRequest userSignUpRequest = formFactory.form(UserSignUpRequest.class).bindFromRequest().get();
+        List<CareerSyncErrorMessages> errorMessages = new ArrayList<>();
+        DynamoAccessor.getInstance().getAllUsernames();
+        if (DynamoAccessor.getInstance().getAllUsernames().contains(userSignUpRequest.getUsername())){
+            errorMessages.add(CareerSyncErrorMessages.USERNAME_TAKEN);
+        }
+        if (!userSignUpRequest.getPhoneNumber().matches("\\d+")) {
+            errorMessages.add(CareerSyncErrorMessages.INVALID_PHONE_NUMBER);
+        }
+        if (!ValidationHelper.getInstance().passwordIsValid(userSignUpRequest.getPassword())) {
+            errorMessages.add(CareerSyncErrorMessages.PASSWORD_DOES_NOT_CONFORM);
+        }
+        if (errorMessages.size() == 0){
+            try {
+                UserType user = awsSignUp(userSignUpRequest);
+                return redirect(routes.HomeController.index()).withCookies(
+                        Http.Cookie.builder("username", user.getUsername()).build(),
+                        Http.Cookie.builder("userType", userSignUpRequest.getUserType()).build());
+            } catch (Exception e) {
+                errorMessages.add(CareerSyncErrorMessages.GENERAL_SUBMISSION_ERROR);
+            }
+        }
+        return badRequest(views.html.signUp.render(errorMessages, Optional.of(userSignUpRequest)));
     }
 
-    public UserType awsSignUp(Form<UserSignUpRequest> userSignUpForm) {
-        UserSignUpRequest signUpRequest = userSignUpForm.get();
+    private UserType awsSignUp(UserSignUpRequest signUpRequest) {
         AWSCognitoIdentityProvider cognitoClient = AwsCognitoIdentityProviderWrapper.getInstance();
+        String userPoolId = config.getString("userPoolId");
         AdminCreateUserRequest cognitoRequest = new AdminCreateUserRequest()
-                .withUserPoolId(config.getString("userPoolId"))
+                .withUserPoolId(userPoolId)
                 .withUsername(signUpRequest.getUsername())
                 .withUserAttributes(
                         new AttributeType()
@@ -75,9 +99,16 @@ public class RegisterController extends Controller {
                 .with("userType", signUpRequest.getUserType());
         DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName()).putItem(careerSyncUser);
 
-
         AdminCreateUserResult createUserResult = cognitoClient.adminCreateUser(cognitoRequest);
         UserType cognitoUser = createUserResult.getUser();
+
+        AdminSetUserPasswordRequest setUserPasswordRequest = new AdminSetUserPasswordRequest()
+                .withPassword(signUpRequest.getPassword())
+                .withUsername(signUpRequest.getUsername())
+                .withPermanent(true)
+                .withUserPoolId(userPoolId);
+
+        cognitoClient.adminSetUserPassword(setUserPasswordRequest);
 
         return cognitoUser;
 

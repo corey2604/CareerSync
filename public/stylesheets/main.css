@@ -1,5 +1,141 @@
+body, html {
+    height: 100%;
+}
+
+.hero-image {
+    height: 50%;
+
+    /* Position and center the image to scale nicely on all screens */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+}
+
+.main-image {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url("../images/banner.jpeg");
+}
+
+.ksa-image {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url("../images/KSA.jpg");
+}
+
+.ksa-profile-image {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url("../images/ksaProfile.jpeg");
+}
+
+.jobRecommendation-image {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url("../images/jobRecommendation.jpg");
+}
+
+.jobDescription-image {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url("../images/jobDescriptionDetails.jpeg");
+}
+
+.uploadedJobDescriptions-image {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url("../images/uploadedJobDescriptions.jpeg");
+}
+
+.contact-image {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url("../images/contact.jpeg");
+}
+
+.candidate-image {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url("../images/candidates.jpeg");
+}
+
+.account-image {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url("../images/account.jpeg");
+}
+
+.hero-text {
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+}
+
 body {
     font-family: "Lato", sans-serif;
+}
+
+body p, strong, body section ul li, input {
+    font-size: 26px;
+}
+
+.jumbotron h1{
+    color: #74597D;
+}
+
+.section-title h1 {
+    font-size: 60px;
+    color: #74597D;
+    font-weight: 900;
+    letter-spacing: -0.6px;
+    position: relative;
+    margin: 0 0 50px 0;
+    padding-bottom: 15px;
+}
+
+.section-title h1:after {
+    left: 50%;
+    z-index: 1;
+    width: 60px;
+    height: 3px;
+    content: " ";
+    bottom: -5px;
+    margin-left: -30px;
+    text-align: center;
+    position: absolute;
+    background: #D4D4D4;
+}
+
+.section-title h2 {
+    font-size: 40px;
+    color: black;
+    font-weight: 900;
+    letter-spacing: -0.6px;
+    position: relative;
+    margin: 0 0 50px 0;
+    padding-bottom: 15px;
+}
+
+.section-title h2:after {
+    left: 50%;
+    z-index: 1;
+    width: 60px;
+    height: 3px;
+    content: " ";
+    bottom: -5px;
+    margin-left: -30px;
+    text-align: center;
+    position: absolute;
+    background: #D4D4D4;
+}
+
+nav {
+   background-color: #74597D;
+}
+
+@media (min-width: 768px) {
+    section {
+        padding: 150px 0;
+    }
+}
+
+section {
+    padding: 70px 0;
+}
+
+.light-bg {
+    background-color: #f8f8f8;
+}
+
+.dark-bg {
+    background-color: #333231;
+    color: #fff;
 }
 
 .main-head{
@@ -10,28 +146,13 @@ body {
 
 .sidenav {
     height: 100%;
-    background-color: #000;
+    background-color: #74597D;
     overflow-x: hidden;
-    padding-top: 20px;
 }
 
 
 .main {
     padding: 0px 10px;
-}
-
-@media screen and (max-height: 450px) {
-    .sidenav {padding-top: 15px;}
-}
-
-@media screen and (max-width: 450px) {
-    .login-form{
-        margin-top: 10%;
-    }
-
-    .register-form{
-        margin-top: 10%;
-    }
 }
 
 @media screen and (min-width: 768px){
@@ -48,7 +169,7 @@ body {
     }
 
     .login-form{
-        margin-top: 80%;
+        margin-top: 50%;
     }
 
     .register-form{
@@ -70,4 +191,26 @@ body {
 .btn-black{
     background-color: #000 !important;
     color: #fff;
+}
+
+.btn-purple{
+    background-color: #74597D !important;
+    color: #fff;
+}
+
+.btn-purple:hover{
+    background-color: #8A4E62 !important;
+    color: #fff;
+}
+
+#jobDescriptionTable a{
+    width:150px;
+}
+
+#matchingCandidatesTable a{
+    width:200px;
+}
+
+#jobRecommendationsTable a{
+    width:170px;
 }
