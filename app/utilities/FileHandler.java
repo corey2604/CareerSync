@@ -1,13 +1,12 @@
 package utilities;
 
-import Enums.DynamoTables;
-import awsWrappers.DynamoDbTableProvider;
-import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import models.KsaForm;
 import models.KsaValues;
 import models.QualificationLevels;
@@ -19,15 +18,11 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class FileHandler {
     private static final String BUCKET_NAME = "career-sync";
@@ -79,6 +74,8 @@ public class FileHandler {
             try {
                 s3Client.putObject(new PutObjectRequest(BUCKET_NAME, fileName, chosenFile.get()));
                 extractKsasFromFile(folderName);
+                fileChooser.cancelSelection();
+                fileChooser.setVisible(false);
                 return true;
             } catch (Exception e) {
                 fileChooser.cancelSelection();
@@ -107,13 +104,13 @@ public class FileHandler {
             String fileName = username + SUFFIX;
             File localFile = new File(System.getProperty("user.home") + "/CV.docx");
             s3Client.getObject(new GetObjectRequest(BUCKET_NAME, fileName), localFile);
-            if(!Desktop.isDesktopSupported()){
+            if (!Desktop.isDesktopSupported()) {
                 System.out.println("Desktop is not supported");
                 return;
             }
 
             Desktop desktop = Desktop.getDesktop();
-            if(localFile.exists()) desktop.open(localFile);
+            if (localFile.exists()) desktop.open(localFile);
 
         } catch (Exception e) {
             System.out.println("No CV found");
@@ -166,45 +163,15 @@ public class FileHandler {
                 qualificationArea = substringStartingFromQualificationLevel.substring(0, indexToUse);
             }
         }
-        //.replace(qualificationLevel.get(), "");
 
-        List<String> communicationSkills = new ArrayList<>();
-        List<String> peopleSkills = new ArrayList<>();
-        List<String> financialKnowledgeSkills = new ArrayList<>();
-        List<String> thinkingAndAnalysisSkills = new ArrayList<>();
-        List<String> creativeOrInnovativeSkills = new ArrayList<>();
-        List<String> administrativeOrOrganisationalSkills = new ArrayList<>();
+        String cvText = extractor.getText().toLowerCase();
+        List<String> communicationSkills = addKsaIfFoundInCv(KsaValues.getCommunicationSkills(), cvText);
+        List<String> peopleSkills = addKsaIfFoundInCv(KsaValues.getPeopleSkills(), cvText);
+        List<String> financialKnowledgeSkills = addKsaIfFoundInCv(KsaValues.getFinancialKnowledgeAndSkills(), cvText);
+        List<String> thinkingAndAnalysisSkills = addKsaIfFoundInCv(KsaValues.getThinkingAndAnalysis(), cvText);
+        List<String> creativeOrInnovativeSkills = addKsaIfFoundInCv(KsaValues.getCreativeOrInnovative(), cvText);
+        List<String> administrativeOrOrganisationalSkills = addKsaIfFoundInCv(KsaValues.getAdministrativeOrOrganisational(), cvText);
 
-        KsaValues.getCommunicationSkills().forEach(ksa -> {
-            if (extractor.getText().contains(ksa)) {
-                communicationSkills.add(ksa);
-            }
-        });
-        KsaValues.getPeopleSkills().forEach(ksa -> {
-            if (lowercaseText.contains(ksa.toLowerCase())) {
-                peopleSkills.add(ksa);
-            }
-        });
-        KsaValues.getFinancialKnowledgeAndSkills().forEach(ksa -> {
-            if (lowercaseText.contains(ksa.toLowerCase())) {
-                financialKnowledgeSkills.add(ksa);
-            }
-        });
-        KsaValues.getThinkingAndAnalysis().forEach(ksa -> {
-            if (lowercaseText.contains(ksa.toLowerCase())) {
-                thinkingAndAnalysisSkills.add(ksa);
-            }
-        });
-        KsaValues.getCreativeOrInnovative().forEach(ksa -> {
-            if (lowercaseText.contains(ksa.toLowerCase())) {
-                creativeOrInnovativeSkills.add(ksa);
-            }
-        });
-        KsaValues.getAdministrativeOrOrganisational().forEach(ksa -> {
-            if (lowercaseText.contains(ksa.toLowerCase())) {
-                administrativeOrOrganisationalSkills.add(ksa);
-            }
-        });
         KsaForm ksaForm = new KsaForm();
         ksaForm.setQualificationLevel(qualificationLevel.get());
         ksaForm.setQualificationArea(qualificationArea);
@@ -215,5 +182,51 @@ public class FileHandler {
         ksaForm.setCreativeOrInnovative(creativeOrInnovativeSkills);
         ksaForm.setAdministrativeOrOrganisational(administrativeOrOrganisationalSkills);
         DynamoAccessor.getInstance().putKsasInTable(username, ksaForm);
+    }
+
+    private List<String> addKsaIfFoundInCv(List<String> ksaGroup, String cvText) {
+        List<String> ksasFound = new ArrayList<>();
+        ksaGroup.forEach(ksa -> {
+            Set<String> ksaSynonyms = getRelatedWords(ksa);
+            if (ksaSynonyms.stream().anyMatch(cvText::contains)) {
+                ksasFound.add(ksa);
+            }
+        });
+        return ksasFound;
+    }
+
+    public Set<String> getRelatedWords(String word) {
+        String formattedWord = word.replaceAll("\\s+","");
+        formattedWord = formattedWord.replaceAll("-", "").toLowerCase();
+        Set<String> relatedWords = new HashSet<>();
+        relatedWords.addAll(queryWordnikApi("synonym", formattedWord));
+//        relatedWords.addAll(queryWordnikApi("hypernym", formattedWord));
+//        relatedWords.addAll(queryWordnikApi("verb-stem", formattedWord));
+//        relatedWords.addAll(queryWordnikApi("verb-form", formattedWord));
+        relatedWords.addAll(queryWordnikApi("equivalent", formattedWord));
+        return relatedWords;
+    }
+
+    private List<String> queryWordnikApi(String wordType, String word) {
+        try {
+            String formattedUrl = String.format("https://api.wordnik.com/v4/word.json/%s/relatedWords?useCanonical=false&relationshipTypes=%s&limitPerRelationshipType=100&api_key=%s", word.toLowerCase(), wordType, System.getenv("WORDNIK_API_KEY"));
+            URL url = new URL(formattedUrl);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer content = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                content.append(inputLine);
+            }
+            in.close();
+            JsonArray json = JsonParser.parseString(content.toString()).getAsJsonArray().get(0).getAsJsonObject().get("words").getAsJsonArray();
+            List<String> synonyms = new ArrayList<>();
+            json.forEach(synonym -> synonyms.add(synonym.getAsString()));
+            return synonyms;
+        } catch (Exception e) {
+            return Collections.singletonList(word);
+        }
     }
 }

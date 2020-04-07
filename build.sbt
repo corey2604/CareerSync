@@ -17,5 +17,6 @@ libraryDependencies ++= Seq(
   "org.apache.poi" % "poi-ooxml" % "4.1.2",
   "org.mockito" % "mockito-all" % "2.0.2-beta" % Test,
   "org.openjfx" % "javafx" % "11-ea+19",
-  "org.seleniumhq.selenium" % "selenium-java" % "3.141.59"
+  "org.seleniumhq.selenium" % "selenium-java" % "3.141.59",
+  "com.google.code.gson" % "gson" % "2.8.6"
 )
