@@ -13,7 +13,7 @@
             <div class="section-title text-center">
                 <h1 class="">Job Details:</h1>
             </div>
-        @helper.form(action = routes.JobDescriptionController.submitJobDescription()) {
+        @helper.form(action = routes.JobDescriptionController.submitEditedJobDescription()) {
             <div class="form-group">
                 <label for="referenceCode"><strong>Reference Code:</strong></label>
                 <input type="text" class="form-control" name="referenceCode" value="@jobDescription.getReferenceCode">
@@ -21,6 +21,14 @@
             <div class="form-group">
                 <label for="jobTitle"><strong>Job Title:</strong></label>
                 <input type="text" class="form-control" name="jobTitle" value="@jobDescription.getJobTitle">
+            </div>
+            <div class="form-group">
+                <strong>Created at:</strong>
+                <p name="createdAt">@jobDescription.getCreatedAt</p>
+            </div>
+            <div class="form-group">
+                <strong>Last updated at:</strong>
+                <p name="lastUpdatedAt">@jobDescription.getLastUpdatedAt</p>
             </div>
             @if(jobDescription.getDuration.isPresent) {
                 <div class="form-group">

@@ -22,6 +22,7 @@ import Enums.DynamoTables;
 import utilities.KsaMatcher;
 
 import javax.inject.Inject;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -71,7 +72,14 @@ public class JobDescriptionController extends Controller {
     public Result submitJobDescription(Http.Request request) {
         JobDescription jobDescription = formFactory.form(JobDescription.class).bindFromRequest().get();
         jobDescription.setRecruiter(request.cookie("username").value());
-        putJobDescriptionInTable(jobDescription);
+        putNewJobDescriptionInTable(jobDescription);
+        return redirect(routes.HomeController.index());
+    }
+
+    public Result submitEditedJobDescription(Http.Request request) {
+        JobDescription jobDescription = formFactory.form(JobDescription.class).bindFromRequest().get();
+        jobDescription.setRecruiter(request.cookie("username").value());
+        updateJobDescriptionInTable(jobDescription);
         return redirect(routes.HomeController.index());
     }
 
@@ -83,12 +91,12 @@ public class JobDescriptionController extends Controller {
     public Result deleteJobDescription(Http.Request request, String referenceCode) {
         Table jobDescriptionsTable = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_JOB_DESCRIPTIONS.getName());
         DeleteItemSpec deleteItemSpec = new DeleteItemSpec()
-                .withPrimaryKey("recruiter", request.cookie("username").value())
-                .withConditionExpression(":referenceCode = :val")
-                .withNameMap(new NameMap()
-                        .with(":referenceCode", "referenceCode"))
-                .withValueMap(new ValueMap()
-                        .withString(":val", referenceCode))
+                .withPrimaryKey("recruiter", request.cookie("username").value(), "referenceCode", referenceCode)
+//                .withConditionExpression(":referenceCode = :val")
+//                .withNameMap(new NameMap()
+//                        .with(":referenceCode", "referenceCode"))
+//                .withValueMap(new ValueMap()
+//                        .withString(":val", referenceCode))
                 .withReturnValues(ReturnValue.ALL_OLD);
         jobDescriptionsTable.deleteItem(deleteItemSpec);
         return getUploadedJobDescriptions(request);
@@ -112,7 +120,19 @@ public class JobDescriptionController extends Controller {
         return ok(views.html.candidate.userContactInformation.render(userAccountDetails, request.cookie("userType").value(), userHasKsas));
     }
 
-    private void putJobDescriptionInTable(JobDescription jobDescription) {
+    private void putNewJobDescriptionInTable(JobDescription jobDescription) {
+        putJobDescriptionInTable(jobDescription, false);
+    }
+
+    private void updateJobDescriptionInTable(JobDescription jobDescription) {
+        putJobDescriptionInTable(jobDescription, true);
+    }
+
+    private void putJobDescriptionInTable(JobDescription jobDescription, boolean isUpdate) {
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//dd/MM/yyyy
+        Date now = new Date();
+        String strDate = sdfDate.format(now);
+
         Optional<List<String>> communicaticationSkills = Optional.ofNullable(jobDescription.getCommunicationSkills());
         Optional<List<String>> peopleSkills = Optional.ofNullable(jobDescription.getPeopleSkills());
         Optional<List<String>> financialKnowledgeAndSkills = Optional.ofNullable(jobDescription.getFinancialKnowledgeAndSkills());
@@ -136,7 +156,9 @@ public class JobDescriptionController extends Controller {
                 .withList("financialKnowledgeAndSkills", convertSkillsToList(financialKnowledgeAndSkills))
                 .withList("thinkingAndAnalysis", convertSkillsToList(thinkingAndAnalysis))
                 .withList("creativeOrInnovative", convertSkillsToList(creativeOrInnovative))
-                .withList("administrativeOrOrganisational", convertSkillsToList(administrativeOrOrganisational));
+                .withList("administrativeOrOrganisational", convertSkillsToList(administrativeOrOrganisational))
+                .with("createdAt", isUpdate ? jobDescription.getCreatedAt() : strDate)
+                .with("lastUpdatedAt", strDate);
 
         if (jobDescription.getDuration().isPresent()) {
             jobDescriptionItem.with("duration", jobDescription.getDuration().get());

@@ -34,6 +34,8 @@ public class JobDescription {
     private List<String> thinkingAndAnalysis;
     private List<String> creativeOrInnovative;
     private List<String> administrativeOrOrganisational;
+    private String createdAt;
+    private String lastUpdatedAt;
 
     public JobDescription() {
     }
@@ -63,6 +65,8 @@ public class JobDescription {
         this.thinkingAndAnalysis = (List<String>) item.get("thinkingAndAnalysis");
         this.creativeOrInnovative = (List<String>) item.get("creativeOrInnovative");
         this.administrativeOrOrganisational = (List<String>) item.get("administrativeOrOrganisational");
+        this.createdAt = item.get("createdAt").toString();
+        this.lastUpdatedAt = item.get("lastUpdatedAt").toString();
     }
 
     public JobDescription(Map<String, AttributeValue> item) {
@@ -90,6 +94,8 @@ public class JobDescription {
         this.thinkingAndAnalysis = getListOfStringsFromItem(item, "thinkingAndAnalysis");
         this.creativeOrInnovative = getListOfStringsFromItem(item,"creativeOrInnovative");
         this.administrativeOrOrganisational = getListOfStringsFromItem(item, "administrativeOrOrganisational");
+        this.createdAt = item.get("createdAt").getS();
+        this.lastUpdatedAt = item.get("lastUpdatedAt").getS();
     }
 
     private Optional<String> getNullSafeValue(Item item, String field) {
@@ -298,6 +304,22 @@ public class JobDescription {
 
     public void setAdministrativeOrOrganisational(List<String> administrativeOrOrganisational) {
         this.administrativeOrOrganisational = administrativeOrOrganisational;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getLastUpdatedAt() {
+        return lastUpdatedAt;
+    }
+
+    public void setLastUpdatedAt(String lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
     }
 
     public List<String> getAllJobRelatedKsas() {

@@ -34,6 +34,8 @@ POST        /editAccount/update             controllers.EditAccountController.up
 +nocsrf
 POST        /jobDescription/submit          controllers.JobDescriptionController.submitJobDescription(request: Request)
 +nocsrf
+POST        /editJobDescriptionn/submit     controllers.JobDescriptionController.submitEditedJobDescription(request: Request)
++nocsrf
 POST        /ksaForm/submit                 controllers.KsaFormController.submitForm(request: Request)
 
 # Map static resources from the /public folder to the /assets URL path
