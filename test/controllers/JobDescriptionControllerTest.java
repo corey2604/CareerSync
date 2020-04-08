@@ -235,6 +235,49 @@ public class JobDescriptionControllerTest {
     }
 
     @Test
+    public void testSubmitEditedJobDescriptionWithNoKsas() {
+        //given
+        Http.RequestImpl request = Helpers.fakeRequest()
+                .cookie(Http.Cookie.builder("username", "fakeName").build())
+                .build();
+        doReturn(mockForm).when(mockFormFactory).form(JobDescription.class);
+        doReturn(mockForm).when(mockForm).bindFromRequest();
+        doReturn(mockJobDescription).when(mockForm).get();
+
+        //when
+        Result result = new JobDescriptionController(mockFormFactory).submitEditedJobDescription(request);
+
+        //then
+        assertEquals(SEE_OTHER, result.status());
+        assertEquals("/", result.redirectLocation().get());
+    }
+
+    @Test
+    public void testSubmitEditedJobDescriptionWithPopulatedKsas() {
+        //given
+        Http.RequestImpl request = Helpers.fakeRequest()
+                .cookie(Http.Cookie.builder("username", "fakeName").build())
+                .build();
+        doReturn(mockForm).when(mockFormFactory).form(JobDescription.class);
+        doReturn(mockForm).when(mockForm).bindFromRequest();
+        doReturn(mockJobDescription).when(mockForm).get();
+
+        doReturn(Collections.singletonList("Listening")).when(mockJobDescription).getCommunicationSkills();
+        doReturn(Collections.singletonList("Counselling")).when(mockJobDescription).getPeopleSkills();
+        doReturn(Collections.singletonList("VAT")).when(mockJobDescription).getFinancialKnowledgeAndSkills();
+        doReturn(Collections.singletonList("Statistics")).when(mockJobDescription).getThinkingAndAnalysis();
+        doReturn(Collections.singletonList("Creative")).when(mockJobDescription).getCreativeOrInnovative();
+        doReturn(Collections.singletonList("Planning")).when(mockJobDescription).getAdministrativeOrOrganisational();
+
+        //when
+        Result result = new JobDescriptionController(mockFormFactory).submitJobDescription(request);
+
+        //then
+        assertEquals(SEE_OTHER, result.status());
+        assertEquals("/", result.redirectLocation().get());
+    }
+
+    @Test
     public void testEditJobDescription() {
         //given
         doReturn(mockUserKsas).when(mockJobDescription).getUserKsasFromJobDescription();

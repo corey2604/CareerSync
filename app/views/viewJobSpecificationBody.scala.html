@@ -13,6 +13,14 @@
             <strong>Job Title:</strong>
             <p name="referenceCode">@jobDescription.getJobTitle</p>
         </div>
+        <div class="row">
+            <strong>Created at:</strong>
+            <p name="createdAt">@jobDescription.getCreatedAt</p>
+        </div>
+        <div class="row">
+            <strong>Last updated at:</strong>
+            <p name="lastUpdatedAt">@jobDescription.getLastUpdatedAt</p>
+        </div>
         @if(jobDescription.getDuration.isPresent) {
             <div class="row">
                 <strong>Duration:</strong>
