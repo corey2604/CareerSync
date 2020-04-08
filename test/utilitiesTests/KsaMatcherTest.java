@@ -22,8 +22,8 @@ import static org.mockito.Mockito.reset;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KsaMatcherTest {
-    private static final String EXISTING_RECRUITER = "testRecruiterUser";
-    private static final String EXISTING_REFERENCE_CODE = "TestReference";
+    private static final String EXISTING_RECRUITER = "requiredTestRecruiterUser";
+    private static final String EXISTING_REFERENCE_CODE = "RequiredTestReference";
 
     @Mock
     private DynamoAccessor mockDynamoAccessor;
