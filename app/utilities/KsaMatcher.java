@@ -17,7 +17,6 @@ import java.util.Map;
 
 public class KsaMatcher {
     private static KsaMatcher ksaMatcher = null;
-    private static int PERCENTAGE_THRESHOLD = 75;
 
     private KsaMatcher() {
         //private constructor
@@ -74,7 +73,7 @@ public class KsaMatcher {
             double percentMatch = (ksaCount <= allJobDescriptionRelatedKsas.size()) ? (ksaCount * 100) / allJobDescriptionRelatedKsas.size() : 100;
             System.out.println("Percentage Match: " + percentMatch);
 
-            if (percentMatch > PERCENTAGE_THRESHOLD) {
+            if (percentMatch > jobDescription.getPercentageMatchThreshold()) {
                 matchingJobDescriptions.add(jobDescription);
             }
         }
@@ -92,7 +91,7 @@ public class KsaMatcher {
                 double percentMatch = (ksaCount <= allJobDescriptionRelatedKsas.size()) ? (ksaCount * 100) / allJobDescriptionRelatedKsas.size() : 100;
                 System.out.println("Percentage Match: " + percentMatch);
 
-                if (percentMatch > PERCENTAGE_THRESHOLD) {
+                if (percentMatch >= jobDescription.getPercentageMatchThreshold()) {
                     matchingUsers.add(DynamoAccessor.getInstance().getUserAccountDetails(userKsas.getUsername()));
                 }
             }

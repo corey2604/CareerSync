@@ -139,5 +139,14 @@
     </div>
             @populatedKsaFormPage
         }
+        <div class="container">
+            <div class="form-group">
+                <label for="percentageMatchThreshold"><strong>Percentage Match:</strong></label>
+                <p class="font-weight-light">Please indicate what percentage of matching KSA's a candidate should possess in order to be seen as a suitable candidate for this role</p>
+                <input type="number" class="form-control" name="percentageMatchThreshold" step="0" max="100" min="1" value="@jobDescription.getPercentageMatchThreshold" required>
+            </div>
+            <br/>
+            <button type="submit" class="btn btn-purple btn-lg btn-block active">Submit</button>
+        </div>
     </section>
 }
