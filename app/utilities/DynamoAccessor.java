@@ -8,12 +8,10 @@ import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.ItemCollection;
 import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.spec.DeleteItemSpec;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.GetItemRequest;
-import com.amazonaws.services.dynamodbv2.model.ScanRequest;
-import com.amazonaws.services.dynamodbv2.model.ScanResult;
+import com.amazonaws.services.dynamodbv2.model.*;
 import models.JobDescription;
 import models.KsaForm;
 import models.UserAccountDetails;
@@ -124,6 +122,14 @@ public class DynamoAccessor {
         addSkillListIfPresent(jobDescriptionItem, "creativeOrInnovative", ksaForm.getCreativeOrInnovative());
         addSkillListIfPresent(jobDescriptionItem, "administrativeOrOrganisational", ksaForm.getAdministrativeOrOrganisational());
         DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USER_KSAS.getName()).putItem(jobDescriptionItem);
+    }
+
+    public void deleteJobDescriptionFromTable(JobDescription jobDescription) {
+        Table jobDescriptionsTable = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_JOB_DESCRIPTIONS.getName());
+        DeleteItemSpec deleteItemSpec = new DeleteItemSpec()
+                .withPrimaryKey("recruiter", jobDescription.getRecruiter(), "referenceCode", jobDescription.getReferenceCode())
+                .withReturnValues(ReturnValue.ALL_OLD);
+        jobDescriptionsTable.deleteItem(deleteItemSpec);
     }
 
     private void addSkillListIfPresent(Item jobDescriptionItem, String fieldName, List<String> skillList) {

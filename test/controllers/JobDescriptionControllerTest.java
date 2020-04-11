@@ -102,6 +102,7 @@ public class JobDescriptionControllerTest {
         doReturn("100000000000").when(mockJobDescription).getSalary();
         doReturn("To Test").when(mockJobDescription).getMainPurposeOfJob();
         doReturn("Testing").when(mockJobDescription).getMainResponsibilities();
+        doReturn("01-01-2100").when(mockJobDescription).getClosingDate();
         doReturn(Optional.of("Permanent")).when(mockJobDescription).getDuration();
         doReturn(Optional.empty()).when(mockJobDescription).getGeneral();
         doReturn(Optional.empty()).when(mockJobDescription).getReportsTo();
