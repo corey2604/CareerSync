@@ -157,8 +157,9 @@ public class JobDescriptionController extends Controller {
                 .withList("thinkingAndAnalysis", convertSkillsToList(thinkingAndAnalysis))
                 .withList("creativeOrInnovative", convertSkillsToList(creativeOrInnovative))
                 .withList("administrativeOrOrganisational", convertSkillsToList(administrativeOrOrganisational))
-                .with("createdAt", isUpdate ? jobDescription.getCreatedAt() : strDate)
-                .with("lastUpdatedAt", strDate);
+                .with("createdAt", (isUpdate) ? jobDescription.getCreatedAt() : strDate)
+                .with("lastUpdatedAt", strDate)
+                .with("percentageMatchThreshold", String.valueOf(jobDescription.getPercentageMatchThreshold()));
 
         if (jobDescription.getDuration().isPresent()) {
             jobDescriptionItem.with("duration", jobDescription.getDuration().get());

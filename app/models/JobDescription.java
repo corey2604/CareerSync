@@ -36,6 +36,7 @@ public class JobDescription {
     private List<String> administrativeOrOrganisational;
     private String createdAt;
     private String lastUpdatedAt;
+    private int percentageMatchThreshold;
 
     public JobDescription() {
     }
@@ -67,6 +68,7 @@ public class JobDescription {
         this.administrativeOrOrganisational = (List<String>) item.get("administrativeOrOrganisational");
         this.createdAt = item.get("createdAt").toString();
         this.lastUpdatedAt = item.get("lastUpdatedAt").toString();
+        this.percentageMatchThreshold = Integer.parseInt(item.get("percentageMatchThreshold").toString());
     }
 
     public JobDescription(Map<String, AttributeValue> item) {
@@ -96,6 +98,7 @@ public class JobDescription {
         this.administrativeOrOrganisational = getListOfStringsFromItem(item, "administrativeOrOrganisational");
         this.createdAt = item.get("createdAt").getS();
         this.lastUpdatedAt = item.get("lastUpdatedAt").getS();
+        this.percentageMatchThreshold = Integer.parseInt(item.get("percentageMatchThreshold").getS());
     }
 
     private Optional<String> getNullSafeValue(Item item, String field) {
@@ -320,6 +323,14 @@ public class JobDescription {
 
     public void setLastUpdatedAt(String lastUpdatedAt) {
         this.lastUpdatedAt = lastUpdatedAt;
+    }
+
+    public int getPercentageMatchThreshold() {
+        return percentageMatchThreshold;
+    }
+
+    public void setPercentageMatchThreshold(int percentageMatchThreshold) {
+        this.percentageMatchThreshold = percentageMatchThreshold;
     }
 
     public List<String> getAllJobRelatedKsas() {

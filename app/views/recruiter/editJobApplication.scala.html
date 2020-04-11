@@ -24,11 +24,11 @@
             </div>
             <div class="form-group">
                 <strong>Created at:</strong>
-                <p name="createdAt">@jobDescription.getCreatedAt</p>
+                <input type="text" class="form-control-plaintext" name="createdAt" value="@jobDescription.getCreatedAt" readonly>
             </div>
             <div class="form-group">
                 <strong>Last updated at:</strong>
-                <p name="lastUpdatedAt">@jobDescription.getLastUpdatedAt</p>
+                <input type="text" class="form-control-plaintext" name="lastUpdatedAt" value="@jobDescription.getLastUpdatedAt" readonly>
             </div>
             @if(jobDescription.getDuration.isPresent) {
                 <div class="form-group">
@@ -138,6 +138,15 @@
         <h1 class="">Employee Specification:</h1>
     </div>
             @populatedKsaFormPage
+        <div class="container">
+            <div class="form-group">
+                <label for="percentageMatchThreshold"><strong>Percentage Match:</strong></label>
+                <p class="font-weight-light">Please indicate what percentage of matching KSA's a candidate should possess in order to be seen as a suitable candidate for this role</p>
+                <input type="number" class="form-control" name="percentageMatchThreshold" step="0" max="100" min="1" value="@jobDescription.getPercentageMatchThreshold" required>
+            </div>
+            <br/>
+            <button type="submit" class="btn btn-purple btn-lg btn-block active">Submit</button>
+        </div>
         }
     </section>
 }
