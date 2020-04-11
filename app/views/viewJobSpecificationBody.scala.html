@@ -35,6 +35,10 @@
             <strong>Company or Organisation:</strong>
             <p name="referenceCode">@jobDescription.getCompanyOrOrganisation</p>
         </div>
+        <div class="row">
+            <strong>Closing Date:</strong>
+            <p name="closingDate">@jobDescription.getClosingDate</p>
+        </div>
         @if(jobDescription.getDepartment.isPresent) {
             <div class="row">
                 <strong>Department:</strong>

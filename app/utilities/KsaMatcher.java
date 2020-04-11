@@ -10,10 +10,10 @@ import models.JobDescription;
 import models.UserAccountDetails;
 import models.UserKsas;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class KsaMatcher {
     private static KsaMatcher ksaMatcher = null;
@@ -71,10 +71,18 @@ public class KsaMatcher {
             List<String> allJobDescriptionRelatedKsas = jobDescription.getAllJobRelatedKsas();
             long ksaCount = allKsas.stream().filter(ksa -> allJobDescriptionRelatedKsas.contains(ksa)).count();
             double percentMatch = (ksaCount <= allJobDescriptionRelatedKsas.size()) ? (ksaCount * 100) / allJobDescriptionRelatedKsas.size() : 100;
-            System.out.println("Percentage Match: " + percentMatch);
 
             if (percentMatch > jobDescription.getPercentageMatchThreshold()) {
-                matchingJobDescriptions.add(jobDescription);
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                try {
+                    Date closingDate = formatter.parse(jobDescription.getClosingDate());
+                    if (new Date().after(closingDate)) {
+                        DynamoAccessor.getInstance().deleteJobDescriptionFromTable(jobDescription);
+                    } else {
+                        matchingJobDescriptions.add(jobDescription);
+                    }
+                } catch (ParseException e) {
+                }
             }
         }
         return matchingJobDescriptions;

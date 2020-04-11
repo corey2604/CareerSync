@@ -25,6 +25,7 @@ public class JobDescription {
     private String salary;
     private String mainPurposeOfJob;
     private String mainResponsibilities;
+    private String closingDate;
     private Optional<String> general;
     private String qualificationLevel;
     private String qualificationArea;
@@ -57,6 +58,7 @@ public class JobDescription {
         this.salary = item.get("salary").toString();
         this.mainPurposeOfJob = item.get("mainPurposeOfJob").toString();
         this.mainResponsibilities = item.get("mainResponsibilities").toString();
+        this.closingDate = item.get("closingDate").toString();
         this.general = getNullSafeValue(item, "general");
         this.qualificationLevel = item.get("qualificationLevel").toString();
         this.qualificationArea = item.get("qualificationArea").toString();
@@ -87,6 +89,7 @@ public class JobDescription {
         this.salary = item.get("salary").getS();
         this.mainPurposeOfJob = item.get("mainPurposeOfJob").getS();
         this.mainResponsibilities = item.get("mainResponsibilities").getS();
+        this.closingDate = item.get("closingDate").getS();
         this.general = setOptionalValueFromAttribute(item.get("general"));
         this.qualificationLevel = item.get("qualificationLevel").getS();
         this.qualificationArea = item.get("qualificationArea").getS();
@@ -235,6 +238,14 @@ public class JobDescription {
 
     public void setMainResponsibilities(String mainResponsibilities) {
         this.mainResponsibilities = mainResponsibilities;
+    }
+
+    public String getClosingDate() {
+        return closingDate;
+    }
+
+    public void setClosingDate(String closingDate) {
+        this.closingDate = closingDate;
     }
 
     public Optional<String> getGeneral() {

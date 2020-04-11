@@ -13,6 +13,7 @@ import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import models.JobDescription;
 import models.UserAccountDetails;
 import models.UserKsas;
+import org.apache.http.client.utils.DateUtils;
 import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -22,6 +23,8 @@ import Enums.DynamoTables;
 import utilities.KsaMatcher;
 
 import javax.inject.Inject;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -62,9 +65,19 @@ public class JobDescriptionController extends Controller {
         List<JobDescription> jobDescriptions = new ArrayList<JobDescription>();
         Item item;
         while (iterator.hasNext()) {
-            item = iterator.next();
-            jobDescriptions.add(new JobDescription(item));
-            System.out.println(item.toJSONPretty());
+            JobDescription jobDescription = new JobDescription(iterator.next());
+            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date closingDate;
+            try {
+                closingDate = formatter.parse(jobDescription.getClosingDate());
+            } catch (ParseException e) {
+                return badRequest();
+            }
+            if (new Date().after(closingDate)) {
+                deleteJobDescription(request, jobDescription.getReferenceCode());
+            } else {
+                jobDescriptions.add(jobDescription);
+            }
         }
         return ok(views.html.recruiter.uploadedJobDescriptions.render(jobDescriptions));
     }
@@ -92,11 +105,6 @@ public class JobDescriptionController extends Controller {
         Table jobDescriptionsTable = DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_JOB_DESCRIPTIONS.getName());
         DeleteItemSpec deleteItemSpec = new DeleteItemSpec()
                 .withPrimaryKey("recruiter", request.cookie("username").value(), "referenceCode", referenceCode)
-//                .withConditionExpression(":referenceCode = :val")
-//                .withNameMap(new NameMap()
-//                        .with(":referenceCode", "referenceCode"))
-//                .withValueMap(new ValueMap()
-//                        .withString(":val", referenceCode))
                 .withReturnValues(ReturnValue.ALL_OLD);
         jobDescriptionsTable.deleteItem(deleteItemSpec);
         return getUploadedJobDescriptions(request);
@@ -149,6 +157,7 @@ public class JobDescriptionController extends Controller {
                 .with("salary", jobDescription.getSalary())
                 .with("mainPurposeOfJob", jobDescription.getMainPurposeOfJob())
                 .with("mainResponsibilities", jobDescription.getMainResponsibilities())
+                .with("closingDate", jobDescription.getClosingDate())
                 .with("qualificationLevel", jobDescription.getQualificationLevel())
                 .with("qualificationArea", jobDescription.getQualificationArea())
                 .withList("communicationSkills", convertSkillsToList(communicaticationSkills))
