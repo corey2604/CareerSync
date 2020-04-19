@@ -10,11 +10,14 @@ import org.mockito.runners.MockitoJUnitRunner;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
+import utilities.DynamoAccessor;
 import utilities.KsaMatcher;
 
 import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static play.mvc.Http.Status.OK;
@@ -31,8 +34,13 @@ public class KsaMatcherControllerTest {
     @Mock
     private JobDescription mockJobDescription;
 
+    @Mock
+    private DynamoAccessor mockDynamoAccessor;
+
     @Before
     public void setUp() {
+        DynamoAccessor.setDynamoAccessor(mockDynamoAccessor);
+        when(mockDynamoAccessor.hasUserSavedJobDescription(any(), any(), anyString())).thenReturn(true);
         when(mockKsaMatcher.getJobRecommendations(USER_WITH_RECOMMENDATIONS)).thenReturn(Collections.singletonList(mockJobDescription));
     }
 
@@ -77,7 +85,9 @@ public class KsaMatcherControllerTest {
     @After
     public void tearDown() {
         reset(mockKsaMatcher,
-                mockJobDescription);
+                mockJobDescription,
+                mockDynamoAccessor);
         KsaMatcher.setInstance(null);
+        DynamoAccessor.setDynamoAccessor(null);
     }
 }

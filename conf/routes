@@ -2,41 +2,50 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# An example controller showing a sample home page
-GET         /                               controllers.HomeController.index(request: Request)
-# Serve index page from public directory
-#GET     /                           controllers.FrontendController.index()
 GET         /register                       controllers.RegisterController.register(request: Request)
 GET         /logIn                          controllers.LogInController.logIn(request: Request)
++nocsrf
+POST        /register/submit                controllers.RegisterController.registerSubmit()
++nocsrf
+POST        /logIn/submit                   controllers.LogInController.logInSubmit()
+
+
+GET         /                               controllers.HomeController.index(request: Request)
 GET         /upload                         controllers.HomeController.uploadFile(request: Request)
 GET         /viewCv                         controllers.HomeController.viewCv(request: Request)
 GET         /viewCvForUser                  controllers.HomeController.viewCvForUser(request:Request, username: String, referenceCode: String)
+GET         /logOut                         controllers.HomeController.logOut(request: Request)
+
+
 GET         /ksaForm                        controllers.KsaFormController.loadForm(request: Request)
 GET         /editKsas                       controllers.KsaFormController.editKsas(request: Request)
-GET         /logOut                         controllers.HomeController.logOut(request: Request)
++nocsrf
+POST        /ksaForm/submit                 controllers.KsaFormController.submitForm(request: Request)
+
+
 GET         /editAccount                    controllers.EditAccountController.editAccount(request: Request)
++nocsrf
+POST        /editAccount/update             controllers.EditAccountController.updateUserAccountDetails(request: Request)
+
+
 GET         /uploadJobDescription           controllers.JobDescriptionController.uploadJobDescription(request: Request)
 GET         /uploadedJobDescriptions        controllers.JobDescriptionController.getUploadedJobDescriptions(request: Request)
 GET         /editJobDescription             controllers.JobDescriptionController.editJobDescription(recruiter: String, referenceCode: String)
 GET         /viewJobDescription             controllers.JobDescriptionController.viewJobDescription(request: Request, recruiter: String, referenceCode: String)
 GET         /deleteJobDescription           controllers.JobDescriptionController.deleteJobDescription(request: Request, referenceCode: String)
-GET         /viewJobRecommendations         controllers.KsaMatcherController.viewJobRecommendations(request: Request)
 GET         /getPotentialCandidates         controllers.JobDescriptionController.getPotentialCandidates(recruiter: String, referenceCode: String)
 GET         /getCandidateKsaProfile         controllers.JobDescriptionController.getCandidateKsaProfile(firstName: String, surname: String, username: String)
 GET         /getRecruiterDetails            controllers.JobDescriptionController.viewUserDetails(request: Request, recruiterUsername: String)
-
-+nocsrf
-POST        /register/submit                controllers.RegisterController.registerSubmit()
-+nocsrf
-POST        /logIn/submit                   controllers.LogInController.logInSubmit()
-+nocsrf
-POST        /editAccount/update             controllers.EditAccountController.updateUserAccountDetails(request: Request)
+GET         /saveJobDescription             controllers.JobDescriptionController.saveJobDescription(request: Request, recruiter:String, referenceCode: String)
+GET         /savedJobDescriptions           controllers.JobDescriptionController.getSavedJobDescriptionsForUser(request: Request)
+GET         /removeJobDescription           controllers.JobDescriptionController.removeSavedJobDescription(request: Request, recruiter:String, referenceCode: String)
 +nocsrf
 POST        /jobDescription/submit          controllers.JobDescriptionController.submitJobDescription(request: Request)
 +nocsrf
 POST        /editJobDescriptionn/submit     controllers.JobDescriptionController.submitEditedJobDescription(request: Request)
-+nocsrf
-POST        /ksaForm/submit                 controllers.KsaFormController.submitForm(request: Request)
+
+
+GET         /viewJobRecommendations         controllers.KsaMatcherController.viewJobRecommendations(request: Request)
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                   controllers.Assets.versioned(path="/public", file: Asset)

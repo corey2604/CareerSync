@@ -6,7 +6,7 @@
         </div>
         <div class="form-group">
             <label for="qualificationLevel">Please select your highest level of qualification: </label>
-            <select id="qualificationLevel" name="qualificationLevel">
+            <select class="form-control" id="qualificationLevel" name="qualificationLevel">
                 @for(qualificationLevel <- QualificationLevels.getQualificationLevels) {
                     <option value="@qualificationLevel" @if(userKsas.getQualificationLevel.equals(qualificationLevel)){selected}>@qualificationLevel</option>
                 }

@@ -11,9 +11,9 @@ import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import Enums.CareerSyncErrorMessages;
+import enums.CareerSyncErrorMessages;
 import utilities.DynamoAccessor;
-import Enums.DynamoTables;
+import enums.DynamoTables;
 import utilities.ValidationHelper;
 
 import javax.inject.Inject;
@@ -43,7 +43,6 @@ public class RegisterController extends Controller {
     public Result registerSubmit() {
         UserSignUpRequest userSignUpRequest = formFactory.form(UserSignUpRequest.class).bindFromRequest().get();
         List<CareerSyncErrorMessages> errorMessages = new ArrayList<>();
-        DynamoAccessor.getInstance().getAllUsernames();
         if (DynamoAccessor.getInstance().getAllUsernames().contains(userSignUpRequest.getUsername())){
             errorMessages.add(CareerSyncErrorMessages.USERNAME_TAKEN);
         }
@@ -85,19 +84,8 @@ public class RegisterController extends Controller {
                         new AttributeType()
                                 .withName("email_verified")
                                 .withValue("true"))
-                .withTemporaryPassword("TEMPoRARY_PASSWoRD1")
                 .withMessageAction("SUPPRESS")
-                .withDesiredDeliveryMediums(DeliveryMediumType.EMAIL)
                 .withForceAliasCreation(Boolean.FALSE);
-
-        Item careerSyncUser = new Item()
-                .withPrimaryKey("username", signUpRequest.getUsername())
-                .with("firstName", signUpRequest.getFirstName())
-                .with("surname", signUpRequest.getLastName())
-                .with("email", signUpRequest.getEmail())
-                .with("phoneNumber", signUpRequest.getPhoneNumber())
-                .with("userType", signUpRequest.getUserType());
-        DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName()).putItem(careerSyncUser);
 
         AdminCreateUserResult createUserResult = cognitoClient.adminCreateUser(cognitoRequest);
         UserType cognitoUser = createUserResult.getUser();
@@ -109,6 +97,15 @@ public class RegisterController extends Controller {
                 .withUserPoolId(userPoolId);
 
         cognitoClient.adminSetUserPassword(setUserPasswordRequest);
+
+        Item careerSyncUser = new Item()
+                .withPrimaryKey("username", signUpRequest.getUsername())
+                .with("firstName", signUpRequest.getFirstName())
+                .with("surname", signUpRequest.getLastName())
+                .with("email", signUpRequest.getEmail())
+                .with("phoneNumber", signUpRequest.getPhoneNumber())
+                .with("userType", signUpRequest.getUserType());
+        DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_USERS.getName()).putItem(careerSyncUser);
 
         return cognitoUser;
 

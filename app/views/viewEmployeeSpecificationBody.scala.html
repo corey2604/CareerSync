@@ -10,7 +10,7 @@
         </div>
         <div class="row">
             <strong>Qualification Area:</strong>
-            <p name="referenceCode">@jobDescription.getQualificationArea</p>
+            <p name="referenceCode">@jobDescription.getQualificationArea.get()</p>
         </div>
         @if(!jobDescription.getCommunicationSkills.isEmpty) {
             <div class="row">

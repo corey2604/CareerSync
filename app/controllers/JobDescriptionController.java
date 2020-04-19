@@ -1,5 +1,6 @@
 package controllers;
 
+import enums.CareerSyncSuccessMessage;
 import awsWrappers.DynamoDbTableProvider;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.ItemCollection;
@@ -7,19 +8,17 @@ import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.spec.DeleteItemSpec;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
-import com.amazonaws.services.dynamodbv2.document.utils.NameMap;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import models.JobDescription;
 import models.UserAccountDetails;
 import models.UserKsas;
-import org.apache.http.client.utils.DateUtils;
 import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import utilities.DynamoAccessor;
-import Enums.DynamoTables;
+import enums.DynamoTables;
 import utilities.KsaMatcher;
 
 import javax.inject.Inject;
@@ -63,7 +62,6 @@ public class JobDescriptionController extends Controller {
 
         Iterator<Item> iterator = items.iterator();
         List<JobDescription> jobDescriptions = new ArrayList<JobDescription>();
-        Item item;
         while (iterator.hasNext()) {
             JobDescription jobDescription = new JobDescription(iterator.next());
             DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -128,80 +126,30 @@ public class JobDescriptionController extends Controller {
         return ok(views.html.candidate.userContactInformation.render(userAccountDetails, request.cookie("userType").value(), userHasKsas));
     }
 
+    public Result saveJobDescription(Http.Request request, String recruiter, String referenceCode) {
+        String username = request.cookie("username").value();
+        DynamoAccessor.getInstance().saveJobDescriptionForUser(username, recruiter, referenceCode);
+        List<JobDescription> matchingJobDescriptions = KsaMatcher.getInstance().getJobRecommendations(username);
+        return ok(views.html.candidate.jobReccomendations.render(username, matchingJobDescriptions, Optional.of(CareerSyncSuccessMessage.JOB_SPECIFICATION_SAVED)));
+    }
+
+    public Result getSavedJobDescriptionsForUser(Http.Request request) {
+        List<JobDescription> savedJobDescriptions = DynamoAccessor.getInstance().getSavedJobSpecifications(request.cookie("username").value());
+        return ok(views.html.candidate.savedJobRecommendations.render(savedJobDescriptions));
+    }
+
+    public Result removeSavedJobDescription(Http.Request request, String recruiter, String referenceCode) {
+        String username = request.cookie("username").value();
+        DynamoAccessor.getInstance().removeSavedJobDescription(username, recruiter, referenceCode);
+        List<JobDescription> savedJobDescriptions = DynamoAccessor.getInstance().getSavedJobSpecifications(username);
+        return ok(views.html.candidate.savedJobRecommendations.render(savedJobDescriptions));
+    }
+
     private void putNewJobDescriptionInTable(JobDescription jobDescription) {
-        putJobDescriptionInTable(jobDescription, false);
+        DynamoAccessor.getInstance().putJobDescriptionInTable(jobDescription, false);
     }
 
     private void updateJobDescriptionInTable(JobDescription jobDescription) {
-        putJobDescriptionInTable(jobDescription, true);
-    }
-
-    private void putJobDescriptionInTable(JobDescription jobDescription, boolean isUpdate) {
-        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//dd/MM/yyyy
-        Date now = new Date();
-        String strDate = sdfDate.format(now);
-
-        Optional<List<String>> communicaticationSkills = Optional.ofNullable(jobDescription.getCommunicationSkills());
-        Optional<List<String>> peopleSkills = Optional.ofNullable(jobDescription.getPeopleSkills());
-        Optional<List<String>> financialKnowledgeAndSkills = Optional.ofNullable(jobDescription.getFinancialKnowledgeAndSkills());
-        Optional<List<String>> thinkingAndAnalysis = Optional.ofNullable(jobDescription.getThinkingAndAnalysis());
-        Optional<List<String>> creativeOrInnovative = Optional.ofNullable(jobDescription.getCreativeOrInnovative());
-        Optional<List<String>> administrativeOrOrganisational = Optional.ofNullable(jobDescription.getAdministrativeOrOrganisational());
-        Item jobDescriptionItem = new Item()
-                .withPrimaryKey("referenceCode", jobDescription.getReferenceCode())
-                .with("recruiter", jobDescription.getRecruiter())
-                .with("jobTitle", jobDescription.getJobTitle())
-                .with("location", jobDescription.getLocation())
-                .with("companyOrOrganisation", jobDescription.getCompanyOrOrganisation())
-                .with("hours", jobDescription.getHours())
-                .with("salary", jobDescription.getSalary())
-                .with("mainPurposeOfJob", jobDescription.getMainPurposeOfJob())
-                .with("mainResponsibilities", jobDescription.getMainResponsibilities())
-                .with("closingDate", jobDescription.getClosingDate())
-                .with("qualificationLevel", jobDescription.getQualificationLevel())
-                .with("qualificationArea", jobDescription.getQualificationArea())
-                .withList("communicationSkills", convertSkillsToList(communicaticationSkills))
-                .withList("peopleSkills", convertSkillsToList(peopleSkills))
-                .withList("financialKnowledgeAndSkills", convertSkillsToList(financialKnowledgeAndSkills))
-                .withList("thinkingAndAnalysis", convertSkillsToList(thinkingAndAnalysis))
-                .withList("creativeOrInnovative", convertSkillsToList(creativeOrInnovative))
-                .withList("administrativeOrOrganisational", convertSkillsToList(administrativeOrOrganisational))
-                .with("createdAt", (isUpdate) ? jobDescription.getCreatedAt() : strDate)
-                .with("lastUpdatedAt", strDate)
-                .with("percentageMatchThreshold", String.valueOf(jobDescription.getPercentageMatchThreshold()));
-
-        if (jobDescription.getDuration().isPresent()) {
-            jobDescriptionItem.with("duration", jobDescription.getDuration().get());
-        }
-
-        if (jobDescription.getDepartment().isPresent()) {
-            jobDescriptionItem.with("department", jobDescription.getDepartment().get());
-        }
-
-        if (jobDescription.getSection().isPresent()) {
-            jobDescriptionItem.with("section", jobDescription.getSection().get());
-        }
-
-        if (jobDescription.getGrade().isPresent()) {
-            jobDescriptionItem.with("grade", jobDescription.getGrade().get());
-        }
-
-        if (jobDescription.getReportsTo().isPresent()) {
-            jobDescriptionItem.with("reportsTo", jobDescription.getReportsTo().get());
-        }
-
-        if (jobDescription.getResponsibleTo().isPresent()) {
-            jobDescriptionItem.with("responsibleTo", jobDescription.getResponsibleTo().get());
-        }
-
-        if (jobDescription.getGeneral().isPresent()) {
-            jobDescriptionItem.with("general", jobDescription.getGeneral().get());
-        }
-
-        DynamoDbTableProvider.getTable(DynamoTables.CAREER_SYNC_JOB_DESCRIPTIONS.getName()).putItem(jobDescriptionItem);
-    }
-
-    private List<String> convertSkillsToList(Optional<List<String>> skills) {
-        return skills.map(strings -> strings.stream().filter(Objects::nonNull).collect(Collectors.toList())).orElse(Collections.EMPTY_LIST);
+        DynamoAccessor.getInstance().putJobDescriptionInTable(jobDescription, true);
     }
 }

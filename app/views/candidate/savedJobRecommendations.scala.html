@@ -1,0 +1,60 @@
+@import views.html.candidate.candidateNavbar
+@(jobDescriptions:List[JobDescription])
+
+@main("Your Saved Job Recommendations"){
+    @(candidateNavbar(true, "Your Saved Job Recommendations"))
+    <div class="hero-image savedJobRecommendations-image">
+        <div class="hero-text">
+            <h1 class="display-1 font-weight-normal">Your Saved Job Recommendations</h1>
+        </div>
+    </div>
+    <br>
+        @if(!jobDescriptions.isEmpty) {
+            <div class="container">
+                <div class="row">
+                    <table class="table" id="jobRecommendationsTable">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Job Title</th>
+                                <th scope="col">Company/Organisation</th>
+                                <th scope="col">Location</th>
+                                <th scope="col">Annual Salary</th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @for(jobDescription <- jobDescriptions) {
+                            <tr>
+                                <td>@jobDescription.getJobTitle</td>
+                                <td>@jobDescription.getCompanyOrOrganisation</td>
+                                <td>@jobDescription.getLocation</td>
+                                <td>£@jobDescription.getSalary</td>
+                                <td>
+                                    <a class="btn active btn-purple btn-sm m-0" href="@routes.JobDescriptionController.viewJobDescription(jobDescription.getRecruiter, jobDescription.getReferenceCode)">View Details</a>
+                                </td>
+                                <td>
+                                    <a class="btn active btn-purple btn-sm m-0" href="@routes.JobDescriptionController.viewUserDetails(jobDescription.getRecruiter)">Contact Recruiter</a>
+                                </td>
+                                <td>
+                                    <a class="btn active btn-purple btn-sm m-0" href="@routes.JobDescriptionController.removeSavedJobDescription(jobDescription.getRecruiter, jobDescription.getReferenceCode)">
+                                        Remove</a>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    } else {
+        <section class="text-center">
+            <div class="container">
+                <h3>
+                    You currently have no saved job recommendations.
+                </h3>
+                <p class="text-muted">View job recommendations for you <a href="@routes.KsaMatcherController.viewJobRecommendations">here.</a></p>
+            </div>
+        </section>
+    }
+}

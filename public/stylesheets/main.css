@@ -28,6 +28,10 @@ body, html {
     background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url("../images/jobRecommendation.jpg");
 }
 
+.savedJobRecommendations-image {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url("../images/savedJobRecommendations.jpeg");
+}
+
 .jobDescription-image {
     background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url("../images/jobDescriptionDetails.jpeg");
 }

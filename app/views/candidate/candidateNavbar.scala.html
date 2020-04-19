@@ -26,8 +26,15 @@
                 } else {
                     <li class="nav-item">
                 }
-                    <a class="nav-link" href="@routes.KsaMatcherController.viewJobRecommendations()" id="jobRecommendations">Job Recommendations</a>
+                    <a class="nav-link" href="@routes.KsaMatcherController.viewJobRecommendations()" id="jobRecommendations">View Job Recommendations</a>
                 </li>
+                @if(currentPage.equals("Your Saved Job Recommendations")) {
+                    <li class="nav-item active">
+                } else {
+                    <li class="nav-item">
+                }
+                <a class="nav-link" href="@routes.JobDescriptionController.getSavedJobDescriptionsForUser()">Saved Job Recommendations</a>
+            </li>
             } else {
                 @if(currentPage.equals("KSA Profile")) {
                     <li class="nav-item active">

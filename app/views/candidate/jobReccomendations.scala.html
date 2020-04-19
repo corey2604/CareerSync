@@ -1,5 +1,7 @@
 @import views.html.candidate.candidateNavbar
-@(jobDescriptions:List[JobDescription])
+@import enums.CareerSyncSuccessMessage
+@import utilities.DynamoAccessor
+@(username:String, jobDescriptions:List[JobDescription], careerSyncSuccessMessage: Optional[CareerSyncSuccessMessage])
 
 @main("Uploaded Job Descriptions"){
     @(candidateNavbar(true, "Job Recommendations"))
@@ -10,6 +12,14 @@
     </div>
     <br>
     <div class="container">
+        @if(careerSyncSuccessMessage.isPresent) {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @careerSyncSuccessMessage.get.getSuccessMessage
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
         <div class="row">
             @if(!jobDescriptions.isEmpty) {
                 <table class="table" id="jobRecommendationsTable">
@@ -19,6 +29,7 @@
                             <th scope="col">Company/Organisation</th>
                             <th scope="col">Location</th>
                             <th scope="col">Annual Salary</th>
+                            <th scope="col"></th>
                             <th scope="col"></th>
                             <th scope="col"></th>
                         </tr>
@@ -36,6 +47,16 @@
                             <td>
                                 <a class="btn active btn-purple btn-sm m-0" href="@routes.JobDescriptionController.viewUserDetails(jobDescription.getRecruiter)">Contact Recruiter</a>
                             </td>
+                            @if(DynamoAccessor.getInstance().hasUserSavedJobDescription(username, jobDescription.getRecruiter, jobDescription.getReferenceCode)) {
+                            <td><span style="display: inline-block; padding: .25rem .5rem;
+                                font-size: .875rem;
+                                line-height: 1.5;
+                                border-radius: .2rem;" class="badge badge-info">Job Description Saved</span></td>
+                            } else {
+                            <td>
+                                <a class="btn active btn-purple btn-sm m-0" href="@routes.JobDescriptionController.saveJobDescription(jobDescription.getRecruiter, jobDescription.getReferenceCode)">Save</a>
+                            </td>
+                            }
                         </tr>
                     }
                     </tbody>
