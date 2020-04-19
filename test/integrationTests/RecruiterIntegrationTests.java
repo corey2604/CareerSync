@@ -15,7 +15,7 @@ public class RecruiterIntegrationTests extends CareerSyncIntegrationTest {
 
     @Ignore
     @Test
-    public void recruiterCanLogInAndViewJobDescriptions() {
+    public void testRecruiterCanLogInAndViewJobDescriptions() {
         logIn("recruiterSeleniumTest", "TestPassword12345@");
         WebElement element = driver.findElement(By.id("uploadedJobDescriptions"));
         javaScriptClick(element);
@@ -24,7 +24,7 @@ public class RecruiterIntegrationTests extends CareerSyncIntegrationTest {
 
     @Ignore
     @Test
-    public void recruiterCanLogInAndAddJobDescriptions() {
+    public void testRecruiterCanLogInAndAddJobDescriptions() {
         logIn("recruiterSeleniumTest", "TestPassword12345@");
         WebElement element = driver.findElement(By.id("addJobDescription"));
         javaScriptClick(element);

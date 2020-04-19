@@ -1,7 +1,8 @@
-package Enums;
+package enums;
 
 public enum CareerSyncSuccessMessage {
-    DETAILS_UPDATED("Your details have been successfully updated");
+    DETAILS_UPDATED("Your details have been successfully updated"),
+    JOB_SPECIFICATION_SAVED("Your job recommendation has been saved successfully");
 
     private String successMsg;
 

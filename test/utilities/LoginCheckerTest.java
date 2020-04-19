@@ -1,9 +1,8 @@
-package utilitiesTests;
+package utilities;
 
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.Helpers;
-import utilities.LoginChecker;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

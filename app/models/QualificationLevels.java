@@ -7,14 +7,15 @@ public class QualificationLevels {
     private static final List<String> qualificationLevels = Arrays.asList(
             "Doctorate",
             "MBA",
-            "MSC",
+            "MSc",
             "BA",
-            "BSC",
+            "BSc",
             "HND/NVQ 5",
             "HNC/NVQ 4",
             "A Level/NVQ 3",
             "NVQ 2",
-            "GCSE"
+            "GCSE",
+            "No qualifications"
     );
 
     public static List<String> getQualificationLevels() {

@@ -6,11 +6,10 @@ import java.util.List;
 public class KsaValues {
     private static final List<String> communicationSkills = Arrays.asList(
             "Listening",
-            "Understanding information",
-            "Clearly convey information",
+            "Processing information",
+            "Clearly conveying information",
             "Presentation Skills",
             "Telephone Skills",
-            "Analyse information",
             "Report Writing"
     );
 
@@ -22,24 +21,18 @@ public class KsaValues {
             "Managing others",
             "Leading",
             "Encouraging",
-            "Motivating",
             "Counselling",
             "Negotiating",
-            "Conflict Management",
             "Interviewing",
-            "Appraising",
-            "Persuading",
-            "Changing views"
+            "Appraising"
     );
 
     private static final List<String> financialKnowledgeAndSkills = Arrays.asList(
             "Book-keeping",
-            "Preparation of budgets",
             "VAT",
             "Taxation",
-            "Cash-flow forecast",
+            "Budgeting",
             "Annual accounts",
-            "Cost–benefit analysis",
             "Management accounts",
             "PAYE",
             "Costing"
@@ -60,19 +53,15 @@ public class KsaValues {
             "Creative",
             "Adaptable",
             "Intuitive",
-            "Developing ideas",
             "Innovative"
     );
 
     private static final List<String> administrativeOrOrganisational = Arrays.asList(
             "Time Management",
             "Planning",
-            "Operating policies",
-            "Meeting deadlines",
             "Procedures",
             "Achieve objectives/targets",
             "Monitoring",
-            "Action Plans",
             "Filing"
     );
 

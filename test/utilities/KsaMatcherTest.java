@@ -1,4 +1,4 @@
-package utilitiesTests;
+package utilities;
 
 import models.JobDescription;
 import models.KsaValues;
@@ -10,8 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import utilities.DynamoAccessor;
-import utilities.KsaMatcher;
 
 import java.util.Collections;
 import java.util.List;

@@ -7,11 +7,13 @@ import play.mvc.Result;
 import utilities.KsaMatcher;
 
 import java.util.List;
+import java.util.Optional;
 
 public class KsaMatcherController extends Controller {
 
     public Result viewJobRecommendations(Http.Request request) {
-        List<JobDescription> matchingJobDescriptions = KsaMatcher.getInstance().getJobRecommendations(request.cookie("username").value());
-        return ok(views.html.candidate.jobReccomendations.render(matchingJobDescriptions));
+        String username = request.cookie("username").value();
+        List<JobDescription> matchingJobDescriptions = KsaMatcher.getInstance().getJobRecommendations(username);
+        return ok(views.html.candidate.jobReccomendations.render(username, matchingJobDescriptions, Optional.empty()));
     }
 }

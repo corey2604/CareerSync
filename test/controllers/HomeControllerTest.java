@@ -145,7 +145,7 @@ public class HomeControllerTest extends WithApplication {
         //given
         Http.RequestImpl request = Helpers.fakeRequest()
                 .cookie(Http.Cookie.builder("username", "fakeName").build())
-                .cookie(Http.Cookie.builder("userType", "candidate").build())
+                .cookie(Http.Cookie.builder("userType", "recruiter").build())
                 .build();
         FileHandler.setFileHandler(mockFileHandler);
         doNothing().when(mockFileHandler).getFileFromUsername("username");

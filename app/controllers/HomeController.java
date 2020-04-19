@@ -3,9 +3,11 @@ package controllers;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import enums.CareerSyncErrorMessages;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import scala.Option;
 import utilities.DynamoAccessor;
 import utilities.FileHandler;
 import utilities.KsaMatcher;
@@ -13,6 +15,7 @@ import utilities.LoginChecker;
 
 import javax.inject.Inject;
 import javax.swing.*;
+import java.util.Optional;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -43,7 +46,7 @@ public class HomeController extends Controller {
             boolean uploadedCV = FileHandler.getInstance(S3_CLIENT, new JFileChooser())
                     .doesUserHaveUploadedCV(request.cookies().getCookie("username").get().value());
             boolean completedKsas = DynamoAccessor.getInstance().doesUserHaveKsas(request.cookies().getCookie("username").get().value());
-            return ok(views.html.candidate.index.render(uploadedCV, completedKsas));
+            return ok(views.html.candidate.index.render(uploadedCV, completedKsas, Optional.empty()));
         } else {
             return ok(views.html.recruiter.recruiterIndex.render());
         }
@@ -51,12 +54,15 @@ public class HomeController extends Controller {
 
     public Result uploadFile(Http.Request request) {
         boolean successfullyUploaded = FileHandler.getInstance(S3_CLIENT, new JFileChooser()).uploadFile(request.cookie("username").value());
-        return ok(views.html.candidate.index.render(successfullyUploaded, successfullyUploaded));
+        if (successfullyUploaded) {
+            return ok(views.html.candidate.index.render(successfullyUploaded, successfullyUploaded, Optional.empty()));
+        }
+        return ok(views.html.candidate.index.render(successfullyUploaded, successfullyUploaded, Optional.of(CareerSyncErrorMessages.UNABLE_TO_UPLOAD_CV)));
     }
 
     public Result viewCv(Http.Request request) {
         FileHandler.getInstance(S3_CLIENT, new JFileChooser()).getFileFromUsername(request.cookie("username").value());
-        return ok(views.html.candidate.index.render(true, true));
+        return ok(views.html.candidate.index.render(true, true, Optional.empty()));
     }
 
     public Result viewCvForUser(Http.Request request, String username, String jobTitle) {

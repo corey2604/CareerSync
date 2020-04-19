@@ -1,6 +1,6 @@
 package controllers;
 
-import Enums.CareerSyncSuccessMessage;
+import enums.CareerSyncSuccessMessage;
 import awsWrappers.AmazonDynamoDbClientWrapper;
 import awsWrappers.AwsCognitoIdentityProviderWrapper;
 import com.amazonaws.AmazonServiceException;
@@ -14,9 +14,9 @@ import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import Enums.CareerSyncErrorMessages;
+import enums.CareerSyncErrorMessages;
 import utilities.DynamoAccessor;
-import Enums.DynamoTables;
+import enums.DynamoTables;
 import utilities.ValidationHelper;
 
 import javax.inject.Inject;
