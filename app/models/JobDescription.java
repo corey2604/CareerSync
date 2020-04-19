@@ -13,27 +13,31 @@ public class JobDescription {
     private String recruiter;
     private String referenceCode;
     private String jobTitle;
-    private Optional<String> duration;
     private String location;
     private String companyOrOrganisation;
+    private String hours;
+    private String salary;
+    private String mainPurposeOfJob;
+    private String mainResponsibilities;
+    private String closingDate;
+    private Optional<String> duration;
     private Optional<String> department;
     private Optional<String> section;
     private Optional<String> grade;
     private Optional<String> reportsTo;
     private Optional<String> responsibleTo;
-    private String hours;
-    private String salary;
-    private String mainPurposeOfJob;
-    private String mainResponsibilities;
     private Optional<String> general;
     private String qualificationLevel;
-    private String qualificationArea;
+    private Optional<String> qualificationArea;
     private List<String> communicationSkills;
     private List<String> peopleSkills;
     private List<String> financialKnowledgeAndSkills;
     private List<String> thinkingAndAnalysis;
     private List<String> creativeOrInnovative;
     private List<String> administrativeOrOrganisational;
+    private String createdAt;
+    private String lastUpdatedAt;
+    private int percentageMatchThreshold;
 
     public JobDescription() {
     }
@@ -54,15 +58,19 @@ public class JobDescription {
         this.salary = item.get("salary").toString();
         this.mainPurposeOfJob = item.get("mainPurposeOfJob").toString();
         this.mainResponsibilities = item.get("mainResponsibilities").toString();
+        this.closingDate = item.get("closingDate").toString();
         this.general = getNullSafeValue(item, "general");
         this.qualificationLevel = item.get("qualificationLevel").toString();
-        this.qualificationArea = item.get("qualificationArea").toString();
+        this.qualificationArea = getNullSafeValue(item, "qualificationArea");
         this.communicationSkills = (List<String>) item.get("communicationSkills");
         this.peopleSkills = (List<String>) item.get("peopleSkills");
         this.financialKnowledgeAndSkills = (List<String>) item.get("financialKnowledgeAndSkills");
         this.thinkingAndAnalysis = (List<String>) item.get("thinkingAndAnalysis");
         this.creativeOrInnovative = (List<String>) item.get("creativeOrInnovative");
         this.administrativeOrOrganisational = (List<String>) item.get("administrativeOrOrganisational");
+        this.createdAt = item.get("createdAt").toString();
+        this.lastUpdatedAt = item.get("lastUpdatedAt").toString();
+        this.percentageMatchThreshold = Integer.parseInt(item.get("percentageMatchThreshold").toString());
     }
 
     public JobDescription(Map<String, AttributeValue> item) {
@@ -81,15 +89,19 @@ public class JobDescription {
         this.salary = item.get("salary").getS();
         this.mainPurposeOfJob = item.get("mainPurposeOfJob").getS();
         this.mainResponsibilities = item.get("mainResponsibilities").getS();
+        this.closingDate = item.get("closingDate").getS();
         this.general = setOptionalValueFromAttribute(item.get("general"));
         this.qualificationLevel = item.get("qualificationLevel").getS();
-        this.qualificationArea = item.get("qualificationArea").getS();
+        this.qualificationArea = setOptionalValueFromAttribute(item.get("qualificationArea"));
         this.communicationSkills = getListOfStringsFromItem(item, "communicationSkills");
         this.peopleSkills = getListOfStringsFromItem(item, "peopleSkills");
         this.financialKnowledgeAndSkills = getListOfStringsFromItem(item, "financialKnowledgeAndSkills");
         this.thinkingAndAnalysis = getListOfStringsFromItem(item, "thinkingAndAnalysis");
         this.creativeOrInnovative = getListOfStringsFromItem(item,"creativeOrInnovative");
         this.administrativeOrOrganisational = getListOfStringsFromItem(item, "administrativeOrOrganisational");
+        this.createdAt = item.get("createdAt").getS();
+        this.lastUpdatedAt = item.get("lastUpdatedAt").getS();
+        this.percentageMatchThreshold = Integer.parseInt(item.get("percentageMatchThreshold").getS());
     }
 
     private Optional<String> getNullSafeValue(Item item, String field) {
@@ -228,6 +240,14 @@ public class JobDescription {
         this.mainResponsibilities = mainResponsibilities;
     }
 
+    public String getClosingDate() {
+        return closingDate;
+    }
+
+    public void setClosingDate(String closingDate) {
+        this.closingDate = closingDate;
+    }
+
     public Optional<String> getGeneral() {
         return general;
     }
@@ -244,12 +264,12 @@ public class JobDescription {
         this.qualificationLevel = qualificationLevel;
     }
 
-    public String getQualificationArea() {
+    public Optional<String> getQualificationArea() {
         return qualificationArea;
     }
 
     public void setQualificationArea(String qualificationArea) {
-        this.qualificationArea = qualificationArea;
+        this.qualificationArea = setOptionalValue(qualificationArea);
     }
 
     public List<String> getCommunicationSkills() {
@@ -300,10 +320,34 @@ public class JobDescription {
         this.administrativeOrOrganisational = administrativeOrOrganisational;
     }
 
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getLastUpdatedAt() {
+        return lastUpdatedAt;
+    }
+
+    public void setLastUpdatedAt(String lastUpdatedAt) {
+        this.lastUpdatedAt = lastUpdatedAt;
+    }
+
+    public int getPercentageMatchThreshold() {
+        return percentageMatchThreshold;
+    }
+
+    public void setPercentageMatchThreshold(int percentageMatchThreshold) {
+        this.percentageMatchThreshold = percentageMatchThreshold;
+    }
+
     public List<String> getAllJobRelatedKsas() {
         List<String> allKsas = new ArrayList<>();
         allKsas.add(this.qualificationLevel);
-        allKsas.add(this.qualificationArea);
+        allKsas.add(this.qualificationArea.isPresent() ? qualificationArea.get() : "N/A");
         allKsas.addAll(this.communicationSkills);
         allKsas.addAll(this.peopleSkills);
         allKsas.addAll(this.financialKnowledgeAndSkills);
@@ -316,7 +360,7 @@ public class JobDescription {
     public UserKsas getUserKsasFromJobDescription() {
         UserKsas userKsas = new UserKsas();
         userKsas.setQualificationLevel(this.qualificationLevel);
-        userKsas.setQualificationArea(this.qualificationArea);
+        userKsas.setQualificationArea(this.qualificationArea.isPresent() ? qualificationArea.get() : "N/A");
         userKsas.setCommunicationSkills(this.communicationSkills);
         userKsas.setPeopleSkills(this.peopleSkills);
         userKsas.setFinancialKnowledgeAndSkills(this.financialKnowledgeAndSkills);

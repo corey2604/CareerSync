@@ -54,7 +54,7 @@ public class RegisterControllerTest {
     }
 
     @Test
-    public void testRegisterSubmitResturnsBadRequestWithExistingUsername() {
+    public void testRegisterSubmitReturnsBadRequestWithExistingUsername() {
         //given
         doReturn("candidateTest").when(mockSignUpRequest).getUsername();
         doReturn("0123456789").when(mockSignUpRequest).getPhoneNumber();
@@ -73,7 +73,7 @@ public class RegisterControllerTest {
     }
 
     @Test
-    public void testRegisterSubmitResturnsBadRequestWithInvalidPhoneNumber() {
+    public void testRegisterSubmitReturnsBadRequestWithInvalidPhoneNumber() {
         //given
         doReturn(UUID.randomUUID().toString()).when(mockSignUpRequest).getUsername();
         doReturn("01asdasdasd456789").when(mockSignUpRequest).getPhoneNumber();
@@ -92,7 +92,7 @@ public class RegisterControllerTest {
     }
 
     @Test
-    public void testRegisterSubmitResturnsBadRequestWithInvalidPassword() {
+    public void testRegisterSubmitReturnsBadRequestWithInvalidPassword() {
         //given
         doReturn(UUID.randomUUID().toString()).when(mockSignUpRequest).getUsername();
         doReturn("0123456789").when(mockSignUpRequest).getPhoneNumber();

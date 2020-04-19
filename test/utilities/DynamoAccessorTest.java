@@ -1,4 +1,4 @@
-package utilitiesTests;
+package utilities;
 
 import awsWrappers.AmazonDynamoDbClientWrapper;
 import awsWrappers.DynamoDbTableProvider;
@@ -16,7 +16,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import utilities.DynamoAccessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +30,8 @@ import static org.mockito.Mockito.*;
 public class DynamoAccessorTest {
     private static final String USERNAME = "fakeUsername";
     private static final String SECOND_USERNAME = "secondUsername";
-    private static final String EXISTING_RECRUITER = "testRecruiterUser";
-    private static final String EXISTING_REFERENCE_CODE = "TestReference";
+    private static final String EXISTING_RECRUITER = "requiredTestRecruiterUser";
+    private static final String EXISTING_REFERENCE_CODE = "RequiredTestReference";
     private static final String FIRST_NAME = "firstName";
     private static final String SURNAME = "surname";
     private static final String EMAIL = "fake@email.com";

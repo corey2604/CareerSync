@@ -13,7 +13,7 @@
             <div class="section-title text-center">
                 <h1 class="">Job Details:</h1>
             </div>
-        @helper.form(action = routes.JobDescriptionController.submitJobDescription()) {
+        @helper.form(action = routes.JobDescriptionController.submitEditedJobDescription()) {
             <div class="form-group">
                 <label for="referenceCode"><strong>Reference Code:</strong></label>
                 <input type="text" class="form-control" name="referenceCode" value="@jobDescription.getReferenceCode">
@@ -21,6 +21,14 @@
             <div class="form-group">
                 <label for="jobTitle"><strong>Job Title:</strong></label>
                 <input type="text" class="form-control" name="jobTitle" value="@jobDescription.getJobTitle">
+            </div>
+            <div class="form-group">
+                <strong>Created at:</strong>
+                <input type="text" class="form-control-plaintext" name="createdAt" value="@jobDescription.getCreatedAt" readonly>
+            </div>
+            <div class="form-group">
+                <strong>Last updated at:</strong>
+                <input type="text" class="form-control-plaintext" name="lastUpdatedAt" value="@jobDescription.getLastUpdatedAt" readonly>
             </div>
             @if(jobDescription.getDuration.isPresent) {
                 <div class="form-group">
@@ -112,6 +120,10 @@
                 <label for="mainResponsibilities"><strong>Main Responsibilities:</strong></label>
                 <textarea class="form-control" name="mainResponsibilities" rows="10">@jobDescription.getMainResponsibilities</textarea>
             </div>
+            <div class="form-group">
+                <label for="closingDate"><strong>Closing Date:</strong></label>
+                <input type="date" class="form-control" name="closingDate" value="@jobDescription.getClosingDate">
+            </div>
             @if(jobDescription.getGeneral.isPresent) {
                 <div class="form-group">
                     <label for="general"><strong>General:</strong></label>
@@ -130,6 +142,15 @@
         <h1 class="">Employee Specification:</h1>
     </div>
             @populatedKsaFormPage
+        <div class="container">
+            <div class="form-group">
+                <label for="percentageMatchThreshold"><strong>Percentage Match:</strong></label>
+                <p class="font-weight-light">Please indicate what percentage of matching KSA's a candidate should possess in order to be seen as a suitable candidate for this role</p>
+                <input type="number" class="form-control" name="percentageMatchThreshold" step="0" max="100" min="1" value="@jobDescription.getPercentageMatchThreshold" required>
+            </div>
+            <br/>
+            <button type="submit" class="btn btn-purple btn-lg btn-block active">Submit</button>
+        </div>
         }
     </section>
 }

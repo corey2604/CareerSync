@@ -18,13 +18,9 @@ public class DynamoDbTableProvider {
 
     //Factory method
     public static Table getTable(String tableName) {
-        System.out.println("Table Name within method: " + tableName);
         if (dynamoDB == null) {
-            System.out.println("Dynamo DB was null");
             dynamoDB = new DynamoDB(AmazonDynamoDbClientWrapper.getInstance());
-            System.out.println("DynamoDBTableProvider set.");
         }
-        System.out.println("DynamoDb tables" + dynamoDB.listTables());
         return dynamoDB.getTable(tableName);
     }
 

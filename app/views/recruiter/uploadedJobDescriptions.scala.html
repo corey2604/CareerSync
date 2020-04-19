@@ -1,4 +1,3 @@
-@import java.util
 @import views.html.recruiter.recruiterNavbar
 @(jobDescriptions:List[JobDescription])
 
@@ -41,9 +40,10 @@
                         <td>
                             <a class="btn active btn-purple btn-block m-0" href="@routes.JobDescriptionController.deleteJobDescription(jobDescription.getReferenceCode)">Delete</a>
                         </td>
-                        <td>
-                            <a class="btn active btn-purple btn-block m-0" href="@routes.JobDescriptionController.getPotentialCandidates(jobDescription.getRecruiter, jobDescription.getReferenceCode)">View Candidates</a>
-                        </td>
+                            <td>
+                                <a class="btn active btn-purple btn-block m-0" href="@routes.JobDescriptionController.getPotentialCandidates(jobDescription.getRecruiter, jobDescription.getReferenceCode)">
+                                    View Candidates</a>
+                            </td>
                     </tr>
                 }
                 </tbody>
@@ -55,7 +55,7 @@
                 <h3>
                     You have not uploaded any Job Descriptions.
                 </h3>
-                <p class="text-muted">You can upload Job Descriptions <a  href="@routes.JobDescriptionController.uploadJobDescription">here.</a></p>
+                <p class="text-muted">You can upload Job Descriptions <a href="@routes.JobDescriptionController.uploadJobDescription">here.</a></p>
             </div>
         </section>
     }

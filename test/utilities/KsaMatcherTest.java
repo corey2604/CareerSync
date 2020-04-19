@@ -1,4 +1,4 @@
-package utilitiesTests;
+package utilities;
 
 import models.JobDescription;
 import models.KsaValues;
@@ -10,8 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import utilities.DynamoAccessor;
-import utilities.KsaMatcher;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,8 +20,8 @@ import static org.mockito.Mockito.reset;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KsaMatcherTest {
-    private static final String EXISTING_RECRUITER = "testRecruiterUser";
-    private static final String EXISTING_REFERENCE_CODE = "TestReference";
+    private static final String EXISTING_RECRUITER = "requiredTestRecruiterUser";
+    private static final String EXISTING_REFERENCE_CODE = "RequiredTestReference";
 
     @Mock
     private DynamoAccessor mockDynamoAccessor;

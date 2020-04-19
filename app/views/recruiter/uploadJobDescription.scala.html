@@ -56,8 +56,12 @@
                 <label for="mainResponsibilities"><strong>Main Responsibilities:</strong></label>
                 <textarea class="form-control" name="mainResponsibilities" rows="10" required></textarea>
             </div>
+            <div class="form-group">
+                <label for="closingDate"><strong>Closing Date:</strong></label>
+                <input type="date" class="form-control" name="closingDate" required>
+            </div>
             <br/>
-            <h3 class="font-weight-bold">Additional Information:</h3>
+            <h3 class="font-weight-bold">Additional Information (Not Required):</h3>
             <div class="form-group">
                 <label for="department"><strong>Department:</strong></label>
                 <input type="text" class="form-control" name="department">
@@ -94,7 +98,16 @@
         </div>
         <div class="container">
             @ksaFormPage
-            }
+            <div class="form-group">
+                <label for="percentageMatchThreshold"><strong>Percentage Match:</strong></label>
+                <p class="font-weight-light">Please indicate what percentage of matching KSA's a candidate should possess in order to be seen as a suitable candidate for this role</p>
+                <input type="number" class="form-control" name="percentageMatchThreshold" step="0" max="100" min="1" required>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-purple btn-lg btn-block active" id="submitButton">Submit</button>
+            </div>
+            </div>
         </div>
+            }
     </section>
 }

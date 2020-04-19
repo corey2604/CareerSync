@@ -10,70 +10,78 @@
         </div>
         <div class="row">
             <strong>Qualification Area:</strong>
-            <p name="referenceCode">@jobDescription.getQualificationArea</p>
+            <p name="referenceCode">@jobDescription.getQualificationArea.get()</p>
         </div>
-        <div class="row">
-            <strong>Required Communication Skills:</strong>
-        </div>
-        <ul class="list-group list-group-flush">
-        @for(communicationSkill <- jobDescription.getCommunicationSkills) {
-            <li name="referenceCode">@communicationSkill</li>
+        @if(!jobDescription.getCommunicationSkills.isEmpty) {
+            <div class="row">
+                <strong>Required Communication Skills:</strong>
+            </div>
+            <ul class="list-group list-group-flush">
+            @for(communicationSkill <- jobDescription.getCommunicationSkills) {
+                <li name="referenceCode">@communicationSkill</li>
+            }
+            </ul>
+            <br/>
         }
-        </ul>
-        <br/>
-        <div class="row">
-            <strong>Required People Skills:</strong>
-        </div>
-        <ul class="list-group list-group-flush">
-        @for(peopleSkill <- jobDescription.getPeopleSkills) {
-            <li name="referenceCode">@peopleSkill</li>
+        @if(!jobDescription.getPeopleSkills.isEmpty) {
+            <div class="row">
+                <strong>Required People Skills:</strong>
+            </div>
+            <ul class="list-group list-group-flush">
+            @for(peopleSkill <- jobDescription.getPeopleSkills) {
+                <li name="referenceCode">@peopleSkill</li>
+            }
+            </ul>
+            <br/>
         }
-        </ul>
-        <br/>
-        <div class="row">
-            <strong>Required Financial Knowledge and Skills:</strong>
-        </div>
-        <ul class="list-group list-group-flush">
-        @for(financialKnowledge <- jobDescription.getFinancialKnowledgeAndSkills) {
-            <li name="referenceCode">@financialKnowledge</li>
+        @if(!jobDescription.getFinancialKnowledgeAndSkills.isEmpty) {
+            <div class="row">
+                <strong>Required Financial Knowledge and Skills:</strong>
+            </div>
+            <ul class="list-group list-group-flush">
+            @for(financialKnowledge <- jobDescription.getFinancialKnowledgeAndSkills) {
+                <li name="referenceCode">@financialKnowledge</li>
+            }
+            </ul>
+            <br/>
         }
-        </ul>
-        <br/>
-        <div class="row">
-            <strong>Required Communication Skills:</strong>
-        </div>
-        <ul class="list-group list-group-flush">
-        @for(communicationSkill <- jobDescription.getCommunicationSkills) {
-            <li name="referenceCode">@communicationSkill</li>
+        @if(!jobDescription.getThinkingAndAnalysis.isEmpty) {
+            <div class="row">
+                <strong>Required Thinking and Analytical Skills:</strong>
+            </div>
+            <ul class="list-group list-group-flush">
+            @for(analyticalSkill <- jobDescription.getThinkingAndAnalysis) {
+                <li name="referenceCode">@analyticalSkill</li>
+            }
+            </ul>
+            <br/>
         }
-        </ul>
-        <br/>
-        <div class="row">
-            <strong>Required Thinking and Analytical Skills:</strong>
-        </div>
-        <ul class="list-group list-group-flush">
-        @for(analyticalSkill <- jobDescription.getThinkingAndAnalysis) {
-            <li name="referenceCode">@analyticalSkill</li>
+        @if(!jobDescription.getCreativeOrInnovative.isEmpty) {
+            <div class="row">
+                <strong>Required Creative/Innovative Skills:</strong>
+            </div>
+            <ul class="list-group list-group-flush">
+            @for(creativeSkill <- jobDescription.getCreativeOrInnovative) {
+                <li name="referenceCode">@creativeSkill</li>
+            }
+            </ul>
+            <br/>
         }
-        </ul>
-        <br/>
-        <div class="row">
-            <strong>Required Creative/Innovative Skills:</strong>
-        </div>
-        <ul class="list-group list-group-flush">
-        @for(creativeSkill <- jobDescription.getCreativeOrInnovative) {
-            <li name="referenceCode">@creativeSkill</li>
+        @if(!jobDescription.getAdministrativeOrOrganisational.isEmpty) {
+            <div class="row">
+                <strong>Required Administrative/Organisation Skills:</strong>
+            </div>
+            <ul class="list-group list-group-flush">
+            @for(administrativeSkill <- jobDescription.getAdministrativeOrOrganisational) {
+                <li name="referenceCode">@administrativeSkill</li>
+            }
+            </ul>
+            <br/>
         }
-        </ul>
-        <br/>
         <div class="row">
-            <strong>Required Administrative/Organisation Skills:</strong>
+            <strong>Candidate Percentage Match Threshold:</strong>
+            <p name="percentageMatchThreshold">@jobDescription.getPercentageMatchThreshold%</p>
         </div>
-        <ul class="list-group list-group-flush">
-        @for(administrativeSkill <- jobDescription.getAdministrativeOrOrganisational) {
-            <li name="referenceCode">@administrativeSkill</li>
-        }
-        </ul>
         <section>
             <div class="row text-center">
                 <a class="btn btn-purple btn-block btn-lg" role="button" href="#" onclick="history.go(-1)">

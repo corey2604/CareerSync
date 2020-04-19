@@ -77,6 +77,7 @@ public class JobDescriptionControllerTest {
     public void setup() {
         DynamoDbTableProvider.setDynamoDb(mockDB);
         DynamoAccessor.setDynamoAccessor(mockDynamoAccessor);
+        KsaMatcher.setInstance(mockKsaMatcher);
         when(mockDB.getTable(any())).thenReturn(mockTable);
         when(mockTable.deleteItem(any(DeleteItemSpec.class))).thenReturn(mockDeleteItemOutcome);
         when(mockTable.query(any(QuerySpec.class))).thenReturn(mockItemCollection);
@@ -93,6 +94,7 @@ public class JobDescriptionControllerTest {
         doReturn(Collections.EMPTY_LIST).when(mockUserKsas).getFinancialKnowledgeAndSkills();
         doReturn(Collections.EMPTY_LIST).when(mockUserKsas).getThinkingAndAnalysis();
 
+        doReturn(Optional.of("Computing Systems")).when(mockJobDescription).getQualificationArea();
         doReturn("101").when(mockJobDescription).getReferenceCode();
         doReturn("fakeUser").when(mockJobDescription).getRecruiter();
         doReturn("here").when(mockJobDescription).getLocation();
@@ -102,6 +104,7 @@ public class JobDescriptionControllerTest {
         doReturn("100000000000").when(mockJobDescription).getSalary();
         doReturn("To Test").when(mockJobDescription).getMainPurposeOfJob();
         doReturn("Testing").when(mockJobDescription).getMainResponsibilities();
+        doReturn("01-01-2100").when(mockJobDescription).getClosingDate();
         doReturn(Optional.of("Permanent")).when(mockJobDescription).getDuration();
         doReturn(Optional.empty()).when(mockJobDescription).getGeneral();
         doReturn(Optional.empty()).when(mockJobDescription).getReportsTo();
@@ -109,6 +112,9 @@ public class JobDescriptionControllerTest {
         doReturn(Optional.empty()).when(mockJobDescription).getResponsibleTo();
         doReturn(Optional.empty()).when(mockJobDescription).getDepartment();
         doReturn(Optional.empty()).when(mockJobDescription).getSection();
+        doReturn("01-01-2100").when(mockJobDescription).getCreatedAt();
+        doReturn("01-01-2100").when(mockJobDescription).getLastUpdatedAt();
+        doReturn(75).when(mockJobDescription).getPercentageMatchThreshold();
     }
 
     @Test
@@ -219,6 +225,51 @@ public class JobDescriptionControllerTest {
         doReturn(mockForm).when(mockForm).bindFromRequest();
         doReturn(mockJobDescription).when(mockForm).get();
 
+        doReturn(Optional.of("Computing Systems")).when(mockJobDescription).getQualificationArea();
+        doReturn(Collections.singletonList("Listening")).when(mockJobDescription).getCommunicationSkills();
+        doReturn(Collections.singletonList("Counselling")).when(mockJobDescription).getPeopleSkills();
+        doReturn(Collections.singletonList("VAT")).when(mockJobDescription).getFinancialKnowledgeAndSkills();
+        doReturn(Collections.singletonList("Statistics")).when(mockJobDescription).getThinkingAndAnalysis();
+        doReturn(Collections.singletonList("Creative")).when(mockJobDescription).getCreativeOrInnovative();
+        doReturn(Collections.singletonList("Planning")).when(mockJobDescription).getAdministrativeOrOrganisational();
+
+        //when
+        Result result = new JobDescriptionController(mockFormFactory).submitJobDescription(request);
+
+        //then
+        assertEquals(SEE_OTHER, result.status());
+        assertEquals("/", result.redirectLocation().get());
+    }
+
+    @Test
+    public void testSubmitEditedJobDescriptionWithNoKsas() {
+        //given
+        Http.RequestImpl request = Helpers.fakeRequest()
+                .cookie(Http.Cookie.builder("username", "fakeName").build())
+                .build();
+        doReturn(mockForm).when(mockFormFactory).form(JobDescription.class);
+        doReturn(mockForm).when(mockForm).bindFromRequest();
+        doReturn(mockJobDescription).when(mockForm).get();
+
+        //when
+        Result result = new JobDescriptionController(mockFormFactory).submitEditedJobDescription(request);
+
+        //then
+        assertEquals(SEE_OTHER, result.status());
+        assertEquals("/", result.redirectLocation().get());
+    }
+
+    @Test
+    public void testSubmitEditedJobDescriptionWithPopulatedKsas() {
+        //given
+        Http.RequestImpl request = Helpers.fakeRequest()
+                .cookie(Http.Cookie.builder("username", "fakeName").build())
+                .build();
+        doReturn(mockForm).when(mockFormFactory).form(JobDescription.class);
+        doReturn(mockForm).when(mockForm).bindFromRequest();
+        doReturn(mockJobDescription).when(mockForm).get();
+
+        doReturn(Optional.of("Computing Systems")).when(mockJobDescription).getQualificationArea();
         doReturn(Collections.singletonList("Listening")).when(mockJobDescription).getCommunicationSkills();
         doReturn(Collections.singletonList("Counselling")).when(mockJobDescription).getPeopleSkills();
         doReturn(Collections.singletonList("VAT")).when(mockJobDescription).getFinancialKnowledgeAndSkills();
@@ -265,13 +316,13 @@ public class JobDescriptionControllerTest {
     @Test
     public void testGetPotentialCandidates() {
         //given
-        KsaMatcher.setInstance(mockKsaMatcher);
         doReturn(Collections.EMPTY_LIST).when(mockKsaMatcher).getPotentialCandidates(any(), any());
 
         //when
         Result result = new JobDescriptionController(mockFormFactory).getPotentialCandidates("fakeName", "101");
 
         //then
+        verify(mockKsaMatcher, times(1)).getPotentialCandidates(any(), any());
         assertEquals(OK, result.status());
         assertEquals("text/html", result.contentType().get());
         assertEquals("utf-8", result.charset().get());
@@ -291,6 +342,66 @@ public class JobDescriptionControllerTest {
         Result result = new JobDescriptionController(mockFormFactory).viewUserDetails(request, "userName");
 
         //then
+        verify(mockDynamoAccessor, times(1)).getUserAccountDetails("userName");
+        assertEquals(OK, result.status());
+        assertEquals("text/html", result.contentType().get());
+        assertEquals("utf-8", result.charset().get());
+    }
+
+    @Test
+    public void testSaveJobDescription() {
+        //given
+        Http.RequestImpl request = Helpers.fakeRequest()
+                .cookie(Http.Cookie.builder("username", "fakeName").build())
+                .cookie(Http.Cookie.builder("userType", "recruiter").build())
+                .build();
+        doNothing().when(mockDynamoAccessor).saveJobDescriptionForUser(anyString(), any(), any());
+        doReturn(Collections.EMPTY_LIST).when(mockKsaMatcher).getJobRecommendations(anyString());
+
+        //when
+        Result result = new JobDescriptionController(mockFormFactory).saveJobDescription(request, "userName", "101");
+
+        //then
+        verify(mockDynamoAccessor, times(1)).saveJobDescriptionForUser(anyString(), any(), any());
+        assertEquals(OK, result.status());
+        assertEquals("text/html", result.contentType().get());
+        assertEquals("utf-8", result.charset().get());
+    }
+
+    @Test
+    public void testGetSavedJobDescriptionsForUser() {
+        //given
+        Http.RequestImpl request = Helpers.fakeRequest()
+                .cookie(Http.Cookie.builder("username", "fakeName").build())
+                .cookie(Http.Cookie.builder("userType", "recruiter").build())
+                .build();
+        doReturn(Collections.EMPTY_LIST).when(mockDynamoAccessor).getSavedJobSpecifications("fakeName");
+
+        //when
+        Result result = new JobDescriptionController(mockFormFactory).getSavedJobDescriptionsForUser(request);
+
+        //then
+        verify(mockDynamoAccessor, times(1)).getSavedJobSpecifications("fakeName");
+        assertEquals(OK, result.status());
+        assertEquals("text/html", result.contentType().get());
+        assertEquals("utf-8", result.charset().get());
+    }
+
+    @Test
+    public void testRemoveSavedJobDescription() {
+        //given
+        Http.RequestImpl request = Helpers.fakeRequest()
+                .cookie(Http.Cookie.builder("username", "fakeName").build())
+                .cookie(Http.Cookie.builder("userType", "recruiter").build())
+                .build();
+        doNothing().when(mockDynamoAccessor).removeSavedJobDescription(anyString(), any(), any());
+        doReturn(Collections.EMPTY_LIST).when(mockKsaMatcher).getJobRecommendations(anyString());
+
+        //when
+        Result result = new JobDescriptionController(mockFormFactory).removeSavedJobDescription(request, "username","101");
+
+        //then
+        verify(mockDynamoAccessor, times(1)).removeSavedJobDescription(anyString(), any(), any());
         assertEquals(OK, result.status());
         assertEquals("text/html", result.contentType().get());
         assertEquals("utf-8", result.charset().get());

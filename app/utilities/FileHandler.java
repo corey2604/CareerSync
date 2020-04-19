@@ -1,33 +1,29 @@
 package utilities;
 
-import Enums.DynamoTables;
-import awsWrappers.DynamoDbTableProvider;
-import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import models.KsaForm;
+import models.KsaSynonyms;
 import models.KsaValues;
 import models.QualificationLevels;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public class FileHandler {
     private static final String BUCKET_NAME = "career-sync";
@@ -46,6 +42,17 @@ public class FileHandler {
     public static FileHandler getInstance(AmazonS3 s3Client, JFileChooser fileChooser) {
         if (fileHandler == null) {
             fileHandler = new FileHandler(s3Client, fileChooser);
+        }
+        return fileHandler;
+    }
+
+    public static FileHandler getInstance() {
+        if (fileHandler == null) {
+            AmazonS3 newS3Client = AmazonS3ClientBuilder
+                    .standard()
+                    .withRegion(Regions.EU_WEST_1)
+                    .build();
+            fileHandler = new FileHandler(newS3Client, new JFileChooser());
         }
         return fileHandler;
     }
@@ -77,19 +84,24 @@ public class FileHandler {
         String fileName = folderName + SUFFIX;
         if (chosenFile.isPresent()) {
             try {
+                XWPFDocument xdoc = new XWPFDocument(OPCPackage.open(chosenFile.get()));
+                XWPFWordExtractor extractor = new XWPFWordExtractor(xdoc);
+                extractKsasFromFile(folderName, extractor);
                 s3Client.putObject(new PutObjectRequest(BUCKET_NAME, fileName, chosenFile.get()));
-                extractKsasFromFile(folderName);
+                hideFileChooser();
                 return true;
             } catch (Exception e) {
-                fileChooser.cancelSelection();
-                fileChooser.setVisible(false);
-                System.out.println("Could not upload CV");
+                hideFileChooser();
                 return false;
             }
         }
+        hideFileChooser();
+        return false;
+    }
+
+    private void hideFileChooser() {
         fileChooser.cancelSelection();
         fileChooser.setVisible(false);
-        return false;
     }
 
     public boolean doesUserHaveUploadedCV(String username) {
@@ -107,106 +119,40 @@ public class FileHandler {
             String fileName = username + SUFFIX;
             File localFile = new File(System.getProperty("user.home") + "/CV.docx");
             s3Client.getObject(new GetObjectRequest(BUCKET_NAME, fileName), localFile);
-            if(!Desktop.isDesktopSupported()){
+            if (!Desktop.isDesktopSupported()) {
                 System.out.println("Desktop is not supported");
                 return;
             }
 
             Desktop desktop = Desktop.getDesktop();
-            if(localFile.exists()) desktop.open(localFile);
+            if (localFile.exists()) desktop.open(localFile);
 
         } catch (Exception e) {
             System.out.println("No CV found");
         }
     }
 
-    private void extractKsasFromFile(String username) {
-        String fileName = username + SUFFIX;
-        S3Object object = s3Client.getObject(new GetObjectRequest(BUCKET_NAME, fileName));
-        InputStream objectData = object.getObjectContent();
-        ZipSecureFile.setMinInflateRatio(-1.0d);
-        XWPFDocument xdoc = null;
-        try {
-            xdoc = new XWPFDocument(OPCPackage.open(objectData));
-        } catch (InvalidFormatException | IOException e) {
-            e.printStackTrace();
-        }
-        XWPFWordExtractor extractor = new XWPFWordExtractor(xdoc);
-        String lowercaseText = extractor.getText().toLowerCase();
-        String[] lines = extractor.getText().split("\r?\n");
-        List<String> cvWords = new ArrayList<>();
-        for (String line : lines) {
-            cvWords.addAll(Arrays.asList(line.toLowerCase().split(" ")));
-        }
-        List<String> lineList = Arrays.asList(lines);
-        Optional<String> qualificationLevel = QualificationLevels.getQualificationLevels()
+    private void extractKsasFromFile(String username, XWPFWordExtractor extractor) {
+        String lowercaseCvText = extractor.getText().toLowerCase();
+        List<String> cvWords = extractAllWordsFromCv(extractor);
+
+        String qualificationLevel = QualificationLevels.getQualificationLevels()
                 .stream()
                 .filter(ql -> cvWords.contains(ql.toLowerCase()))
-                .findFirst();
+                .findFirst()
+                .orElse("No qualifications");
 
-        String qualificationLine = "";
-        if (qualificationLevel.isPresent()) {
-            Optional<String> qualificationsLineOpt = lineList.stream().filter(line -> line.toLowerCase().contains(qualificationLevel.get().toLowerCase())).findFirst();
-            if (qualificationsLineOpt.isPresent()) {
-                qualificationLine = qualificationsLineOpt.get();
-            }
-        }
-        int qualificationLevelIndex = qualificationLine.toLowerCase().indexOf(qualificationLevel.get().toLowerCase());
-        String substringStartingFromQualificationLevel = qualificationLine.substring(qualificationLevelIndex);
-        int firstFullStop = substringStartingFromQualificationLevel.indexOf(".");
-        int firstNewline = substringStartingFromQualificationLevel.indexOf("\n");
-        String qualificationArea = "";
-        if (!(firstFullStop == -1 && firstNewline == -1)) {
-            if (firstFullStop == -1) {
-                qualificationArea = substringStartingFromQualificationLevel.substring(0, firstNewline);
-            } else if (firstNewline == -1) {
-                qualificationArea = substringStartingFromQualificationLevel.substring(0, firstFullStop);
-            } else {
-                int indexToUse = (firstFullStop < firstNewline) ? firstFullStop : firstNewline;
-                qualificationArea = substringStartingFromQualificationLevel.substring(0, indexToUse);
-            }
-        }
-        //.replace(qualificationLevel.get(), "");
+        String qualificationArea = getQualificationArea(extractor, qualificationLevel);
 
-        List<String> communicationSkills = new ArrayList<>();
-        List<String> peopleSkills = new ArrayList<>();
-        List<String> financialKnowledgeSkills = new ArrayList<>();
-        List<String> thinkingAndAnalysisSkills = new ArrayList<>();
-        List<String> creativeOrInnovativeSkills = new ArrayList<>();
-        List<String> administrativeOrOrganisationalSkills = new ArrayList<>();
+        List<String> communicationSkills = addKsaIfFoundInCv(KsaValues.getCommunicationSkills(), lowercaseCvText);
+        List<String> peopleSkills = addKsaIfFoundInCv(KsaValues.getPeopleSkills(), lowercaseCvText);
+        List<String> financialKnowledgeSkills = addKsaIfFoundInCv(KsaValues.getFinancialKnowledgeAndSkills(), lowercaseCvText);
+        List<String> thinkingAndAnalysisSkills = addKsaIfFoundInCv(KsaValues.getThinkingAndAnalysis(), lowercaseCvText);
+        List<String> creativeOrInnovativeSkills = addKsaIfFoundInCv(KsaValues.getCreativeOrInnovative(), lowercaseCvText);
+        List<String> administrativeOrOrganisationalSkills = addKsaIfFoundInCv(KsaValues.getAdministrativeOrOrganisational(), lowercaseCvText);
 
-        KsaValues.getCommunicationSkills().forEach(ksa -> {
-            if (extractor.getText().contains(ksa)) {
-                communicationSkills.add(ksa);
-            }
-        });
-        KsaValues.getPeopleSkills().forEach(ksa -> {
-            if (lowercaseText.contains(ksa.toLowerCase())) {
-                peopleSkills.add(ksa);
-            }
-        });
-        KsaValues.getFinancialKnowledgeAndSkills().forEach(ksa -> {
-            if (lowercaseText.contains(ksa.toLowerCase())) {
-                financialKnowledgeSkills.add(ksa);
-            }
-        });
-        KsaValues.getThinkingAndAnalysis().forEach(ksa -> {
-            if (lowercaseText.contains(ksa.toLowerCase())) {
-                thinkingAndAnalysisSkills.add(ksa);
-            }
-        });
-        KsaValues.getCreativeOrInnovative().forEach(ksa -> {
-            if (lowercaseText.contains(ksa.toLowerCase())) {
-                creativeOrInnovativeSkills.add(ksa);
-            }
-        });
-        KsaValues.getAdministrativeOrOrganisational().forEach(ksa -> {
-            if (lowercaseText.contains(ksa.toLowerCase())) {
-                administrativeOrOrganisationalSkills.add(ksa);
-            }
-        });
         KsaForm ksaForm = new KsaForm();
-        ksaForm.setQualificationLevel(qualificationLevel.get());
+        ksaForm.setQualificationLevel(qualificationLevel);
         ksaForm.setQualificationArea(qualificationArea);
         ksaForm.setCommunicationSkills(communicationSkills);
         ksaForm.setPeopleSkills(peopleSkills);
@@ -215,5 +161,97 @@ public class FileHandler {
         ksaForm.setCreativeOrInnovative(creativeOrInnovativeSkills);
         ksaForm.setAdministrativeOrOrganisational(administrativeOrOrganisationalSkills);
         DynamoAccessor.getInstance().putKsasInTable(username, ksaForm);
+    }
+
+    private List<String> extractAllWordsFromCv(XWPFWordExtractor extractor) {
+        List<String> lines = Arrays.asList(extractor.getText().split("\r?\n"));
+        List<String> cvWords = new ArrayList<>();
+        lines.forEach(line -> {
+            cvWords.addAll(Arrays.asList(line.toLowerCase().split(" ")));
+        });
+        return cvWords;
+    }
+
+    private String getQualificationArea(XWPFWordExtractor extractor, String qualificationLevel) {
+        List<String> lines = Arrays.asList(extractor.getText().split("\r?\n"));
+        String qualificationArea = "N/A";
+        if (!qualificationLevel.equals("No qualifications")) {
+            Optional<String> qualificationsLineOpt = lines.stream().filter(line -> line.toLowerCase().contains(qualificationLevel.toLowerCase())).findFirst();
+            if (qualificationsLineOpt.isPresent()) {
+                String qualificationLine = qualificationsLineOpt.get();
+
+                int qualificationLevelIndex = qualificationLine.toLowerCase().indexOf(qualificationLevel.toLowerCase());
+                String substringStartingFromQualificationLevel = qualificationLine.substring(qualificationLevelIndex + qualificationLevel.length());
+                int firstFullStop = substringStartingFromQualificationLevel.indexOf(".");
+                int firstNewline = substringStartingFromQualificationLevel.indexOf("\n");
+
+                boolean noFullStopFound = (firstFullStop == -1);
+                boolean noNewLineFound = (firstNewline == -1);
+                if (!(noFullStopFound && noNewLineFound)) {
+                    if (noFullStopFound) {
+                        qualificationArea = substringStartingFromQualificationLevel.substring(0, firstNewline);
+                    } else if (noNewLineFound) {
+                        qualificationArea = substringStartingFromQualificationLevel.substring(0, firstFullStop);
+                    } else {
+                        int indexToUse = Math.min(firstFullStop, firstNewline);
+                        qualificationArea = substringStartingFromQualificationLevel.substring(0, indexToUse);
+                    }
+                } else {
+                    qualificationArea = substringStartingFromQualificationLevel.trim();
+                }
+            }
+        }
+        return qualificationArea;
+    }
+
+    private InputStream readDataFromS3(String username) {
+        String fileName = username + SUFFIX;
+        S3Object object = s3Client.getObject(new GetObjectRequest(BUCKET_NAME, fileName));
+        return object.getObjectContent();
+    }
+
+    private List<String> addKsaIfFoundInCv(List<String> ksaGroup, String cvText) {
+        List<String> ksasFound = new ArrayList<>();
+        ksaGroup.forEach(ksa -> {
+            String lowercaseKsa = ksa.toLowerCase();
+            Set<String> ksaSynonyms = getRelatedWords(lowercaseKsa);
+            if (ksaSynonyms.stream().anyMatch(cvText::contains)) {
+                ksasFound.add(ksa);
+            }
+        });
+        return ksasFound;
+    }
+
+    public Set<String> getRelatedWords(String word) {
+        if (KsaSynonyms.getKsaSynonyms().containsKey(word)) {
+            return KsaSynonyms.getKsaSynonyms().get(word);
+        }
+        return Set.of(word);
+    }
+
+    private List<String> queryWordnikApi(String wordType, String word) {
+        try {
+            String formattedUrl = String.format("https://api.wordnik.com/v4/word.json/%s/relatedWords?useCanonical=false&relationshipTypes=%s&limitPerRelationshipType=100&api_key=%s",
+                    word.toLowerCase(),
+                    wordType,
+                    System.getenv("WORDNIK_API_KEY"));
+            URL url = new URL(formattedUrl);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer content = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                content.append(inputLine);
+            }
+            in.close();
+            JsonArray json = JsonParser.parseString(content.toString()).getAsJsonArray().get(0).getAsJsonObject().get("words").getAsJsonArray();
+            List<String> synonyms = new ArrayList<>();
+            json.forEach(synonym -> synonyms.add(synonym.getAsString()));
+            return synonyms;
+        } catch (Exception e) {
+            return Collections.singletonList(word);
+        }
     }
 }

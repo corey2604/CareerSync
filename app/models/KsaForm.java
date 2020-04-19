@@ -1,10 +1,11 @@
 package models;
 
 import java.util.List;
+import java.util.Optional;
 
 public class KsaForm {
     private String qualificationLevel;
-    private String qualificationArea;
+    private Optional<String> qualificationArea;
     private List<String> communicationSkills;
     private List<String> peopleSkills;
     private List<String> financialKnowledgeAndSkills;
@@ -24,12 +25,12 @@ public class KsaForm {
     }
 
 
-    public String getQualificationArea() {
+    public Optional<String> getQualificationArea() {
         return qualificationArea;
     }
 
     public void setQualificationArea(String qualificationArea) {
-        this.qualificationArea = qualificationArea;
+        this.qualificationArea = setOptionalValue(qualificationArea);
     }
 
     public List<String> getCommunicationSkills() {
@@ -78,5 +79,9 @@ public class KsaForm {
 
     public void setAdministrativeOrOrganisational(List<String> administrativeOrOrganisational) {
         this.administrativeOrOrganisational = administrativeOrOrganisational;
+    }
+
+    private Optional<String> setOptionalValue(String field) {
+        return (field.isEmpty()) ? Optional.empty() : Optional.ofNullable(field);
     }
 }

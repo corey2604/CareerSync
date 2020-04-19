@@ -1,6 +1,6 @@
 package utilities;
 
-import Enums.DynamoTables;
+import enums.DynamoTables;
 import awsWrappers.AmazonDynamoDbClientWrapper;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -10,14 +10,15 @@ import models.JobDescription;
 import models.UserAccountDetails;
 import models.UserKsas;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import javax.inject.Singleton;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
+@Singleton
 public class KsaMatcher {
     private static KsaMatcher ksaMatcher = null;
-    private static int PERCENTAGE_THRESHOLD = 75;
 
     private KsaMatcher() {
         //private constructor
@@ -70,12 +71,20 @@ public class KsaMatcher {
         for (Map<String, AttributeValue> item : allJobDescriptions.getItems()) {
             JobDescription jobDescription = new JobDescription(item);
             List<String> allJobDescriptionRelatedKsas = jobDescription.getAllJobRelatedKsas();
-            long ksaCount = allKsas.stream().filter(ksa -> allJobDescriptionRelatedKsas.contains(ksa)).count();
+            long ksaCount = allKsas.stream().filter(allJobDescriptionRelatedKsas::contains).count();
             double percentMatch = (ksaCount <= allJobDescriptionRelatedKsas.size()) ? (ksaCount * 100) / allJobDescriptionRelatedKsas.size() : 100;
-            System.out.println("Percentage Match: " + percentMatch);
 
-            if (percentMatch > PERCENTAGE_THRESHOLD) {
-                matchingJobDescriptions.add(jobDescription);
+            if (percentMatch > jobDescription.getPercentageMatchThreshold()) {
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                try {
+                    Date closingDate = formatter.parse(jobDescription.getClosingDate());
+                    if (new Date().after(closingDate)) {
+                        DynamoAccessor.getInstance().deleteJobDescriptionFromTable(jobDescription);
+                    } else {
+                        matchingJobDescriptions.add(jobDescription);
+                    }
+                } catch (ParseException e) {
+                }
             }
         }
         return matchingJobDescriptions;
@@ -83,21 +92,23 @@ public class KsaMatcher {
 
     private List<UserAccountDetails> getMatchingCandidates(JobDescription jobDescription, ScanResult allCandidates) {
         List<String> allJobDescriptionRelatedKsas = jobDescription.getAllJobRelatedKsas();
+
         if (allJobDescriptionRelatedKsas.size() > 0) {
             List<UserAccountDetails> matchingUsers = new ArrayList<>();
             for (Map<String, AttributeValue> item : allCandidates.getItems()) {
                 UserKsas userKsas = new UserKsas(item);
                 List<String> allUserKsas = userKsas.getAllKsas();
-                long ksaCount = allUserKsas.stream().filter(ksa -> allJobDescriptionRelatedKsas.contains(ksa)).count();
+                long ksaCount = allUserKsas.stream().filter(allJobDescriptionRelatedKsas::contains).count();
                 double percentMatch = (ksaCount <= allJobDescriptionRelatedKsas.size()) ? (ksaCount * 100) / allJobDescriptionRelatedKsas.size() : 100;
-                System.out.println("Percentage Match: " + percentMatch);
 
-                if (percentMatch > PERCENTAGE_THRESHOLD) {
+                if (percentMatch >= jobDescription.getPercentageMatchThreshold()) {
                     matchingUsers.add(DynamoAccessor.getInstance().getUserAccountDetails(userKsas.getUsername()));
                 }
+
             }
             return matchingUsers;
         }
+
         return Collections.EMPTY_LIST;
     }
 }
